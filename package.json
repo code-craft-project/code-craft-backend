@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon --ignore dist/ --exec \"tsc && ts-node -r tsconfig-paths/register app/index.ts\"",
     "build": "tsc",
-    "start": "node dist/app/index.js"
+    "start": "node dist/app/index.js",
+    "migrate": "tsc && node dist/infrastructure/database/migrations/cli.js"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +24,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.18.2",
     "module-alias": "^2.2.3",
+    "mysql2": "^3.9.1",
     "swagger-ui-express": "^5.0.0"
   },
   "_moduleAliases": {
