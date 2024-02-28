@@ -9,21 +9,20 @@ const db_connection = mysql.createConnection({
 });
 
 export class MySQLDatabase {
-    async query(q: string): Promise<any> {
+    async query<T>(q: string, ...args: any): Promise<T | null> {
         let promise = new Promise((resolve, reject) => {
-            db_connection.query(q, (error, result) => {
+            db_connection.query(q, [...args], (error, result) => {
                 if (error) {
                     reject(error);
                     return;
                 }
-
                 resolve(result);
             });
         });
 
         try {
             let result = await promise;
-            return result;
+            return result as T;
         } catch (err) {
             console.log({ err });
             return null;
