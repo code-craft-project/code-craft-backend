@@ -24,6 +24,7 @@ import ClubPermissionsTableMigration from "./ClubPermissionsTableMigration";
 import NotificationsTableMigration from "./NotificationsTableMigration";
 import TeamsTableMigration from "./TeamsTableMigration";
 import TeamMembersTableMigration from "./TeamMembersTableMigration";
+import UserSessionsTableMigration from "./UserSessionsTableMigration";
 
 export class DatabaseMigration {
     private database: MySQLDatabase;
@@ -43,6 +44,7 @@ export class DatabaseMigration {
         let challenges_table = new ChallengesTableMigration(this.database, this.logger);
         let event_participants_table = new EventParticipantsTableMigration(this.database, this.logger);
         let notifications_table = new NotificationsTableMigration(this.database, this.logger);
+        let user_sessions_table = new UserSessionsTableMigration(this.database, this.logger);
 
         let club_members_table = new ClubMembersTableMigration(this.database, this.logger);
         let company_members_table = new CompanyMembersTableMigration(this.database, this.logger);
@@ -76,6 +78,7 @@ export class DatabaseMigration {
             companies_table.migrate(),
             event_participants_table.migrate(),
             notifications_table.migrate(),
+            user_sessions_table.migrate(),
         ]);
 
         // Level 03
@@ -113,6 +116,7 @@ export class DatabaseMigration {
         let challenges_table = new ChallengesTableMigration(this.database, this.logger);
         let event_participants_table = new EventParticipantsTableMigration(this.database, this.logger);
         let notifications_table = new NotificationsTableMigration(this.database, this.logger);
+        let user_sessions_table = new UserSessionsTableMigration(this.database, this.logger);
 
         let club_members_table = new ClubMembersTableMigration(this.database, this.logger);
         let company_members_table = new CompanyMembersTableMigration(this.database, this.logger);
@@ -164,6 +168,7 @@ export class DatabaseMigration {
             companies_table.drop(),
             event_participants_table.drop(),
             notifications_table.drop(),
+            user_sessions_table.drop(),
         ]);
 
         // Level 01
