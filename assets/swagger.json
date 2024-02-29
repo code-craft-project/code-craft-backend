@@ -25,21 +25,20 @@
                 ],
                 "parameters": [
                     {
-                        "name": "email",
                         "in": "body",
-                        "description": "email of the user",
+                        "name": "body",
+                        "description": "credentials",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "password",
-                        "in": "body",
-                        "description": "password related to that user",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            }
                         }
                     }
                 ],
@@ -77,48 +76,29 @@
                 ],
                 "parameters": [
                     {
-                        "name": "username",
                         "in": "body",
-                        "description": "username for the account",
+                        "name": "body",
+                        "description": "sign_up body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "first_name",
-                        "in": "body",
-                        "description": "first_name for the account",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "last_name",
-                        "in": "body",
-                        "description": "last_name for the account",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "email",
-                        "in": "body",
-                        "description": "email for the account",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "password",
-                        "in": "body",
-                        "description": "password for the account",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "type": "string"
+                                },
+                                "first_name": {
+                                    "type": "string"
+                                },
+                                "last_name": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            }
                         }
                     }
                 ],
@@ -242,12 +222,16 @@
                 ],
                 "parameters": [
                     {
-                        "name": "name",
                         "in": "body",
-                        "description": "name of the company",
+                        "name": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            }
                         }
                     },
                     {
@@ -283,8 +267,6 @@
                 }
             }
         },
-
-        
         "/clubs": {
             "get": {
                 "description": "Returns the first page of clubs fron the system",
@@ -380,12 +362,17 @@
                 ],
                 "parameters": [
                     {
-                        "name": "name",
                         "in": "body",
-                        "description": "name of the club",
+                        "name": "body",
+                        "description": "create new club body",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            }
                         }
                     },
                     {
@@ -421,7 +408,6 @@
                 }
             }
         },
-
         "/challenges": {
             "get": {
                 "description": "Returns the first page of challenges fron the system",
@@ -471,10 +457,7 @@
                 "description": "Returns a challenge based on a single ID",
                 "operationId": "getChallengeById",
                 "produces": [
-                    "application/json",
-                    "application/xml",
-                    "text/xml",
-                    "text/html"
+                    "application/json"
                 ],
                 "parameters": [
                     {
@@ -484,13 +467,6 @@
                         "required": true,
                         "type": "integer",
                         "format": "int64"
-                    },
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true,
-                        "type": "string",
-                        "description": "Bearer token for authentication"
                     }
                 ],
                 "responses": {
@@ -516,38 +492,6 @@
                         }
                     }
                 }
-            },
-            "delete": {
-                "description": "deletes a single challenge based on the ID supplied",
-                "operationId": "deleteChallenge",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of challenge to delete",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true,
-                        "type": "string",
-                        "description": "Bearer token for authentication"
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "challenge deleted"
-                    },
-                    "default": {
-                        "description": "unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    }
-                }
             }
         },
         "/challenges/create": {
@@ -559,20 +503,59 @@
                 ],
                 "parameters": [
                     {
-                        "name": "challenge",
                         "in": "body",
-                        "description": "challenge information to create",
+                        "name": "body",
+                        "description": "create new challenge body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/Challenge"
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "type": "string"
+                                },
+                                "topic": {
+                                    "type": "string"
+                                },
+                                "level": {
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "type": "string"
+                                },
+                                "is_public": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "name"
+                            ]
                         }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "description": "Bearer token for authentication"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "challenge response",
+                        "description": "create challenge response",
                         "schema": {
-                            "$ref": "#/definitions/Challenge"
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "data": {
+                                    "$ref": "#/definitions/Challenge"
+                                }
+                            }
                         }
                     },
                     "default": {
@@ -692,6 +675,29 @@
                 },
                 "title": {
                     "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "level": {
+                    "type": "string"
+                },
+                "topic": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "is_public": {
+                    "type": "boolean"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2024-02-28T20:20:48.000Z"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2024-02-28T20:20:48.000Z"
                 }
             }
         },

@@ -10,7 +10,8 @@ export default class ChallengesRepository implements ChallengesRepositoryInterfa
     // name, topic, level, is_public, type, creator_id
     async createChallenge(challenge: ChallengeInterface): Promise<ChallengeInterface | null> {
         let result = await this.database.query<ChallengeInterface>(`insert into challenges (${CHALLENGE_CREATE_PROPS}) values (?);`, [
-            challenge.name,
+            challenge.title,
+            challenge.description,
             challenge.topic,
             challenge.level,
             challenge.is_public,
@@ -26,7 +27,7 @@ export default class ChallengesRepository implements ChallengesRepositoryInterfa
     }
 
     async getChallengeById(id: number): Promise<ChallengeInterface | null> {
-        let data = await this.database.query<ChallengeInterface[]>(`select ${CHALLENGE_SELECT_PROPS} from challenges where id = ?;`, [id]);
+        let data = await this.database.query<ChallengeInterface[]>(`select ${CHALLENGE_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS creator from challenges join users on creator_id = users.id where challenges.id = ?;`, [id]);
 
         if (data && data.length > 0) {
             return data[0];

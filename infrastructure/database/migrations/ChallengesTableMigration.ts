@@ -4,7 +4,8 @@ export default class ChallengesTableMigration extends TableMigration {
     async createTable(): Promise<void> {
         await this.database.query(`create table if not exists challenges (
             id int AUTO_INCREMENT primary key,
-            name varchar(255),
+            title varchar(255),
+            description text,
             topic varchar(255),
             level varchar(255),
             is_public boolean,

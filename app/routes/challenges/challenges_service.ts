@@ -35,8 +35,29 @@ export async function getChallenges(req: Request, res: Response) {
     });
 }
 
+export async function getChallengeById(req: Request, res: Response) {
+    const { id } = req.params;
+
+    let data = await challengesRepository.getChallengeById(parseInt(id));
+
+    if (!data) {
+        res.status(200).json({
+            status: "success",
+            message: "Challenge not found",
+            data: []
+        });
+
+        return;
+    }
+
+    res.status(200).json({
+        status: "success",
+        data
+    });
+}
+
 export async function createChallenge(req: Request, res: Response) {
-    const challenge = req.body;
+    const challenge: ChallengeInterface = req.body;
 
     let validate_result: ValidatorResult = challenge_validator.validate(challenge);
     if (!validate_result.is_valid) {
@@ -44,7 +65,8 @@ export async function createChallenge(req: Request, res: Response) {
         return;
     }
 
-    let result = await challengesRepository.createChallenge(challenge);
+    const creator_id = req.user?.id as number;
+    let result = await challengesRepository.createChallenge({ ...challenge, creator_id });
     if (!result) {
         res.status(200).json({ status: "error", message: "Can't create challenge, something went wrong" });
         return;
