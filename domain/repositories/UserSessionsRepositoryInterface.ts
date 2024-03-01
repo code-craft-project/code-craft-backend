@@ -2,5 +2,5 @@ export const USER_SESSION_SELECT_PROPS: string = 'user_sessions.id as id, user_s
 export const USER_SESSION_CREATE_PROPS: string = 'user_id, access_token';
 
 export interface UserSessionsRepositoryInterface {
-    createUserSession(user: UserSessionInterface): Promise<UserSessionInterface | null>;
+    createUserSession(user: UserSessionInterface): Promise<InsertResultInterface | null>;
 };

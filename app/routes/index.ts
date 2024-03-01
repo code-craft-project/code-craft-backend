@@ -1,8 +1,7 @@
 import { Router } from "express";
 
 import challengesRouter from "./challenges/index";
-import companiesRouter from "./companies/index";
-import clubsRouter from "./clubs/index";
+import organizationsRouter from "./organizations/index";
 import authRouter from "./auth/index";
 import jobPostsRouter from "./jobposts/index";
 import eventsRouter from "./events/index";
@@ -14,8 +13,7 @@ const router = Router();
 router.use("/", protectedRoutes);
 router.use("/auth", authRouter);
 router.use("/challenges", challengesRouter);
-router.use("/companies", companiesRouter);
-router.use("/clubs", clubsRouter);
+router.use("/organizations", organizationsRouter);
 router.use("/jobposts", jobPostsRouter);
 router.use("/events", eventsRouter);
 

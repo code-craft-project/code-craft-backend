@@ -11,8 +11,10 @@ export default class EventsTableMigration extends TableMigration {
             logo_url varchar(255),
             start_at TIMESTAMP,
             end_at TIMESTAMP,
+            organization_id int,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            foreign key(organization_id) references organizations(id)
         );`);
     }
 

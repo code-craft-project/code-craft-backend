@@ -1,7 +1,8 @@
-interface ClubInterface {
+interface OrganizationInterface {
     id?: number;
     name: string;
-    leader_id: number;
+    creator_id: number;
+    type: 'club' | 'company';
     profile_image_url: string;
     created_at?: string;
     updated_at?: string;

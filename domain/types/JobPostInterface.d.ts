@@ -4,6 +4,6 @@ interface JobPostInterface {
     description: string;
     role: string;
     type: string;
-    company_id: string;
+    organization_id: string;
     created_at?: string;
 };

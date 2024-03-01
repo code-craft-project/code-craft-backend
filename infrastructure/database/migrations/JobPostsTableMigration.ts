@@ -8,10 +8,10 @@ export default class JobPostsTableMigration extends TableMigration {
             description varchar(255),
             role varchar(255),
             type varchar(255),
-            company_id int,
+            organization_id int,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            foreign key(company_id) references companies(id)
+            foreign key(organization_id) references organizations(id)
         );`);
     }
 

@@ -7,15 +7,16 @@ export default class EventsRepository implements EventsRepositoryInterface {
         this.database = database;
     }
 
-    async createEvent(event: EventInterface): Promise<EventInterface | null> {
-        let result = await this.database.query<EventInterface>(`insert into events (${EVENT_CREATE_PROPS}) values (?);`, [
+    async createEvent(event: EventInterface): Promise<InsertResultInterface | null> {
+        let result = await this.database.query<InsertResultInterface>(`insert into events (${EVENT_CREATE_PROPS}) values (?);`, [
             event.title,
             event.description,
             event.is_public,
             event.password,
             event.logo_url,
-            event.start_at,
-            event.end_at
+            new Date(event.start_at),
+            new Date(event.end_at),
+            event.organization_id
         ]);
 
         if (result) {

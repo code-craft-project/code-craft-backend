@@ -7,8 +7,8 @@ export default class UsersRepository implements UsersRepositoryInterface {
         this.database = database;
     }
 
-    async createUser(user: UserInterface): Promise<UserInterface | null> {
-        const result = await this.database.query<UserInterface>(
+    async createUser(user: UserInterface): Promise<InsertResultInterface | null> {
+        const result = await this.database.query<InsertResultInterface>(
             `insert into users (${USER_CREATE_PROPS}) values (?);`,
             [
                 user.username,

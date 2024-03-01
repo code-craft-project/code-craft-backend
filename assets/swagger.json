@@ -127,10 +127,10 @@
                 }
             }
         },
-        "/companies": {
+        "/organizations": {
             "get": {
-                "description": "Returns the first page of companies fron the system",
-                "operationId": "getCompanies",
+                "description": "Returns the first page of organizations from the system",
+                "operationId": "getOrganizations",
                 "produces": [
                     "application/json"
                 ],
@@ -145,7 +145,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "companies response",
+                        "description": "organizations response",
                         "schema": {
                             "type": "object",
                             "properties": {
@@ -156,7 +156,7 @@
                                 "data": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/definitions/Company"
+                                        "$ref": "#/definitions/Organization"
                                     }
                                 }
                             }
@@ -171,10 +171,10 @@
                 }
             }
         },
-        "/companies/{id}": {
+        "/organizations/{id}": {
             "get": {
-                "description": "Returns a Company based on a single ID",
-                "operationId": "getCompanyById",
+                "description": "Returns a Organization based on a single ID",
+                "operationId": "getOrganizationById",
                 "produces": [
                     "application/json"
                 ],
@@ -182,7 +182,7 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of Company to fetch",
+                        "description": "ID of Organization to fetch",
                         "required": true,
                         "type": "integer",
                         "format": "int64"
@@ -190,7 +190,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "company response",
+                        "description": "organization response",
                         "schema": {
                             "type": "object",
                             "properties": {
@@ -199,7 +199,7 @@
                                     "example": "success"
                                 },
                                 "data": {
-                                    "$ref": "#/definitions/Company"
+                                    "$ref": "#/definitions/Organization"
                                 }
                             }
                         }
@@ -213,10 +213,10 @@
                 }
             }
         },
-        "/companies/create": {
+        "/organizations/create": {
             "post": {
-                "description": "Create a new company",
-                "operationId": "createCompany",
+                "description": "Create a new organization",
+                "operationId": "createOrganization",
                 "produces": [
                     "application/json"
                 ],
@@ -244,7 +244,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "create company response",
+                        "description": "create organization response",
                         "schema": {
                             "type": "object",
                             "properties": {
@@ -253,7 +253,7 @@
                                     "example": "success"
                                 },
                                 "data": {
-                                    "$ref": "#/definitions/Company"
+                                    "$ref": "#/definitions/Organization"
                                 }
                             }
                         }
@@ -267,54 +267,10 @@
                 }
             }
         },
-        "/clubs": {
-            "get": {
-                "description": "Returns the first page of clubs fron the system",
-                "operationId": "getClubs",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "number of page",
-                        "required": false,
-                        "type": "integer"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "clubs response",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "status": {
-                                    "type": "string",
-                                    "example": "success"
-                                },
-                                "data": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/definitions/Club"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    }
-                }
-            }
-        },
-        "/clubs/{id}": {
-            "get": {
-                "description": "Returns a Club based on a single ID",
-                "operationId": "getClubById",
+        "/organizations/{id}/add_member": {
+            "post": {
+                "description": "Add new organization member",
+                "operationId": "addOrganizationMember",
                 "produces": [
                     "application/json"
                 ],
@@ -322,54 +278,25 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of Club to fetch",
+                        "description": "ID of Organization to fetch",
                         "required": true,
                         "type": "integer",
                         "format": "int64"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "club response",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "status": {
-                                    "type": "string",
-                                    "example": "success"
-                                },
-                                "data": {
-                                    "$ref": "#/definitions/Club"
-                                }
-                            }
-                        }
                     },
-                    "default": {
-                        "description": "unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorModel"
-                        }
-                    }
-                }
-            }
-        },
-        "/clubs/create": {
-            "post": {
-                "description": "Create a new club",
-                "operationId": "createClub",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
                     {
                         "in": "body",
                         "name": "body",
-                        "description": "create new club body",
                         "required": true,
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "name": {
+                                "user_id": {
+                                    "type": "integer"
+                                },
+                                "organization_id": {
+                                    "type": "integer"
+                                },
+                                "role": {
                                     "type": "string"
                                 }
                             }
@@ -385,7 +312,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "create club response",
+                        "description": "add new organization member response",
                         "schema": {
                             "type": "object",
                             "properties": {
@@ -394,7 +321,140 @@
                                     "example": "success"
                                 },
                                 "data": {
-                                    "$ref": "#/definitions/Club"
+                                    "$ref": "#/definitions/Member"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/organizations/{id}/remove_member": {
+            "post": {
+                "description": "remove Organization Member",
+                "operationId": "removeOrganization",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of Organization to fetch",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "member_id": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "description": "Bearer token for authentication"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "remove organization member response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "data": {
+                                    "$ref": "#/definitions/Organization"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/organizations/{id}/give_permission": {
+            "post": {
+                "description": "Give a specific permission to a user",
+                "operationId": "givePermission",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of Organization to fetch",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "permission": {
+                                    "type": "string"
+                                },
+                                "entity_id": {
+                                    "type": "integer"
+                                },
+                                "user_id": {
+                                    "type": "integer"
+                                },
+                                "organization": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "description": "Bearer token for authentication"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "give permission response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "data": {
+                                    "$ref": "#/definitions/Organization"
                                 }
                             }
                         }
@@ -410,7 +470,7 @@
         },
         "/challenges": {
             "get": {
-                "description": "Returns the first page of challenges fron the system",
+                "description": "Returns the first page of challenges from the system",
                 "operationId": "getChallenges",
                 "produces": [
                     "application/json"
@@ -909,7 +969,7 @@
                 }
             }
         },
-        "Company": {
+        "Organization": {
             "type": "object",
             "properties": {
                 "id": {
@@ -918,38 +978,10 @@
                 "name": {
                     "type": "string"
                 },
-                "owner_id": {
+                "creator_id": {
                     "type": "integer"
                 },
-                "owner": {
-                    "$ref": "#/definitions/User"
-                },
-                "profile_image_url": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string",
-                    "example": "2024-02-28T20:20:48.000Z"
-                },
-                "updated_at": {
-                    "type": "string",
-                    "example": "2024-02-28T20:20:48.000Z"
-                }
-            }
-        },
-        "Club": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "leader_id": {
-                    "type": "integer"
-                },
-                "leader": {
+                "creator": {
                     "$ref": "#/definitions/User"
                 },
                 "profile_image_url": {
@@ -1017,7 +1049,7 @@
                 "type": {
                     "type": "string"
                 },
-                "company_id": {
+                "organization_id": {
                     "type": "integer"
                 },
                 "created_at": {
@@ -1054,6 +1086,46 @@
                 "end_at": {
                     "type": "string",
                     "example": "2024-02-28T20:20:48.000Z"
+                },
+                "organization_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "Member": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "organization_id": {
+                    "type": "integer"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "Permission": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "permission": {
+                    "type": "string"
+                },
+                "entity_id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "organization_id": {
+                    "type": "integer"
                 }
             }
         },

@@ -8,8 +8,8 @@ export default class ChallengesRepository implements ChallengesRepositoryInterfa
         this.database = database;
     }
     // name, topic, level, is_public, type, creator_id
-    async createChallenge(challenge: ChallengeInterface): Promise<ChallengeInterface | null> {
-        let result = await this.database.query<ChallengeInterface>(`insert into challenges (${CHALLENGE_CREATE_PROPS}) values (?);`, [
+    async createChallenge(challenge: ChallengeInterface): Promise<InsertResultInterface | null> {
+        let result = await this.database.query<InsertResultInterface>(`insert into challenges (${CHALLENGE_CREATE_PROPS}) values (?);`, [
             challenge.title,
             challenge.description,
             challenge.topic,
