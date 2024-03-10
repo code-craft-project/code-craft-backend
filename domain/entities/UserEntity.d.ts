@@ -1,4 +1,4 @@
-interface UserInterface {
+interface UserEntity {
     id?: number;
     username: string;
     first_name: string;

@@ -7,7 +7,7 @@ export default class MembersRepository implements MembersRepositoryInterface {
         this.database = database;
     }
 
-    async createMember(member: MemberInterface): Promise<InsertResultInterface | null> {
+    async createMember(member: MemberEntity): Promise<InsertResultInterface | null> {
         let result = await this.database.query<InsertResultInterface>(`insert into members (${MEMBER_CREATE_PROPS}) values (?);`, [
             member.role,
             member.user_id,
@@ -21,8 +21,8 @@ export default class MembersRepository implements MembersRepositoryInterface {
         return null;
     }
 
-    async getMemberById(member_id: number): Promise<MemberInterface | null> {
-        let data = await this.database.query<MemberInterface[]>(`select ${MEMBER_SELECT_PROPS} from members where id = ?;`, [member_id]);
+    async getMemberById(member_id: number): Promise<MemberEntity | null> {
+        let data = await this.database.query<MemberEntity[]>(`select ${MEMBER_SELECT_PROPS} from members where id = ?;`, [member_id]);
 
         if (data && data.length > 0) {
             return data[0];
@@ -31,8 +31,8 @@ export default class MembersRepository implements MembersRepositoryInterface {
         return null;
     }
 
-    async removeOrganizationMemberById(member_id: number, organization_id: number): Promise<MemberInterface | null> {
-        let result = await this.database.query<MemberInterface>(`delete from members where id = ? and organization_id = ?;`, [member_id, organization_id]);
+    async removeOrganizationMemberById(member_id: number, organization_id: number): Promise<MemberEntity | null> {
+        let result = await this.database.query<MemberEntity>(`delete from members where id = ? and organization_id = ?;`, [member_id, organization_id]);
 
         if (result) {
             return result;
@@ -41,8 +41,8 @@ export default class MembersRepository implements MembersRepositoryInterface {
         return null;
     }
 
-    async getMemberByOrganizationId(user_id: number, organization_id: number): Promise<MemberInterface | null> {
-        let data = await this.database.query<MemberInterface[]>(`select ${MEMBER_SELECT_PROPS} from members where user_id = ? and organization_id = ?;`, user_id, organization_id);
+    async getMemberByOrganizationId(user_id: number, organization_id: number): Promise<MemberEntity | null> {
+        let data = await this.database.query<MemberEntity[]>(`select ${MEMBER_SELECT_PROPS} from members where user_id = ? and organization_id = ?;`, user_id, organization_id);
 
         if (data && data.length > 0) {
             return data[0];
@@ -51,8 +51,8 @@ export default class MembersRepository implements MembersRepositoryInterface {
         return null;
     }
 
-    async getOrganizationMembers(organization_id: number): Promise<MemberInterface[] | null> {
-        let result = await this.database.query<MemberInterface[]>(`select ${MEMBER_SELECT_PROPS} from members where organization_id = ?;`, [organization_id]);
+    async getOrganizationMembers(organization_id: number): Promise<MemberEntity[] | null> {
+        let result = await this.database.query<MemberEntity[]>(`select ${MEMBER_SELECT_PROPS} from members where organization_id = ?;`, [organization_id]);
 
         if (result) {
             return result;

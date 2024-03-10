@@ -7,7 +7,7 @@ export default class UsersRepository implements UsersRepositoryInterface {
         this.database = database;
     }
 
-    async createUser(user: UserInterface): Promise<InsertResultInterface | null> {
+    async createUser(user: UserEntity): Promise<InsertResultInterface | null> {
         const result = await this.database.query<InsertResultInterface>(
             `insert into users (${USER_CREATE_PROPS}) values (?);`,
             [
@@ -26,8 +26,8 @@ export default class UsersRepository implements UsersRepositoryInterface {
         return null;
     }
 
-    async getUserById(id: number): Promise<UserInterface | null> {
-        let users = await this.database.query<UserInterface[]>(`select ${USER_SELECT_PROPS} from users where id = ?;`, [id]);
+    async getUserById(id: number): Promise<UserEntity | null> {
+        let users = await this.database.query<UserEntity[]>(`select ${USER_SELECT_PROPS} from users where id = ?;`, [id]);
         if (!users || users?.length == 0) {
             return null;
         }
@@ -35,8 +35,8 @@ export default class UsersRepository implements UsersRepositoryInterface {
         return users[0];
     }
 
-    async getUserByUsername(username: string): Promise<UserInterface | null> {
-        let users = await this.database.query<UserInterface[]>(`select ${USER_SELECT_PROPS} from users where username = ?;`, [username]);
+    async getUserByUsername(username: string): Promise<UserEntity | null> {
+        let users = await this.database.query<UserEntity[]>(`select ${USER_SELECT_PROPS} from users where username = ?;`, [username]);
         if (!users || users?.length == 0) {
             return null;
         }
@@ -44,13 +44,12 @@ export default class UsersRepository implements UsersRepositoryInterface {
         return users[0];
     }
 
-    async getUserByEmail(email: string): Promise<UserInterface | null> {
-        let users = await this.database.query<UserInterface[]>(`select ${USER_SELECT_PROPS} from users where email = ?;`, [email]);
+    async getUserByEmail(email: string): Promise<UserEntity | null> {
+        let users = await this.database.query<UserEntity[]>(`select ${USER_SELECT_PROPS} from users where email = ?;`, [email]);
         if (!users || users?.length == 0) {
             return null;
         }
 
         return users[0];
     }
-
 }

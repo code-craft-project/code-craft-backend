@@ -7,7 +7,7 @@ export default class EventsRepository implements EventsRepositoryInterface {
         this.database = database;
     }
 
-    async createEvent(event: EventInterface): Promise<InsertResultInterface | null> {
+    async createEvent(event: EventEntity): Promise<InsertResultInterface | null> {
         let result = await this.database.query<InsertResultInterface>(`insert into events (${EVENT_CREATE_PROPS}) values (?);`, [
             event.title,
             event.description,
@@ -26,8 +26,8 @@ export default class EventsRepository implements EventsRepositoryInterface {
         return null;
     }
 
-    async getEventById(id: number): Promise<EventInterface | null> {
-        let data = await this.database.query<EventInterface[]>(`select ${EVENT_SELECT_PROPS} from events where events.id = ?;`, [id]);
+    async getEventById(id: number): Promise<EventEntity | null> {
+        let data = await this.database.query<EventEntity[]>(`select ${EVENT_SELECT_PROPS} from events where events.id = ?;`, [id]);
 
         if (data && data.length > 0) {
             return data[0];
@@ -36,8 +36,8 @@ export default class EventsRepository implements EventsRepositoryInterface {
         return null;
     }
 
-    async getEventsByPage(page: number = 0, limits: number = 10): Promise<EventInterface[] | null> {
-        let data = await this.database.query<EventInterface[]>(`select ${EVENT_SELECT_PROPS} from events limit ?;`, [page, limits]);
+    async getEventsByPage(page: number = 0, limits: number = 10): Promise<EventEntity[] | null> {
+        let data = await this.database.query<EventEntity[]>(`select ${EVENT_SELECT_PROPS} from events limit ?;`, [page, limits]);
         if (!data) {
             return null;
         }

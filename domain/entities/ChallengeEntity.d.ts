@@ -1,4 +1,4 @@
-interface ChallengeInterface {
+interface ChallengeEntity {
     id: number;
     title: string;
     description: string;

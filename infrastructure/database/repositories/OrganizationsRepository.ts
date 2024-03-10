@@ -8,7 +8,7 @@ export default class OrganizationsRepository implements OrganizationsRepositoryI
         this.database = database;
     }
 
-    async createOrganization(organization: OrganizationInterface): Promise<InsertResultInterface | null> {
+    async createOrganization(organization: OrganizationEntity): Promise<InsertResultInterface | null> {
         const result = await this.database.query<InsertResultInterface>(
             `insert into organizations (${ORGANIZATION_CREATE_PROPS}) values (?);`,
             [
@@ -25,8 +25,8 @@ export default class OrganizationsRepository implements OrganizationsRepositoryI
         return null;
     }
 
-    async getOrganizationById(id: number): Promise<OrganizationInterface | null> {
-        let data = await this.database.query<OrganizationInterface[]>(`select ${ORGANIZATION_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS creator from organizations join users on creator_id = users.id where organizations.id = ?;`, [id]);
+    async getOrganizationById(id: number): Promise<OrganizationEntity | null> {
+        let data = await this.database.query<OrganizationEntity[]>(`select ${ORGANIZATION_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS creator from organizations join users on creator_id = users.id where organizations.id = ?;`, [id]);
 
         if (data && data.length > 0) {
             return data[0];
@@ -35,8 +35,8 @@ export default class OrganizationsRepository implements OrganizationsRepositoryI
         return null;
     }
 
-    async getOrganizationByName(name: string): Promise<OrganizationInterface | null> {
-        let data = await this.database.query<OrganizationInterface[]>(`select ${ORGANIZATION_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS creator from organizations join users on creator_id = users.id where name = ?;`, [name]);
+    async getOrganizationByName(name: string): Promise<OrganizationEntity | null> {
+        let data = await this.database.query<OrganizationEntity[]>(`select ${ORGANIZATION_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS creator from organizations join users on creator_id = users.id where name = ?;`, [name]);
 
         if (data && data.length > 0) {
             return data[0];
@@ -45,8 +45,8 @@ export default class OrganizationsRepository implements OrganizationsRepositoryI
         return null;
     }
 
-    async getOrganizationsByPage(page: number = 0, limits: number = 10): Promise<OrganizationInterface[] | null> {
-        let data = await this.database.query<OrganizationInterface[]>(`select ${ORGANIZATION_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS creator from organizations join users on creator_id = users.id limit ?;`, [page, limits]);
+    async getOrganizationsByPage(page: number = 0, limits: number = 10): Promise<OrganizationEntity[] | null> {
+        let data = await this.database.query<OrganizationEntity[]>(`select ${ORGANIZATION_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS creator from organizations join users on creator_id = users.id limit ?;`, [page, limits]);
         if (!data) {
             return null;
         }

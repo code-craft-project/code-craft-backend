@@ -1,4 +1,4 @@
-interface UserSessionInterface {
+interface UserSessionEntity {
     id?: number;
     user_id: number;
     access_token: string;

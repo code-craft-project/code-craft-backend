@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { createJobPost, getJobPostById, getJobPosts } from "./jobposts_service";
+import { jobPostsController } from "@/app/controllers";
 
 const router = Router();
 
-router.post("/create", createJobPost);
-router.get("/:id", getJobPostById);
-router.get("/", getJobPosts);
+router.post("/create", jobPostsController.createJobPost);
+router.get("/:id", jobPostsController.getJobPostById);
+router.get("/", jobPostsController.getJobPosts);
 
 export default router;

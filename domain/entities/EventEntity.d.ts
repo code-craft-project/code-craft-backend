@@ -1,4 +1,4 @@
-interface EventInterface {
+interface EventEntity {
     id?: number;
     title: string;
     description: string;
@@ -7,5 +7,5 @@ interface EventInterface {
     logo_url: string;
     start_at: timestamp;
     end_at: timestamp;
-    organization_id: string;
+    organization_id: number;
 };

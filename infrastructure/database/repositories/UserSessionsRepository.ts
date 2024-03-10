@@ -7,7 +7,7 @@ export default class UserSessionsRepository implements UserSessionsRepositoryInt
         this.database = database;
     }
 
-    async createUserSession(user_session: UserSessionInterface): Promise<InsertResultInterface | null> {
+    async createUserSession(user_session: UserSessionEntity): Promise<InsertResultInterface | null> {
         const result = await this.database.query<InsertResultInterface>(
             `insert into user_sessions (${USER_SESSION_CREATE_PROPS}) values (?);`,
             [

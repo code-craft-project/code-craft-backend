@@ -3,8 +3,8 @@ export const ORGANIZATION_JOIN_PROPS: string = "'id', organizations.id, 'name', 
 export const ORGANIZATION_CREATE_PROPS: string = 'name, type, creator_id, profile_image_url';
 
 export interface OrganizationsRepositoryInterface {
-    createOrganization(user: OrganizationInterface): Promise<InsertResultInterface | null>;
-    getOrganizationById(id: number): Promise<OrganizationInterface | null>;
-    getOrganizationByName(name: string): Promise<OrganizationInterface | null>;
-    getOrganizationsByPage(page: number, limits: number): Promise<OrganizationInterface[] | null>;
+    createOrganization(user: OrganizationEntity): Promise<InsertResultInterface | null>;
+    getOrganizationById(id: number): Promise<OrganizationEntity | null>;
+    getOrganizationByName(name: string): Promise<OrganizationEntity | null>;
+    getOrganizationsByPage(page: number, limits: number): Promise<OrganizationEntity[] | null>;
 };

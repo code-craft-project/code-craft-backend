@@ -8,7 +8,7 @@ export default class JobPostsRepository implements JobPostsRepositoryInterface {
         this.database = database;
     }
     
-    async createJobPost(job_post: JobPostInterface): Promise<InsertResultInterface | null> {
+    async createJobPost(job_post: JobPostEntity): Promise<InsertResultInterface | null> {
         let result = await this.database.query<InsertResultInterface>(`insert into job_posts (${JOBPOST_CREATE_PROPS}) values (?);`, [
             job_post.title,
             job_post.description,
@@ -24,8 +24,8 @@ export default class JobPostsRepository implements JobPostsRepositoryInterface {
         return null;
     }
 
-    async getJobPostById(id: number): Promise<JobPostInterface | null> {
-        let data = await this.database.query<JobPostInterface[]>(`select ${JOBPOST_SELECT_PROPS}, JSON_OBJECT(${ORGANIZATION_JOIN_PROPS}) AS organization from job_posts join organizations on organization_id = organizations.id where job_posts.id = ?;`, [id]);
+    async getJobPostById(id: number): Promise<JobPostEntity | null> {
+        let data = await this.database.query<JobPostEntity[]>(`select ${JOBPOST_SELECT_PROPS}, JSON_OBJECT(${ORGANIZATION_JOIN_PROPS}) AS organization from job_posts join organizations on organization_id = organizations.id where job_posts.id = ?;`, [id]);
 
         if (data && data.length > 0) {
             return data[0];
@@ -34,8 +34,8 @@ export default class JobPostsRepository implements JobPostsRepositoryInterface {
         return null;
     }
 
-    async getJobPostsByPage(page: number = 0, limits: number = 10): Promise<JobPostInterface[] | null> {
-        let data = await this.database.query<JobPostInterface[]>(`select ${JOBPOST_SELECT_PROPS}, JSON_OBJECT(${ORGANIZATION_JOIN_PROPS}) AS organization from job_posts join organizations on organization_id = organizations.id limit ?;`, [page, limits]);
+    async getJobPostsByPage(page: number = 0, limits: number = 10): Promise<JobPostEntity[] | null> {
+        let data = await this.database.query<JobPostEntity[]>(`select ${JOBPOST_SELECT_PROPS}, JSON_OBJECT(${ORGANIZATION_JOIN_PROPS}) AS organization from job_posts join organizations on organization_id = organizations.id limit ?;`, [page, limits]);
         if (!data) {
             return null;
         }

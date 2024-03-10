@@ -1,4 +1,4 @@
-interface OrganizationInterface {
+interface OrganizationEntity {
     id?: number;
     name: string;
     creator_id: number;
