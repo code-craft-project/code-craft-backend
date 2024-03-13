@@ -6,6 +6,7 @@ import JobPostValidator from "@/infrastructure/validators/JobPostValidator";
 import MemberValidator from "@/infrastructure/validators/MemberValidator";
 import PermissionValidator from "@/infrastructure/validators/PermissionValidator";
 import UserValidator from "@/infrastructure/validators/UserValidator";
+import TeamValidator from "@/infrastructure/validators/TeamValidator";
 
 export const challengeValidator = new ChallengeValidator();
 export const credentialsValidator = new CredentialsValidator();
@@ -15,3 +16,4 @@ export const jobPostValidator = new JobPostValidator();
 export const eventValidator = new EventValidator();
 export const memberValidator = new MemberValidator();
 export const permissionValidator = new PermissionValidator();
+export const teamValidator = new TeamValidator();

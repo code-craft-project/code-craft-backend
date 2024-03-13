@@ -16,7 +16,9 @@ export default class EventsRepository implements EventsRepositoryInterface {
             event.logo_url,
             new Date(event.start_at),
             new Date(event.end_at),
-            event.organization_id
+            event.organization_id,
+            event.is_team_based,
+            event.max_team_members
         ]);
 
         if (result) {

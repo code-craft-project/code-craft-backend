@@ -11,7 +11,7 @@ const app = express();
 
 app.use(express.json());
 
-app.use('/api-docs', swaggerMiddlewares.swaggerUIServe,swaggerMiddlewares.swaggerUISetup);
+app.use('/api-docs', swaggerMiddlewares.swaggerUIServe, swaggerMiddlewares.swaggerUISetup);
 app.use('/api', apiRouter);
 
 app.listen(PORT, () => {

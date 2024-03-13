@@ -1,4 +1,4 @@
-import { challengesRepository, eventsRepository, jobPostsRepository, membersRepository, organizationsRepository, permissionsRepository, userSessionsRepository, usersRepository } from "./repositories";
+import { challengesRepository, eventParticipantsRepository, eventsRepository, jobPostsRepository, membersRepository, organizationsRepository, permissionsRepository, teamMembersRepository, teamsRepository, userSessionsRepository, usersRepository } from "./repositories";
 import ChallengesService from "./services/ChallengesService";
 import EventsService from "./services/EventsService";
 import JobPostsService from "./services/JobPostsService";
@@ -11,7 +11,7 @@ import UsersService from "./services/UsersService";
 export const usersService = new UsersService(usersRepository);
 export const userSessionsService = new UserSessionsService(userSessionsRepository);
 export const challengesService = new ChallengesService(challengesRepository);
-export const eventsService = new EventsService(eventsRepository);
+export const eventsService = new EventsService(eventsRepository, eventParticipantsRepository, teamsRepository, teamMembersRepository);
 export const membersService = new MembersService(membersRepository);
 export const permissionsService = new PermissionsService(permissionsRepository);
 export const organizationsService = new OrganizationsService(organizationsRepository);

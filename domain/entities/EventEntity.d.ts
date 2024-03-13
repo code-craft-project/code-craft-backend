@@ -8,4 +8,6 @@ interface EventEntity {
     start_at: timestamp;
     end_at: timestamp;
     organization_id: number;
+    is_team_based: boolean;
+    max_team_members: number;
 };

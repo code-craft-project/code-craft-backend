@@ -8,6 +8,8 @@ export default class EventsTableMigration extends TableMigration {
             description varchar(255),
             is_public boolean,
             password varchar(255),
+            is_team_based boolean,
+            max_team_members int,
             logo_url varchar(255),
             start_at TIMESTAMP,
             end_at TIMESTAMP,
