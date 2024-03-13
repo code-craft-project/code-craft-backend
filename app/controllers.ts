@@ -17,6 +17,7 @@ const organizationsControllerConfig: OrganizationsControllerConfig = {
     permissionValidator
 };
 
+// IMPORTANT: When adding new method to a controller, it must be an arrow function so it can capture the class instance when using 'this'.
 export const authController = new AuthController(usersService, userSessionsService, credentialsValidator, userValidator);
 export const challengesController = new ChallengesController(challengesService, challengeValidator);
 export const organizationsController = new OrganizationsController(organizationsControllerConfig);

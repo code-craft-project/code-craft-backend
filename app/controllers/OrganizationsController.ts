@@ -41,7 +41,7 @@ export default class OrganizationsController {
         this.permissionValidator = organizationsControllerConfig.permissionValidator;
     }
 
-    async getOrganizations(req: Request, res: Response) {
+    getOrganizations = async (req: Request, res: Response) => {
         const { page, limits } = req.query;
 
         let offset = 0;
@@ -73,7 +73,7 @@ export default class OrganizationsController {
         });
     }
 
-    async getOrganizationById(req: Request, res: Response) {
+    getOrganizationById = async (req: Request, res: Response) => {
         const { id } = req.params;
 
         let data = await this.organizationsService.getOrganizationById(parseInt(id));
@@ -94,7 +94,7 @@ export default class OrganizationsController {
         });
     }
 
-    async createOrganization(req: Request, res: Response) {
+    createOrganization = async (req: Request, res: Response) => {
         const organization: OrganizationEntity = req.body;
 
         let validate_result: ValidatorResult = this.organizationValidator.validate(organization);
@@ -125,7 +125,7 @@ export default class OrganizationsController {
         res.status(200).json({ status: "success", data: result });
     }
 
-    async addOrganizationMember(req: Request, res: Response) {
+    addOrganizationMember = async (req: Request, res: Response) => {
         const organization_id: number = parseInt(req.params.id);
         const member: MemberEntity = req.body;
 
@@ -158,7 +158,7 @@ export default class OrganizationsController {
         res.status(200).json({ status: "success", data: new_member });
     }
 
-    async removeOrganizationMember(req: Request, res: Response) {
+    removeOrganizationMember = async (req: Request, res: Response) => {
         const organization_id: number = parseInt(req.params.id);
         const member_id: number = req.body.member_id;
 
@@ -184,7 +184,7 @@ export default class OrganizationsController {
         res.status(200).json({ status: "success", data: remove_organization_member });
     }
 
-    async givePermission(req: Request, res: Response) {
+    givePermission = async (req: Request, res: Response) => {
         const organization_id: number = parseInt(req.params.id);
         const permission: PermissionEntity = req.body;
 

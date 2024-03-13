@@ -18,7 +18,7 @@ export default class EventsController {
         this.teamValidator = teamValidator;
     }
 
-    async getEvents(req: Request, res: Response) {
+    getEvents = async (req: Request, res: Response) => {
         const { page, limits } = req.query;
 
         let offset = 0;
@@ -50,7 +50,7 @@ export default class EventsController {
         });
     }
 
-    async getEventById(req: Request, res: Response) {
+    getEventById = async (req: Request, res: Response) => {
         const { id } = req.params;
 
         let data = await this.eventsService.getEventById(parseInt(id));
@@ -71,7 +71,7 @@ export default class EventsController {
         });
     }
 
-    async createEvent(req: Request, res: Response) {
+    createEvent = async (req: Request, res: Response) => {
         const event: EventEntity = req.body;
 
         let validate_result: ValidatorResult = this.eventValidator.validate(event);
@@ -97,7 +97,7 @@ export default class EventsController {
         res.status(200).json({ status: "success", data: result });
     }
 
-    async updateEvent(req: Request, res: Response) {
+    updateEvent = async (req: Request, res: Response) => {
         const { id } = req.params;
         const event: EventEntity = req.body;
 
@@ -119,7 +119,7 @@ export default class EventsController {
         });
     }
 
-    async joinEvent(req: Request, res: Response) {
+    joinEvent = async (req: Request, res: Response) => {
         const { id: event_id } = req.params;
         const { password } = req.body;
 
@@ -153,7 +153,7 @@ export default class EventsController {
         res.status(200).json({ status: "success", message: "You have joined the event successfully", data: eventParticipation });
     }
 
-    async leaveEvent(req: Request, res: Response) {
+    leaveEvent = async (req: Request, res: Response) => {
         const { id: event_id } = req.params;
 
         const user_id = req.user?.id as number;
@@ -166,7 +166,7 @@ export default class EventsController {
         res.status(200).json({ status: "success", message: "You have leaved the event successfully", data: leaveEvent });
     }
 
-    async createTeam(req: Request, res: Response) {
+    createTeam = async (req: Request, res: Response) => {
         const { id: event_id } = req.params;
 
         const team: TeamEntity = req.body;
@@ -211,7 +211,7 @@ export default class EventsController {
         res.status(200).json({ status: "success", message: "You have leaved the event successfully", data: newTeam });
     }
 
-    async deleteTeam(req: Request, res: Response) {
+    deleteTeam = async (req: Request, res: Response) => {
         const { team_id } = req.body;
 
         const team = await this.eventsService.getTeamById(parseInt(team_id));
@@ -231,7 +231,7 @@ export default class EventsController {
         res.status(200).json({ status: "success", message: "Team deleted successfuly" });
     }
 
-    async joinTeam(req: Request, res: Response) {
+    joinTeam = async (req: Request, res: Response) => {
         const { id: event_id } = req.params;
         const { team_id, password } = req.body;
 
@@ -272,7 +272,7 @@ export default class EventsController {
         res.status(200).json({ status: "success", message: "Join team success", data: joinTeamResult });
     }
 
-    async leaveTeam(req: Request, res: Response) {
+    leaveTeam = async (req: Request, res: Response) => {
         const { id: event_id } = req.params;
 
         const user_id = req.user?.id as number;

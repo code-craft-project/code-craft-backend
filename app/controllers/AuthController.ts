@@ -33,7 +33,7 @@ export default class AuthController {
         this.userValidator = userValidator;
     }
 
-    async signIn(req: Request, res: Response): Promise<void> {
+    signIn = async (req: Request, res: Response): Promise<void> => {
         const credentials: CredentialsInterface = req.body;
 
         const result: ValidatorResult = this.credentialsValidator.validate(credentials);
@@ -61,7 +61,7 @@ export default class AuthController {
         res.status(200).json({ status: "success", data: { access_token, user } });
     }
 
-    async signUp(req: Request, res: Response): Promise<void> {
+    signUp = async (req: Request, res: Response): Promise<void> => {
         const user: UserEntity = req.body;
 
         const result: ValidatorResult = this.userValidator.validate(user);
@@ -94,7 +94,7 @@ export default class AuthController {
         res.status(200).json({ status: "success", data: create_user });
     }
 
-    async auth(req: Request, res: Response, next: NextFunction): Promise<void> {
+    auth = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         const access_token = req.headers.authorization;
 
         if (!access_token) {
@@ -119,7 +119,7 @@ export default class AuthController {
         next();
     }
 
-    async routeProtectionMiddleWare(req: Request, res: Response, next: NextFunction) {
+    routeProtectionMiddleWare = async (req: Request, res: Response, next: NextFunction) => {
         for (let index = 0; index < DYNAMIC_PROTECTED_ROUTES.length; index++) {
             const regex = DYNAMIC_PROTECTED_ROUTES[index];
             if (req.path.match(regex)) {

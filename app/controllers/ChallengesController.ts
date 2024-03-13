@@ -12,7 +12,7 @@ export default class ChallengesController {
         this.challengeValidator = challengeValidator;
     }
 
-    async getChallenges(req: Request, res: Response) {
+    getChallenges = async (req: Request, res: Response) => {
         const { page, limits } = req.query;
 
         let offset = 0;
@@ -44,7 +44,7 @@ export default class ChallengesController {
         });
     }
 
-    async getChallengeById(req: Request, res: Response) {
+    getChallengeById = async (req: Request, res: Response) => {
         const { id } = req.params;
 
         let data = await this.challengesService.getChallengeById(parseInt(id));
@@ -65,7 +65,7 @@ export default class ChallengesController {
         });
     }
 
-    async createChallenge(req: Request, res: Response) {
+    createChallenge = async (req: Request, res: Response) => {
         const challenge: ChallengeEntity = req.body;
 
         let validate_result: ValidatorResult = this.challengeValidator.validate(challenge);
