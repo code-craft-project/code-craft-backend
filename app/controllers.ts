@@ -20,5 +20,5 @@ const organizationsControllerConfig: OrganizationsControllerConfig = {
 export const authController = new AuthController(usersService, userSessionsService, credentialsValidator, userValidator);
 export const challengesController = new ChallengesController(challengesService, challengeValidator);
 export const organizationsController = new OrganizationsController(organizationsControllerConfig);
-export const jobPostsController = new JobPostsController(jobPostsService, jobPostValidator);
+export const jobPostsController = new JobPostsController(jobPostsService, membersService, jobPostValidator);
 export const eventsController = new EventsController(eventsService, membersService, eventValidator);
