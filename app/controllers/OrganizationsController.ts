@@ -80,9 +80,8 @@ export default class OrganizationsController {
 
         if (!data) {
             res.status(200).json({
-                status: "success",
-                message: "Comapny not found",
-                data: []
+                status: "error",
+                message: "Organization not found",
             });
 
             return;

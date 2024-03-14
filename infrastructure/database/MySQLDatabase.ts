@@ -28,4 +28,8 @@ export class MySQLDatabase {
             return null;
         }
     }
+
+    close(): void {
+        db_connection.end();
+    }
 };

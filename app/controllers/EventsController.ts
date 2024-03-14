@@ -57,9 +57,8 @@ export default class EventsController {
 
         if (!data) {
             res.status(200).json({
-                status: "success",
-                message: "Event not found",
-                data: []
+                status: "error",
+                message: "Event not found"
             });
 
             return;
@@ -105,9 +104,8 @@ export default class EventsController {
 
         if (!data) {
             res.status(200).json({
-                status: "success",
-                message: "Event not found",
-                data: []
+                status: "error",
+                message: "Event not found"
             });
 
             return;
@@ -140,7 +138,7 @@ export default class EventsController {
 
         const didUserJoin = await this.eventsService.didUserJoin(parseInt(event_id), user_id);
         if (didUserJoin) {
-            res.status(200).json({ status: "error", message: "You already there" });
+            res.status(200).json({ status: "error", message: "You already joined" });
             return;
         }
 
@@ -150,7 +148,7 @@ export default class EventsController {
             return;
         }
 
-        res.status(200).json({ status: "success", message: "You have joined the event successfully", data: eventParticipation });
+        res.status(200).json({ status: "success", message: "Successfully joined the event", data: eventParticipation });
     }
 
     leaveEvent = async (req: Request, res: Response) => {
@@ -190,7 +188,7 @@ export default class EventsController {
 
         const user_id = req.user?.id as number;
 
-        const eventParticipant = await this.eventsService.didUserJoin(parseInt(event_id), user_id);
+        const eventParticipant = await this.eventsService.getParticipantByUserId(parseInt(event_id), user_id);
         if (!eventParticipant) {
             res.status(200).json({ status: "error", message: "You need to join the event first" });
             return;
@@ -202,17 +200,20 @@ export default class EventsController {
             return;
         }
 
-        const newTeam = await this.eventsService.createTeam(team);
+        const newTeam = await this.eventsService.createTeam({ ...team, leader_id: eventParticipant.id, event_id: parseInt(event_id) });
         if (!newTeam) {
             res.status(200).json({ status: "error", message: "Something went wrong while creating a team" });
             return;
         }
 
-        res.status(200).json({ status: "success", message: "You have leaved the event successfully", data: newTeam });
+        await this.eventsService.joinTeam(newTeam.insertId, eventParticipant.id!);
+
+        res.status(200).json({ status: "success", message: "Team created successfully", data: newTeam });
     }
 
     deleteTeam = async (req: Request, res: Response) => {
         const { team_id } = req.body;
+        const { id: event_id } = req.params;
 
         const team = await this.eventsService.getTeamById(parseInt(team_id));
         if (!team) {
@@ -221,7 +222,13 @@ export default class EventsController {
         }
 
         const user_id = req.user?.id as number;
-        if (team.leader_id != user_id) {
+        const eventParticipant = await this.eventsService.getParticipantByUserId(parseInt(event_id), user_id);
+        if (!eventParticipant) {
+            res.status(200).json({ status: "error", message: "You are not a participant in this event" });
+            return;
+        }
+
+        if (team.leader_id != eventParticipant.id) {
             res.status(200).json({ status: "error", message: "Only the leader can delete the team" });
             return;
         }
@@ -269,7 +276,7 @@ export default class EventsController {
 
         const joinTeamResult = await this.eventsService.joinTeam(team_id, eventParticipant.id!);
 
-        res.status(200).json({ status: "success", message: "Join team success", data: joinTeamResult });
+        res.status(200).json({ status: "success", message: "Team joined successfully", data: joinTeamResult });
     }
 
     leaveTeam = async (req: Request, res: Response) => {
@@ -278,8 +285,15 @@ export default class EventsController {
         const user_id = req.user?.id as number;
 
         const teamMember = await this.eventsService.getTeamMemberByEventId(parseInt(event_id), user_id);
+
         if (!teamMember) {
-            res.status(200).json({ status: "error", message: "You are not a member of this team" });
+            res.status(200).json({ status: "error", message: "You are not a member of a team" });
+            return;
+        }
+
+        const team = await this.eventsService.getTeamById(teamMember.team_id);
+        if (team && team.leader_id == teamMember.id) {
+            res.status(200).json({ status: "error", message: "You are the leader can't leave the team but you can delete it" });
             return;
         }
 

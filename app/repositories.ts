@@ -11,7 +11,7 @@ import TeamsRepository from "@/infrastructure/database/repositories/TeamsReposit
 import UserSessionsRepository from "@/infrastructure/database/repositories/UserSessionsRepository";
 import UsersRepository from "@/infrastructure/database/repositories/UsersRepository";
 
-const database = new MySQLDatabase();
+export const database = new MySQLDatabase();
 
 export const usersRepository = new UsersRepository(database);
 export const userSessionsRepository = new UserSessionsRepository(database);

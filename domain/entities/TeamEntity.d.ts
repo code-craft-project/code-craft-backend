@@ -3,7 +3,7 @@ interface TeamEntity {
     name: string;
     description: string;
     is_private: boolean;
-    password: string;
-    leader_id: number;
-    event_id: number;
+    password?: string;
+    leader_id?: number;
+    event_id?: number;
 };

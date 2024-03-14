@@ -21,7 +21,7 @@ export default class TeamMembersRepository implements TeamMembersRepositoryInter
     }
 
     async getTeamMemberByEventId(event_id: number, user_id: number): Promise<TeamMemberEntity | null> {
-        let data = await this.database.query<TeamMemberEntity[]>(`select ${TEAM_MEMBER_SELECT_PROPS} from team_members join teams on teams.id = team_members.id join event_participants on event_participants.id = team_members.event_participant_id where teams.event_id = ? and event_participants.user_id = ?;`, event_id, user_id);
+        let data = await this.database.query<TeamMemberEntity[]>(`select ${TEAM_MEMBER_SELECT_PROPS} from team_members join teams on teams.id = team_members.team_id join event_participants on event_participants.id = team_members.event_participant_id where teams.event_id = ? and event_participants.user_id = ?;`, event_id, user_id);
         if (data && data.length > 0) {
             return data[0];
         }

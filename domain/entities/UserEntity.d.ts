@@ -7,5 +7,5 @@ interface UserEntity {
     password: string;
     created_at?: date;
     updated_at?: date;
-    profile_image_url: string;
+    profile_image_url?: string;
 };

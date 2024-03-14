@@ -14,6 +14,6 @@ app.use(express.json());
 app.use('/api-docs', swaggerMiddlewares.swaggerUIServe, swaggerMiddlewares.swaggerUISetup);
 app.use('/api', apiRouter);
 
-app.listen(PORT, () => {
+export const server = app.listen(PORT, () => {
     console.log(`Server is up running on port ${PORT}`);
 });

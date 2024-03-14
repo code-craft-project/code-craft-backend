@@ -54,9 +54,8 @@ export default class JobPostsController {
 
         if (!data) {
             res.status(200).json({
-                status: "success",
-                message: "Job Post not found",
-                data: []
+                status: "error",
+                message: "Job Post not found"
             });
 
             return;
