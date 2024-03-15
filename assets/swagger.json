@@ -1604,7 +1604,7 @@
                 }
             }
         },
-        "/events/{id}/team/create": {
+        "/events/{id}/teams/create": {
             "post": {
                 "description": "Create a new team",
                 "operationId": "createTeam",
@@ -1681,7 +1681,7 @@
                 }
             }
         },
-        "/events/{id}/team/delete": {
+        "/events/{id}/teams/delete": {
             "post": {
                 "description": "delete Team",
                 "operationId": "deleteTeam",
@@ -1743,7 +1743,7 @@
                 }
             }
         },
-        "/events/{id}/team/join": {
+        "/events/{id}/teams/join": {
             "post": {
                 "description": "Join Team",
                 "operationId": "joinTeam",
@@ -1808,7 +1808,7 @@
                 }
             }
         },
-        "/events/{id}/team/leave": {
+        "/events/{id}/teams/leave": {
             "post": {
                 "description": "leave Team, no team id is required because the user allowed to be a member of one team only",
                 "operationId": "leaveTeam",

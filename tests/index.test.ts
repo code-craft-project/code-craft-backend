@@ -567,7 +567,7 @@ describe("API Tests:", () => {
         describe("Teams", () => {
             describe("Team Creation", () => {
                 test("Should not create a team if invalid 'Create Team' form is submitted", async () => {
-                    const response = await request(server).post("/api/events/1/team/create").set("Authorization", user2_access_token);
+                    const response = await request(server).post("/api/events/1/teams/create").set("Authorization", user2_access_token);
 
                     const expectedOutput = {
                         status: 'error',
@@ -584,7 +584,7 @@ describe("API Tests:", () => {
                 });
 
                 test("Should not create a team if the event is not team based", async () => {
-                    const response = await request(server).post("/api/events/2/team/create").set("Authorization", user2_access_token).send(team);
+                    const response = await request(server).post("/api/events/2/teams/create").set("Authorization", user2_access_token).send(team);
 
                     const expectedOutput = { status: "error", message: "This event is not team based" };
 
@@ -593,7 +593,7 @@ describe("API Tests:", () => {
                 });
 
                 test("Should not create a team if not a participant in the event", async () => {
-                    const response = await request(server).post("/api/events/1/team/create").set("Authorization", user2_access_token).send(team);
+                    const response = await request(server).post("/api/events/1/teams/create").set("Authorization", user2_access_token).send(team);
 
                     const expectedOutput = { status: "error", message: "You need to join the event first" };
 
@@ -603,7 +603,7 @@ describe("API Tests:", () => {
 
                 test("Should successfully create a team", async () => {
                     await request(server).post("/api/events/1/join_event").set("Authorization", user2_access_token);
-                    const response = await request(server).post("/api/events/1/team/create").set("Authorization", user2_access_token).send(team);
+                    const response = await request(server).post("/api/events/1/teams/create").set("Authorization", user2_access_token).send(team);
 
                     expect(response.statusCode).toBe(200);
                     expect(response.body.status).toEqual("success");
@@ -611,7 +611,7 @@ describe("API Tests:", () => {
                 });
 
                 test("Should not create a team if already in a team", async () => {
-                    const response = await request(server).post("/api/events/1/team/create").set("Authorization", user2_access_token).send(team);
+                    const response = await request(server).post("/api/events/1/teams/create").set("Authorization", user2_access_token).send(team);
 
                     const expectedOutput = { status: "error", message: "You are already in a team" };
 
@@ -622,7 +622,7 @@ describe("API Tests:", () => {
 
             describe("Team Deletion", () => {
                 test("Should not delete a team if not a participant on the event", async () => {
-                    const response = await request(server).post("/api/events/1/team/delete").set("Authorization", access_token).send({ team_id: 1 });
+                    const response = await request(server).post("/api/events/1/teams/delete").set("Authorization", access_token).send({ team_id: 1 });
 
                     const expectedOutput = { status: "error", message: "You are not a participant in this event" };
 
@@ -631,7 +631,7 @@ describe("API Tests:", () => {
                 });
 
                 test("Should not delete a team if the team does not exist", async () => {
-                    const response = await request(server).post("/api/events/1/team/delete").set("Authorization", user2_access_token).send({ team_id: 5 });
+                    const response = await request(server).post("/api/events/1/teams/delete").set("Authorization", user2_access_token).send({ team_id: 5 });
 
                     const expectedOutput = { status: "error", message: "No Team Found" };
 
@@ -642,7 +642,7 @@ describe("API Tests:", () => {
 
                 test("Should not delete a team if not the leader of the team", async () => {
                     await request(server).post("/api/events/1/join_event").set("Authorization", access_token);
-                    const response = await request(server).post("/api/events/1/team/delete").set("Authorization", access_token).send({ team_id: 1 });
+                    const response = await request(server).post("/api/events/1/teams/delete").set("Authorization", access_token).send({ team_id: 1 });
 
                     const expectedOutput = { status: "error", message: "Only the leader can delete the team" };
 
@@ -651,7 +651,7 @@ describe("API Tests:", () => {
                 });
 
                 test("Should successfully delete a team", async () => {
-                    const response = await request(server).post("/api/events/1/team/delete").set("Authorization", user2_access_token).send({ team_id: 1 });
+                    const response = await request(server).post("/api/events/1/teams/delete").set("Authorization", user2_access_token).send({ team_id: 1 });
 
                     const expectedOutput = { status: "success", message: "Team deleted successfuly" };
 
@@ -663,7 +663,7 @@ describe("API Tests:", () => {
             describe("Team Join", () => {
                 test("Should not join a team if not a participant in the event", async () => {
                     await request(server).post("/api/events/1/leave_event").set("Authorization", access_token);
-                    const response = await request(server).post("/api/events/1/team/join").set("Authorization", access_token).send({ team_id: 2 });
+                    const response = await request(server).post("/api/events/1/teams/join").set("Authorization", access_token).send({ team_id: 2 });
 
                     const expectedOutput = { status: "error", message: "You need to join the event first" };
 
@@ -673,8 +673,8 @@ describe("API Tests:", () => {
 
                 test("Should not join a team if already in a team", async () => {
                     await request(server).post("/api/events/1/join_event").set("Authorization", access_token);
-                    await request(server).post("/api/events/1/team/create").set("Authorization", access_token).send(team);
-                    const response = await request(server).post("/api/events/1/team/join").set("Authorization", access_token).send({ team_id: 1 });
+                    await request(server).post("/api/events/1/teams/create").set("Authorization", access_token).send(team);
+                    const response = await request(server).post("/api/events/1/teams/join").set("Authorization", access_token).send({ team_id: 1 });
 
                     const expectedOutput = { status: "error", message: "You already in a team" };
 
@@ -683,7 +683,7 @@ describe("API Tests:", () => {
                 });
 
                 test("Should not join a team if the team does not exist", async () => {
-                    const response = await request(server).post("/api/events/1/team/join").set("Authorization", user2_access_token).send({ team_id: 99 });
+                    const response = await request(server).post("/api/events/1/teams/join").set("Authorization", user2_access_token).send({ team_id: 99 });
 
                     const expectedOutput = { status: "error", message: "Team does not exist" };
 
@@ -694,9 +694,9 @@ describe("API Tests:", () => {
                 test("Should not join a team that is not part of the event", async () => {
                     await request(server).post("/api/events/create").set("Authorization", access_token).send(event);
                     await request(server).post("/api/events/3/join_event").set("Authorization", access_token);
-                    await request(server).post("/api/events/3/team/create").set("Authorization", access_token).send(privateTeam);
+                    await request(server).post("/api/events/3/teams/create").set("Authorization", access_token).send(privateTeam);
 
-                    const response = await request(server).post("/api/events/1/team/join").set("Authorization", user2_access_token).send({ team_id: 3 });
+                    const response = await request(server).post("/api/events/1/teams/join").set("Authorization", user2_access_token).send({ team_id: 3 });
                     const expectedOutput = { status: "error", message: "This team is not part of this event" };
 
                     expect(response.statusCode).toBe(200);
@@ -705,7 +705,7 @@ describe("API Tests:", () => {
 
                 test("Should not join a private team if the password is wrong", async () => {
                     await request(server).post("/api/events/3/join_event").set("Authorization", user2_access_token);
-                    const response = await request(server).post("/api/events/3/team/join").set("Authorization", user2_access_token).send({ team_id: 3, password: "wrong_password" });
+                    const response = await request(server).post("/api/events/3/teams/join").set("Authorization", user2_access_token).send({ team_id: 3, password: "wrong_password" });
 
                     const expectedOutput = { status: "error", message: "Wrong Team Password" };
 
@@ -716,7 +716,7 @@ describe("API Tests:", () => {
                 // test("Should not join a team if it has already exceeded the maximum allowed members", async () => { });
 
                 test("Should join a private team with the correct password", async () => {
-                    const response = await request(server).post("/api/events/3/team/join").set("Authorization", user2_access_token).send({ team_id: 3, password: privateTeam.password });
+                    const response = await request(server).post("/api/events/3/teams/join").set("Authorization", user2_access_token).send({ team_id: 3, password: privateTeam.password });
 
                     expect(response.statusCode).toBe(200);
                     expect(response.body.status).toEqual("success");
@@ -724,7 +724,7 @@ describe("API Tests:", () => {
                 });
 
                 test("Should join a public team with no password required", async () => {
-                    const response = await request(server).post("/api/events/1/team/join").set("Authorization", user2_access_token).send({ team_id: 2 });
+                    const response = await request(server).post("/api/events/1/teams/join").set("Authorization", user2_access_token).send({ team_id: 2 });
 
                     expect(response.statusCode).toBe(200);
                     expect(response.body.status).toEqual("success");
@@ -734,7 +734,7 @@ describe("API Tests:", () => {
 
             describe("Team Leave", () => {
                 test("Should not leave a team if a leader", async () => {
-                    const response = await request(server).post("/api/events/1/team/leave").set("Authorization", user2_access_token);
+                    const response = await request(server).post("/api/events/1/teams/leave").set("Authorization", user2_access_token);
 
                     const expectedOutput = { status: "error", message: "You are the leader can't leave the team but you can delete it" };
 
@@ -744,7 +744,7 @@ describe("API Tests:", () => {
 
 
                 test("Should successfully leave a team", async () => {
-                    const response = await request(server).post("/api/events/3/team/leave").set("Authorization", user2_access_token);
+                    const response = await request(server).post("/api/events/3/teams/leave").set("Authorization", user2_access_token);
 
                     expect(response.statusCode).toBe(200);
                     expect(response.body.status).toEqual("success");
@@ -752,7 +752,7 @@ describe("API Tests:", () => {
                 });
 
                 test("Should not leave a team if not a member", async () => {
-                    const response = await request(server).post("/api/events/3/team/leave").set("Authorization", user2_access_token);
+                    const response = await request(server).post("/api/events/3/teams/leave").set("Authorization", user2_access_token);
 
                     const expectedOutput = { status: "error", message: "You are not a member of a team" };
 

@@ -5,10 +5,10 @@ const router = Router();
 
 router.post("/:id/join_event", eventsController.joinEvent);
 router.post("/:id/leave_event", eventsController.leaveEvent);
-router.post("/:id/team/create", eventsController.createTeam);
-router.post("/:id/team/delete", eventsController.deleteTeam);
-router.post("/:id/team/join", eventsController.joinTeam);
-router.post("/:id/team/leave", eventsController.leaveTeam);
+router.post("/:id/teams/create", eventsController.createTeam);
+router.post("/:id/teams/delete", eventsController.deleteTeam);
+router.post("/:id/teams/join", eventsController.joinTeam);
+router.post("/:id/teams/leave", eventsController.leaveTeam);
 router.post("/:id/challenges/create", eventsController.createChallenge);
 router.get("/:id/challenges", eventsController.getChallenges);
 router.post("/create", eventsController.createEvent);
