@@ -11,7 +11,7 @@ router.post("/:id/team/join", eventsController.joinTeam);
 router.post("/:id/team/leave", eventsController.leaveTeam);
 router.post("/create", eventsController.createEvent);
 router.get("/:id", eventsController.getEventById);
-router.post("/:id", eventsController.updateEvent);
+router.post("/:id/update", eventsController.updateEvent);
 router.get("/", eventsController.getEvents);
 
 export default router;

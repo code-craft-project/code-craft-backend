@@ -391,6 +391,44 @@ describe("API Tests:", () => {
             expect(response.body).toEqual(expectedOutput);
         });
 
+        describe("Event Update", () => {
+            test("Should not update non-existing event", async () => {
+                const response = await request(server).post("/api/events/99/update").set('Authorization', access_token).send({ title: "New Title" });
+
+                const expectedOutput = {
+                    status: "error",
+                    message: "Event not found"
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should not update event without proper permissions", async () => {
+                const response = await request(server).post("/api/events/1/update").set('Authorization', user2_access_token).send({ title: "New Title" });
+
+                const expectedOutput = {
+                    status: "error",
+                    message: "You don't have permissions"
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should update event successfully", async () => {
+                const response = await request(server).post("/api/events/1/update").set('Authorization', access_token).send({ title: "New Title" });
+
+                const expectedOutput = {
+                    status: "success",
+                    message: "Event updated successfully"
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+        });
+
         describe("Join Event", () => {
             test("Should return an error when attempting to join a non-existent event", async () => {
                 const response = await request(server).post("/api/events/2/join_event").set('Authorization', access_token);

@@ -73,4 +73,8 @@ export default class EventsService {
     async leaveTeam(team_member_id: number): Promise<InsertResultInterface | null> {
         return await this.teamMembersRepository.removeTeamMemberById(team_member_id);
     }
+
+    async updateEvent(event_id: number, event: EventEntity): Promise<InsertResultInterface | null> {
+        return await this.eventsRepository.updateEvent(event_id, event);
+    }
 };

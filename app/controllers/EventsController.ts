@@ -97,11 +97,20 @@ export default class EventsController {
     }
 
     updateEvent = async (req: Request, res: Response) => {
-        const { id } = req.params;
+        const { id: event_id } = req.params;
         const event: EventEntity = req.body;
 
-        let data = await this.eventsService.getEventById(parseInt(id));
+        const allowedProperties = ["title", "description", "is_public", "start_at", "end_at", "is_team_based"];
 
+        const propertyNames: string[] = Object.getOwnPropertyNames(event);
+        for (let property of propertyNames) {
+            if (!allowedProperties.includes(property)) {
+                res.status(200).json({ status: "error", message: `Can't update ${property}` });
+                return;
+            }
+        }
+
+        let data = await this.eventsService.getEventById(parseInt(event_id));
         if (!data) {
             res.status(200).json({
                 status: "error",
@@ -111,10 +120,20 @@ export default class EventsController {
             return;
         }
 
-        res.status(200).json({
-            status: "success",
-            data
-        });
+        const user = req.user;
+        const hasPermissions = await this.membersService.isEventsManager(user?.id!, data.organization_id);
+        if (!hasPermissions) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
+
+        const updateEvent = await this.eventsService.updateEvent(parseInt(event_id), event);
+        if (!updateEvent) {
+            res.status(200).json({ status: "error", message: "Something went wrong" });
+            return;
+        }
+
+        res.status(200).json({ status: "success", message: "Event updated successfully" });
     }
 
     joinEvent = async (req: Request, res: Response) => {

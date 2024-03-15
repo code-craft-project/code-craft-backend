@@ -46,4 +46,26 @@ export default class EventsRepository implements EventsRepositoryInterface {
 
         return data;
     }
+
+    async updateEvent(id: number, event: EventEntity): Promise<InsertResultInterface | null> {
+        let query = '';
+
+        const params = [];
+        const propertyNames = Object.getOwnPropertyNames(event);
+        for (let i = 0; i < propertyNames.length; i++) {
+            let property = propertyNames[i];
+            query += `${property} = ?`;
+            params.push((event as any)[property]);
+            if (i < (propertyNames.length - 1)) {
+                query += ',';
+            }
+        }
+
+        let updateEvent = await this.database.query<InsertResultInterface>(`update events set ${query} where id = ?;`, ...params, id);
+        if (!updateEvent) {
+            return null;
+        }
+
+        return updateEvent;
+    }
 }
