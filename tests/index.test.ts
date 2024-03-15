@@ -319,6 +319,86 @@ describe("API Tests:", () => {
             expect(response.statusCode).toBe(200);
             expect(response.body).toEqual(expectedOutput);
         });
+
+        describe("Job Post Update", () => {
+            test("Should not update non-existing job post", async () => {
+                const response = await request(server).post("/api/jobposts/99/update").set('Authorization', access_token).send({ title: "New Title" });
+
+                const expectedOutput = {
+                    status: "error",
+                    message: "Job Post not found"
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should not update job post without proper permissions", async () => {
+                const response = await request(server).post("/api/jobposts/1/update").set('Authorization', user2_access_token).send({ title: "New Title" });
+
+                const expectedOutput = {
+                    status: "error",
+                    message: "You don't have permissions"
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should update job post successfully", async () => {
+                const response = await request(server).post("/api/jobposts/1/update").set('Authorization', access_token).send({ title: "New Title" });
+                const response1 = await request(server).get("/api/jobposts/1");
+
+                const expectedOutput = {
+                    status: "success",
+                    message: "Job Post updated successfully"
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+                expect(response1.body.data.title).toEqual("New Title");
+            });
+        });
+
+        describe("Job Post Delete", () => {
+            test("Should not delete non-existing job post", async () => {
+                const response = await request(server).post("/api/jobposts/99/delete").set('Authorization', access_token);
+
+                const expectedOutput = {
+                    status: "error",
+                    message: "Job Post not found"
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should not delete job post without proper permissions", async () => {
+                const response = await request(server).post("/api/jobposts/1/delete").set('Authorization', user2_access_token);
+
+                const expectedOutput = {
+                    status: "error",
+                    message: "You don't have permissions"
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should delete job post successfully", async () => {
+                const response = await request(server).post("/api/jobposts/1/delete").set('Authorization', access_token);
+                const response1 = await request(server).get("/api/jobposts/1");
+
+                const expectedOutput = {
+                    status: "success",
+                    message: "Job Post deleted successfully"
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+                expect(response1.body.message).toEqual("Job Post not found");
+            });
+        });
     });
 
     describe("Events", () => {

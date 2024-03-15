@@ -7,7 +7,7 @@ export default class JobPostsRepository implements JobPostsRepositoryInterface {
     constructor(database: MySQLDatabase) {
         this.database = database;
     }
-    
+
     async createJobPost(job_post: JobPostEntity): Promise<InsertResultInterface | null> {
         let result = await this.database.query<InsertResultInterface>(`insert into job_posts (${JOBPOST_CREATE_PROPS}) values (?);`, [
             job_post.title,
@@ -41,5 +41,37 @@ export default class JobPostsRepository implements JobPostsRepositoryInterface {
         }
 
         return data;
+    }
+
+    async updateJobPostById(job_post_id: number, jobPost: JobPostEntity): Promise<InsertResultInterface | null> {
+        let query = '';
+
+        const params = [];
+        const propertyNames = Object.getOwnPropertyNames(jobPost);
+        for (let i = 0; i < propertyNames.length; i++) {
+            let property = propertyNames[i];
+            query += `${property} = ?`;
+            params.push((jobPost as any)[property]);
+            if (i < (propertyNames.length - 1)) {
+                query += ',';
+            }
+        }
+
+        let updateJobPost = await this.database.query<InsertResultInterface>(`update job_posts set ${query} where id = ?;`, ...params, job_post_id);
+        if (!updateJobPost) {
+            return null;
+        }
+
+        return updateJobPost;
+    }
+
+    async deleteJobPost(job_post_id: number): Promise<InsertResultInterface | null> {
+        let result = await this.database.query<InsertResultInterface>(`delete from job_posts where id = ?;`, [job_post_id]);
+
+        if (result) {
+            return result;
+        }
+
+        return null;
     }
 }
