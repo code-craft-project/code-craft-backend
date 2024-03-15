@@ -37,7 +37,7 @@ export default class ChallengesRepository implements ChallengesRepositoryInterfa
     }
 
     async getChallengesByPage(page: number = 0, limits: number = 10): Promise<ChallengeEntity[] | null> {
-        let data = await this.database.query<ChallengeEntity[]>(`select ${CHALLENGE_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS creator from challenges join users on creator_id = users.id limit ?;`, [page, limits]);
+        let data = await this.database.query<ChallengeEntity[]>(`select ${CHALLENGE_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS creator from challenges join users on creator_id = users.id where challenges.id not in (select challenge_id from event_challenges) limit ?;`, [page, limits]);
         if (!data) {
             return null;
         }
