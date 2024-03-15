@@ -18,6 +18,7 @@ import TeamsTableMigration from "./TeamsTableMigration";
 import TeamMembersTableMigration from "./TeamMembersTableMigration";
 import UserSessionsTableMigration from "./UserSessionsTableMigration";
 import OrganizationsTableMigration from "./OrganizationsTableMigration";
+import EventChallengesTableMigration from "./EventChallengesTableMigration";
 
 export class DatabaseMigration {
     private database: MySQLDatabase;
@@ -43,6 +44,7 @@ export class DatabaseMigration {
             let submittions_table = new SubmittionsTableMigration(this.database, this.logger);
 
             let event_participants_table = new EventParticipantsTableMigration(this.database, this.logger);
+            let event_challenges_table = new EventChallengesTableMigration(this.database, this.logger);
             let permissions_table = new PermissionsTableMigration(this.database, this.logger);
             let job_applications_table = new JobApplicationsTableMigration(this.database, this.logger);
             let comment_likes_table = new CommentLikesTableMigration(this.database, this.logger);
@@ -78,6 +80,7 @@ export class DatabaseMigration {
             // Level 04
             await Promise.all([
                 event_participants_table.migrate(),
+                event_challenges_table.migrate(),
                 permissions_table.migrate(),
                 job_applications_table.migrate(),
                 comment_likes_table.migrate(),
@@ -116,6 +119,7 @@ export class DatabaseMigration {
             let submittions_table = new SubmittionsTableMigration(this.database, this.logger);
 
             let event_participants_table = new EventParticipantsTableMigration(this.database, this.logger);
+            let event_challenges_table = new EventChallengesTableMigration(this.database, this.logger);
             let permissions_table = new PermissionsTableMigration(this.database, this.logger);
             let job_applications_table = new JobApplicationsTableMigration(this.database, this.logger);
             let comment_likes_table = new CommentLikesTableMigration(this.database, this.logger);
@@ -139,6 +143,7 @@ export class DatabaseMigration {
             // Level 04
             await Promise.all([
                 event_participants_table.drop(),
+                event_challenges_table.drop(),
                 permissions_table.drop(),
                 job_applications_table.drop(),
                 comment_likes_table.drop(),

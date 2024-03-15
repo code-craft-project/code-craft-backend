@@ -71,3 +71,12 @@ export const privateTeam: TeamEntity = {
     is_private: true,
     password: "test"
 };
+
+export const challenge: ChallengeEntity = {
+    title: "Two sum",
+    description: "Return the indices of two numbers that the sum of them equals the target",
+    topic: "web devlopment",
+    level: "easy",
+    is_public: true,
+    type: "in_out",
+};

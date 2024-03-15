@@ -4,18 +4,22 @@ import EventsService from "../services/EventsService";
 import { ValidatorResult } from "@/domain/validator/ValidatorResult";
 import MembersService from "../services/MembersService";
 import TeamValidator from "@/infrastructure/validators/TeamValidator";
+import ChallengeValidator from "@/infrastructure/validators/ChallengeValidator";
+import ChallengesService from "../services/ChallengesService";
 
 export default class EventsController {
     eventsService: EventsService;
     membersService: MembersService;
     eventValidator: EventValidator;
     teamValidator: TeamValidator;
+    challengeValidator: ChallengeValidator;
 
-    constructor(eventsService: EventsService, membersService: MembersService, eventValidator: EventValidator, teamValidator: TeamValidator) {
+    constructor(eventsService: EventsService, membersService: MembersService, eventValidator: EventValidator, teamValidator: TeamValidator, challengeValidator: ChallengeValidator) {
         this.eventsService = eventsService;
         this.membersService = membersService;
         this.eventValidator = eventValidator;
         this.teamValidator = teamValidator;
+        this.challengeValidator = challengeValidator;
     }
 
     getEvents = async (req: Request, res: Response) => {
@@ -319,5 +323,39 @@ export default class EventsController {
         const leaveTeamResult = await this.eventsService.leaveTeam(teamMember.id!);
 
         res.status(200).json({ status: "success", message: "Leaving successfuly", data: leaveTeamResult });
+    }
+
+    createChallenge = async (req: Request, res: Response) => {
+        const { id: event_id } = req.params;
+        const challenge: ChallengeEntity = req.body;
+
+        let validate_result: ValidatorResult = this.challengeValidator.validate(challenge);
+        if (!validate_result.is_valid) {
+            res.status(200).json({ status: "error", message: "Invalid body parameters", errors: validate_result.messages });
+            return;
+        }
+
+        const event = await this.eventsService.getEventById(parseInt(event_id));
+        if (!event) {
+            res.status(200).json({ status: "error", message: "Event does not exist" });
+            return;
+        }
+
+        const user_id = req.user?.id as number;
+
+        const hasPermissions = await this.membersService.isChallengesManager(user_id, event.organization_id);
+        if (!hasPermissions) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
+
+        const creator_id = req.user?.id as number;
+        let result = await this.eventsService.createChallenge(parseInt(event_id), { ...challenge, creator_id });
+        if (!result) {
+            res.status(200).json({ status: "error", message: "Can't create challenge, something went wrong" });
+            return;
+        }
+
+        res.status(200).json({ status: "success", message: "Challenge created successfully" });
     }
 };

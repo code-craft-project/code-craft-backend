@@ -1,3 +1,5 @@
+import ChallengesRepository from "@/infrastructure/database/repositories/ChallengesRepository";
+import EventChallengesRepository from "@/infrastructure/database/repositories/EventChallengesRepository";
 import EventParticipantsRepository from "@/infrastructure/database/repositories/EventParticipantsRepository";
 import EventsRepository from "@/infrastructure/database/repositories/EventsRepository";
 import TeamMembersRepository from "@/infrastructure/database/repositories/TeamMembersRepository";
@@ -8,12 +10,17 @@ export default class EventsService {
     eventParticipantsRepository: EventParticipantsRepository;
     teamsRepository: TeamsRepository;
     teamMembersRepository: TeamMembersRepository;
+    challengesRepository: ChallengesRepository;
+    eventChallengesRepository: EventChallengesRepository;
 
-    constructor(eventsRepository: EventsRepository, eventParticipantsRepository: EventParticipantsRepository, teamsRepository: TeamsRepository, teamMembersRepository: TeamMembersRepository) {
+    constructor(eventsRepository: EventsRepository, eventParticipantsRepository: EventParticipantsRepository, teamsRepository: TeamsRepository, teamMembersRepository: TeamMembersRepository, challengesRepository: ChallengesRepository, eventChallengesRepository: EventChallengesRepository) {
         this.eventsRepository = eventsRepository;
         this.eventParticipantsRepository = eventParticipantsRepository;
         this.teamsRepository = teamsRepository;
         this.teamMembersRepository = teamMembersRepository;
+        this.challengesRepository = challengesRepository;
+        this.eventChallengesRepository = eventChallengesRepository;
+
     }
 
     async createEvent(event: EventEntity): Promise<InsertResultInterface | null> {
@@ -76,5 +83,14 @@ export default class EventsService {
 
     async updateEvent(event_id: number, event: EventEntity): Promise<InsertResultInterface | null> {
         return await this.eventsRepository.updateEvent(event_id, event);
+    }
+
+    async createChallenge(event_id: number, challenge: ChallengeEntity): Promise<InsertResultInterface | null> {
+        const createChallenge = await this.challengesRepository.createChallenge(challenge);
+        if (!createChallenge) {
+            return null;
+        }
+
+        return await this.eventChallengesRepository.createEventChallenge({ event_id, challenge_id: createChallenge.insertId });
     }
 };
