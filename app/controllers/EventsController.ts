@@ -358,4 +358,12 @@ export default class EventsController {
 
         res.status(200).json({ status: "success", message: "Challenge created successfully" });
     }
+
+    getChallenges = async (req: Request, res: Response) => {
+        const { id: event_id } = req.params;
+
+        const challenges = await this.eventsService.getChallenges(parseInt(event_id));
+
+        res.status(200).json({ status: "success", data: challenges });
+    }
 };

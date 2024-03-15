@@ -93,4 +93,8 @@ export default class EventsService {
 
         return await this.eventChallengesRepository.createEventChallenge({ event_id, challenge_id: createChallenge.insertId });
     }
+
+    async getChallenges(event_id: number): Promise<ChallengeEntity[] | null> {
+        return await this.challengesRepository.getChallengesByEventId(event_id);
+    }
 };

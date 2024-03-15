@@ -737,6 +737,14 @@ describe("API Tests:", () => {
                     expect(response.body).toEqual(expectedOutput);
                 });
             });
+
+            test("Should List event challenges", async () => {
+                const response = await request(server).get("/api/events/1/challenges").set("Authorization", access_token);
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body.status).toEqual("success");
+                expect(Array.isArray(response.body.data)).toBeTruthy();
+            });
         });
     });
 });

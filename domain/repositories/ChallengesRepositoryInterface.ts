@@ -5,4 +5,5 @@ export interface ChallengesRepositoryInterface {
     createChallenge(challenge: ChallengeEntity): Promise<InsertResultInterface | null>;
     getChallengeById(id: number): Promise<ChallengeEntity | null>;
     getChallengesByPage(page: number, limits: number): Promise<ChallengeEntity[] | null>;
+    getChallengesByEventId(event_id: number): Promise<ChallengeEntity[] | null>;
 };
