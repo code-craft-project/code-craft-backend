@@ -5,6 +5,7 @@ import organizationsRouter from "./organizations/index";
 import authRouter from "./authRouter";
 import jobPostsRouter from "./jobposts/index";
 import eventsRouter from "./events/index";
+import userRouter from "./user/index";
 
 import { authController } from "../controllers";
 
@@ -12,6 +13,7 @@ const router = Router();
 
 router.use("/", authController.routeProtectionMiddleWare);
 router.use("/auth", authRouter);
+router.use("/users", userRouter);
 router.use("/challenges", challengesRouter);
 router.use("/organizations", organizationsRouter);
 router.use("/jobposts", jobPostsRouter);

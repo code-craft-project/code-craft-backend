@@ -52,4 +52,26 @@ export default class UsersRepository implements UsersRepositoryInterface {
 
         return users[0];
     }
+
+    async updateUser(user_id: number, user: UserEntity): Promise<InsertResultInterface | null> {
+        let query = '';
+
+        const params = [];
+        const propertyNames = Object.getOwnPropertyNames(user);
+        for (let i = 0; i < propertyNames.length; i++) {
+            let property = propertyNames[i];
+            query += `${property} = ?`;
+            params.push((user as any)[property]);
+            if (i < (propertyNames.length - 1)) {
+                query += ',';
+            }
+        }
+
+        let users = await this.database.query<InsertResultInterface>(`update users set ${query} where id = ?;`, ...params, user_id);
+        if (!users) {
+            return null;
+        }
+
+        return users;
+    }
 }

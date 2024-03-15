@@ -123,6 +123,69 @@ describe("API Tests:", () => {
         });
     });
 
+    describe("User Management", () => {
+        test("Should retrieve the current user of the session", async () => {
+            const response = await request(server).get("/api/users").set('Authorization', access_token);
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body.status).toEqual("success");
+            expect(response.body.data.username).toEqual(user.username);
+        });
+
+        test("Should retrieve a user with ID '1'", async () => {
+            const response = await request(server).get("/api/users/1");
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body.status).toEqual("success");
+            expect(response.body.data.id).toEqual(1);
+        });
+
+        test("Should return an error when user does not exist", async () => {
+            const response = await request(server).get("/api/users/99");
+
+            const expectedOutput = {
+                status: 'error',
+                message: "User not found"
+            };
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toEqual(expectedOutput);
+        });
+
+        test("Should not update username to an existing one", async () => {
+            const response = await request(server).post("/api/users").set('Authorization', access_token).send({ username: 'user2' });
+
+            const expectedOutput = {
+                status: 'error',
+                message: "username already in use"
+            };
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toEqual(expectedOutput);
+        });
+
+        test("Should not update email to an existing one", async () => {
+            const response = await request(server).post("/api/users").set('Authorization', access_token).send({ email: 'user2@jest.com' });
+
+            const expectedOutput = {
+                status: 'error',
+                message: "email already in use"
+            };
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toEqual(expectedOutput);
+        });
+
+        test("Should successfully update user information", async () => {
+            const response = await request(server).post("/api/users").set('Authorization', access_token).send({ first_name: "test_user" });
+
+            const expectedOutput = { status: "success", message: "User updated successfully" };
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toEqual(expectedOutput);
+        });
+    });
+
     describe("Organizations", () => {
         test("Should return error list when invalid 'Create Organization' form data is submitted", async () => {
             const response = await request(server).post("/api/organizations/create").set('Authorization', access_token);

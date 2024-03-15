@@ -22,4 +22,8 @@ export default class UsersService {
     async getUserByUsername(username: string): Promise<UserEntity | null> {
         return await this.usersRepository.getUserByUsername(username);
     }
+
+    async updateUser(user_id: number, user: UserEntity): Promise<InsertResultInterface | null> {
+        return await this.usersRepository.updateUser(user_id, user);
+    }
 };

@@ -7,4 +7,5 @@ export interface UsersRepositoryInterface {
     getUserById(id: number): Promise<UserEntity | null>;
     getUserByUsername(username: string): Promise<UserEntity | null>;
     getUserByEmail(email: string): Promise<UserEntity | null>;
+    updateUser(user_id: number, user: UserEntity): Promise<InsertResultInterface | null>;
 };

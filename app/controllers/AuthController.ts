@@ -7,7 +7,7 @@ import { generateToken, verifyToken } from "@/infrastructure/jwt";
 import UserSessionsService from "../services/UserSessionsService";
 import UserValidator from "@/infrastructure/validators/UserValidator";
 
-const STATIC_PROTECTED_ROUTES: string[] = ["/organizations/create", "/challenges/create", "/jobposts/create", "/events/create"];
+const STATIC_PROTECTED_ROUTES: string[] = ["/organizations/create", "/challenges/create", "/jobposts/create", "/events/create", "/users"];
 const DYNAMIC_PROTECTED_ROUTES: RegExp[] = [
     /^\/organizations\/[0-9]+\/add_member$/,
     /^\/organizations\/[0-9]+\/remove_member$/,
