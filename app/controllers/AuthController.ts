@@ -23,6 +23,8 @@ const DYNAMIC_PROTECTED_ROUTES: RegExp[] = [
     /^\/events\/[0-9]+\/challenges\/create$/,
     /^\/jobposts\/[0-9]+\/update$/,
     /^\/jobposts\/[0-9]+\/delete$/,
+    /^\/challenges\/[0-9]+\/comments\/create$/,
+    /^\/challenges\/[0-9]+\/comments\/[0-9]+\/toggle_like$/,
 ];
 
 export default class AuthController {

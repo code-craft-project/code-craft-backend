@@ -80,3 +80,13 @@ export const challenge: ChallengeEntity = {
     is_public: true,
     type: "in_out",
 };
+
+
+export const privateChallenge: ChallengeEntity = {
+    title: "Priave Two sum",
+    description: "Priave Return the indices of two numbers that the sum of them equals the target",
+    topic: "Priave web devlopment",
+    level: "easy",
+    is_public: false,
+    type: "in_out",
+};

@@ -1,5 +1,7 @@
 import { MySQLDatabase } from "@/infrastructure/database/MySQLDatabase";
+import ChallengeCommentsRepository from "@/infrastructure/database/repositories/ChallengeCommentsRepository";
 import ChallengesRepository from "@/infrastructure/database/repositories/ChallengesRepository";
+import CommentLikesRepository from "@/infrastructure/database/repositories/CommentLikesRepository";
 import EventChallengesRepository from "@/infrastructure/database/repositories/EventChallengesRepository";
 import EventParticipantsRepository from "@/infrastructure/database/repositories/EventParticipantsRepository";
 import EventsRepository from "@/infrastructure/database/repositories/EventsRepository";
@@ -26,3 +28,5 @@ export const eventParticipantsRepository = new EventParticipantsRepository(datab
 export const eventChallengesRepository = new EventChallengesRepository(database);
 export const teamsRepository = new TeamsRepository(database);
 export const teamMembersRepository = new TeamMembersRepository(database);
+export const challengeCommentsRepository = new ChallengeCommentsRepository(database);
+export const commentLikesRepository = new CommentLikesRepository(database);

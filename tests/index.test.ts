@@ -5,7 +5,7 @@ import { database } from "@/app/repositories";
 import { MySQLDatabase } from "@/infrastructure/database/MySQLDatabase";
 import { DatabaseMigration } from "@/infrastructure/database/migrations/DatabaseMigration";
 import Logger from "@/infrastructure/logger/Logger";
-import { organization, privateEvent, user, user2, user2Credentials, userCredentials, event, jobpost, privateTeam, team, challenge } from './test_data';
+import { organization, privateEvent, user, user2, user2Credentials, userCredentials, event, jobpost, privateTeam, team, challenge, privateChallenge } from './test_data';
 
 let access_token: string = "";
 let user2_access_token: string = "";
@@ -824,6 +824,165 @@ describe("API Tests:", () => {
                 expect(response.statusCode).toBe(200);
                 expect(response.body.status).toEqual("success");
                 expect(Array.isArray(response.body.data)).toBeTruthy();
+            });
+        });
+    });
+
+    describe("Public Challenges", () => {
+        describe("Comment Creation", () => {
+            test("Should return error for missing comment parameters", async () => {
+                const response = await request(server).post("/api/challenges/1/comments/create").set("Authorization", access_token);
+
+                const expectedOutput = {
+                    status: 'error',
+                    message: 'Comment is missing'
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should return error when challenge is not found", async () => {
+                const response = await request(server).post("/api/challenges/99/comments/create").set("Authorization", access_token).send({ comment: "new comment" });
+
+                const expectedOutput = {
+                    status: 'error',
+                    message: 'Challenge not found'
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should prevent commenting on private challenges", async () => {
+                await request(server).post("/api/challenges/create").set("Authorization", access_token).send(privateChallenge);
+                const response = await request(server).post("/api/challenges/2/comments/create").set("Authorization", access_token).send({ comment: "new comment" });
+
+                const expectedOutput = {
+                    status: "error",
+                    message: "Can't comment on private challenges"
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should successfully create a comment", async () => {
+                const response = await request(server).post("/api/challenges/1/comments/create").set("Authorization", access_token).send({ comment: "new comment" });
+
+                const expectedOutput = {
+                    status: 'success',
+                    message: 'Comment posted successfully'
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+        });
+
+        describe("Comments fetch", () => {
+            test("Should list all comments for a given challenge", async () => {
+                const response = await request(server).get("/api/challenges/1/comments");
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body.status).toEqual("success");
+                expect(Array.isArray(response.body.data)).toBeTruthy();
+            });
+
+            test("Should return an error if the comment is not found", async () => {
+                const response = await request(server).get("/api/challenges/1/comments/99");
+
+                const expectedOutput = {
+                    status: 'error',
+                    message: 'Comment not found'
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should retrieve a specific comment by its id (1)", async () => {
+                const response = await request(server).get("/api/challenges/1/comments/1");
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body.status).toEqual("success");
+                expect(response.body.data.id).toEqual(1);
+            });
+        });
+
+        describe("Comment Like", () => {
+            test("Should return error when comment is not found", async () => {
+                const response = await request(server).post("/api/challenges/1/comments/99/toggle_like").set("Authorization", access_token);
+
+                const expectedOutput = {
+                    status: 'error',
+                    message: 'Comment not found'
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should successfully like a comment", async () => {
+                const response = await request(server).post("/api/challenges/1/comments/1/toggle_like").set("Authorization", access_token);
+                const response1 = await request(server).get("/api/challenges/1/comments/1").set("Authorization", access_token);
+
+                const expectedOutput = { status: "success", message: "Liked the comment successfully" };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+                expect(response1.body.data.likes).toEqual(1);
+            });
+
+            test("Should successfully unlike a comment", async () => {
+                const response = await request(server).post("/api/challenges/1/comments/1/toggle_like").set("Authorization", access_token);
+                const response1 = await request(server).get("/api/challenges/1/comments/1").set("Authorization", access_token);
+
+                const expectedOutput = { status: "success", message: "Unliked the comment successfully" };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+                expect(response1.body.data.likes).toEqual(0);
+            });
+        });
+
+        describe("Comment Reply", () => {
+            test("Should return error for missing comment parameters", async () => {
+                const response = await request(server).post("/api/challenges/1/comments/1/reply").set("Authorization", access_token);
+
+                const expectedOutput = {
+                    status: 'error',
+                    message: 'comment is missing'
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should return error when comment is not found", async () => {
+                const response = await request(server).post("/api/challenges/1/comments/99/reply").set("Authorization", access_token).send({ comment: "new comment" });
+
+                const expectedOutput = {
+                    status: 'error',
+                    message: 'Comment not found'
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should successfully reply to a comment", async () => {
+                const response = await request(server).post("/api/challenges/1/comments/1/reply").set("Authorization", access_token).send({ comment: "new comment" });
+                const response1 = await request(server).get("/api/challenges/1/comments/1").set("Authorization", access_token);
+
+                const expectedOutput = {
+                    status: 'success',
+                    message: 'Reply to a comment successfully'
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+                expect(response1.body.data.replies).toEqual(1);
             });
         });
     });

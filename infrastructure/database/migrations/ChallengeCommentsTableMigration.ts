@@ -7,12 +7,12 @@ export default class ChallengeCommentsTableMigration extends TableMigration {
             comment varchar(255),
             is_reply boolean,
             user_id int,
-            challgenge_id int,
+            challenge_id int,
             reply_to_comment_id int,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             foreign key(user_id) references users(id),
-            foreign key(challgenge_id) references challenges(id),
+            foreign key(challenge_id) references challenges(id),
             foreign key(reply_to_comment_id) references challenge_comments(id)
         );`);
     }
