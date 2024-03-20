@@ -1,5 +1,5 @@
 import { MySQLDatabase } from "../MySQLDatabase";
-import { USER_CREATE_PROPS, USER_SELECT_PROPS, UsersRepositoryInterface } from "@/domain/repositories/UsersRepositoryInterface";
+import { USER_CREATE_PROPS, USER_SELECT_PROPS, USER_SELECT_PROPS_WITH_PASSWORD, UsersRepositoryInterface } from "@/domain/repositories/UsersRepositoryInterface";
 
 export default class UsersRepository implements UsersRepositoryInterface {
     database: MySQLDatabase;
@@ -26,8 +26,8 @@ export default class UsersRepository implements UsersRepositoryInterface {
         return null;
     }
 
-    async getUserById(id: number): Promise<UserEntity | null> {
-        let users = await this.database.query<UserEntity[]>(`select ${USER_SELECT_PROPS} from users where id = ?;`, [id]);
+    async getUserById(id: number, include_password?: boolean): Promise<UserEntity | null> {
+        let users = await this.database.query<UserEntity[]>(`select ${include_password ? USER_SELECT_PROPS_WITH_PASSWORD : USER_SELECT_PROPS} from users where id = ?;`, [id]);
         if (!users || users?.length == 0) {
             return null;
         }
@@ -35,8 +35,8 @@ export default class UsersRepository implements UsersRepositoryInterface {
         return users[0];
     }
 
-    async getUserByUsername(username: string): Promise<UserEntity | null> {
-        let users = await this.database.query<UserEntity[]>(`select ${USER_SELECT_PROPS} from users where username = ?;`, [username]);
+    async getUserByUsername(username: string, include_password?: boolean): Promise<UserEntity | null> {
+        let users = await this.database.query<UserEntity[]>(`select ${include_password ? USER_SELECT_PROPS_WITH_PASSWORD : USER_SELECT_PROPS} from users where username = ?;`, [username]);
         if (!users || users?.length == 0) {
             return null;
         }
@@ -44,8 +44,8 @@ export default class UsersRepository implements UsersRepositoryInterface {
         return users[0];
     }
 
-    async getUserByEmail(email: string): Promise<UserEntity | null> {
-        let users = await this.database.query<UserEntity[]>(`select ${USER_SELECT_PROPS} from users where email = ?;`, [email]);
+    async getUserByEmail(email: string, include_password?: boolean): Promise<UserEntity | null> {
+        let users = await this.database.query<UserEntity[]>(`select ${include_password ? USER_SELECT_PROPS_WITH_PASSWORD : USER_SELECT_PROPS} from users where email = ?;`, [email]);
         if (!users || users?.length == 0) {
             return null;
         }

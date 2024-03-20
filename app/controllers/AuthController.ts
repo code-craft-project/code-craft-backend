@@ -51,7 +51,7 @@ export default class AuthController {
             return;
         }
 
-        const user = await this.usersService.getUserByEmail(credentials.email);
+        const user = await this.usersService.getUserByEmail(credentials.email, true);
         if (!user) {
             res.status(200).json({ status: "error", message: "User does not exist" });
             return;

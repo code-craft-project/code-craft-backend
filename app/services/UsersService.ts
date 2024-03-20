@@ -11,16 +11,16 @@ export default class UsersService {
         return await this.usersRepository.createUser(user);
     }
 
-    async getUserById(id: number): Promise<UserEntity | null> {
-        return await this.usersRepository.getUserById(id);
+    async getUserById(id: number, include_password?: boolean): Promise<UserEntity | null> {
+        return await this.usersRepository.getUserById(id, include_password);
     }
 
-    async getUserByEmail(email: string): Promise<UserEntity | null> {
-        return await this.usersRepository.getUserByEmail(email);
+    async getUserByEmail(email: string, include_password?: boolean): Promise<UserEntity | null> {
+        return await this.usersRepository.getUserByEmail(email, include_password);
     }
 
-    async getUserByUsername(username: string): Promise<UserEntity | null> {
-        return await this.usersRepository.getUserByUsername(username);
+    async getUserByUsername(username: string, include_password?: boolean): Promise<UserEntity | null> {
+        return await this.usersRepository.getUserByUsername(username, include_password);
     }
 
     async updateUser(user_id: number, user: UserEntity): Promise<InsertResultInterface | null> {
