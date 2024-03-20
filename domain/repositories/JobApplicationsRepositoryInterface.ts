@@ -6,5 +6,6 @@ export interface JobApplicationsRepositoryInterface {
     getJobApplicationById(id: number): Promise<JobApplicationEntity | null>;
     getUserJobApplicationById(id: number, user_id: number): Promise<JobApplicationEntity | null>;
     getJobApplicationsByPage(page: number, limits: number): Promise<JobApplicationEntity[] | null>;
+    getJobPostApplications(job_post_id: number): Promise<JobApplicationEntity[] | null>;
     deleteJobPostApplications(job_post_id: number): Promise<InsertResultInterface | null>;
 };

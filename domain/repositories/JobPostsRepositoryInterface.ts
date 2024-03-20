@@ -4,6 +4,7 @@ export const JOBPOST_SELECT_PROPS: string = 'job_posts.id as id, title, descript
 export interface JobPostsRepositoryInterface {
     createJobPost(jobPost: JobPostEntity): Promise<InsertResultInterface | null>;
     getJobPostById(id: number): Promise<JobPostEntity | null>;
+    getOrganizationJobPosts(organization_id: number): Promise<JobPostEntity[] | null>;
     getJobPostsByPage(page: number, limits: number): Promise<JobPostEntity[] | null>;
     updateJobPostById(job_post_id: number, jobPost: JobPostEntity): Promise<InsertResultInterface | null>;
     deleteJobPost(job_post_id: number): Promise<InsertResultInterface | null>;

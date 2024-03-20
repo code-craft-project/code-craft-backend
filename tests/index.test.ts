@@ -250,6 +250,33 @@ describe("API Tests:", () => {
             expect(response.statusCode).toBe(200);
             expect(response.body).toEqual(expectedOutput);
         });
+
+        describe("Organization Job Posts and Job Applications", () => {
+            test("Should list organization job posts", async () => {
+                const response = await request(server).get("/api/organizations/1/job_posts");
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body.status).toEqual("success");
+                expect(Array.isArray(response.body.data)).toBeTruthy();
+            });
+
+            test("Should not list organization job post applications without proper permissions", async () => {
+                const response = await request(server).get("/api/organizations/1/job_posts/1/applications").set('Authorization', user2_access_token);
+
+                const expectedOutput = { status: "error", message: "You don't have permissions" };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should list organization job post applications", async () => {
+                const response = await request(server).get("/api/organizations/1/job_posts/1/applications").set('Authorization', access_token);
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body.status).toEqual("success");
+                expect(Array.isArray(response.body.data)).toBeTruthy();
+            });
+        });
     });
 
     describe("JobPosts", () => {

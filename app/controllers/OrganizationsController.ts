@@ -245,4 +245,54 @@ export default class OrganizationsController {
 
         res.status(200).json({ status: "success", data: organization_permission });
     }
+
+    getJobPosts = async (req: Request, res: Response) => {
+        const { id: organization_id } = req.params;
+
+        let data = await this.organizationsService.getOrganizationJobPosts(parseInt(organization_id));
+
+        if (!data) {
+            res.status(200).json({
+                status: "success",
+                message: "No data",
+                data: []
+            });
+
+            return;
+        }
+
+        res.status(200).json({
+            status: "success",
+            data
+        });
+    }
+
+    getJobPostApplications = async (req: Request, res: Response) => {
+        const { id: organization_id, job_post_id } = req.params;
+
+        const user = req.user;
+
+        const organizationMember = await this.membersService.isJobPostsManager(user?.id!, parseInt(organization_id));
+        if (!organizationMember) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
+
+        const data = await this.organizationsService.getJobPostApplications(parseInt(job_post_id));
+
+        if (!data) {
+            res.status(200).json({
+                status: "success",
+                message: "No data",
+                data: []
+            });
+
+            return;
+        }
+
+        res.status(200).json({
+            status: "success",
+            data
+        });
+    }
 };

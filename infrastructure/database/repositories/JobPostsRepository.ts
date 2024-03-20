@@ -74,4 +74,13 @@ export default class JobPostsRepository implements JobPostsRepositoryInterface {
 
         return null;
     }
+
+    async getOrganizationJobPosts(organization_id: number): Promise<JobPostEntity[] | null> {
+        let data = await this.database.query<JobPostEntity[]>(`select ${JOBPOST_SELECT_PROPS}, JSON_OBJECT(${ORGANIZATION_JOIN_PROPS}) AS organization from job_posts join organizations on organization_id = organizations.id where organization_id = ?;`, [organization_id]);
+        if (!data) {
+            return null;
+        }
+
+        return data;
+    }
 }

@@ -50,6 +50,14 @@ export default class JobApplicationsRepository implements JobApplicationsReposit
         return data;
     }
 
+    async getJobPostApplications(job_post_id: number): Promise<JobApplicationEntity[] | null> {
+        let data = await this.database.query<JobApplicationEntity[]>(`select ${JOB_APPLICATION_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS user from job_applications join users on job_applications.user_id = users.id where job_post_id = ?;`, [job_post_id]);
+        if (!data) {
+            return null;
+        }
+
+        return data;
+    }
 
     async deleteJobPostApplications(job_post_id: number): Promise<InsertResultInterface | null> {
         let result = await this.database.query<InsertResultInterface>(`delete from job_applications where job_post_id = ?;`, [job_post_id]);
