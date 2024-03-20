@@ -84,6 +84,53 @@ export default class ChallengesController {
         res.status(200).json({ status: "success", data: result });
     }
 
+    updateChallenge = async (req: Request, res: Response) => {
+        const { id: challenge_id } = req.params;
+        const updatedChallenge: ChallengeEntity = req.body;
+
+        const allowedProperties = [
+            "title",
+            "description",
+            "topic",
+            "level",
+            "is_public",
+            "type",
+        ];
+
+        const propertyNames: string[] = Object.getOwnPropertyNames(updatedChallenge);
+        for (let property of propertyNames) {
+            if (!allowedProperties.includes(property)) {
+                res.status(200).json({ status: "error", message: `Can't update ${property}` });
+                return;
+            }
+        }
+
+        const challenge = await this.challengesService.getChallengeById(parseInt(challenge_id));
+        if (!challenge) {
+            res.status(200).json({
+                status: "error",
+                message: "Challenge not found"
+            });
+
+            return;
+        }
+
+        const user = req.user;
+        const hasPermissions = user?.id == challenge.creator_id;
+        if (!hasPermissions) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
+
+        const updateEvent = await this.challengesService.updateChallenge(parseInt(challenge_id), updatedChallenge);
+        if (!updateEvent) {
+            res.status(200).json({ status: "error", message: "Something went wrong" });
+            return;
+        }
+
+        res.status(200).json({ status: "success", message: "Challenge updated successfully" });
+    }
+
     getChallengeComments = async (req: Request, res: Response) => {
         const { id } = req.params;
 

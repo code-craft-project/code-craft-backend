@@ -31,6 +31,10 @@ export default class EventsService {
         return await this.eventsRepository.getEventById(id);
     }
 
+    async getChallengeById(event_id: number, challenge_id: number): Promise<ChallengeEntity | null> {
+        return await this.challengesRepository.getEventChallengeById(event_id, challenge_id);
+    }
+
     async getEventsByPage(page?: number, limits?: number): Promise<EventEntity[] | null> {
         return await this.eventsRepository.getEventsByPage(page, limits);
     }
@@ -96,5 +100,9 @@ export default class EventsService {
 
     async getChallenges(event_id: number): Promise<ChallengeEntity[] | null> {
         return await this.challengesRepository.getChallengesByEventId(event_id);
+    }
+
+    async updateEventChallenge(challenge_id: number, challenge: ChallengeEntity): Promise<InsertResultInterface | null> {
+        return await this.challengesRepository.updateChallenge(challenge_id, challenge);
     }
 };

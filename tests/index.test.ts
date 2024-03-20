@@ -818,6 +818,52 @@ describe("API Tests:", () => {
                 });
             });
 
+            describe("Challenge Update", () => {
+                test("Should not update challenge when event does not exist", async () => {
+                    const response = await request(server).post("/api/events/99/challenges/1/update").set("Authorization", access_token).send({ title: "New title" });
+
+                    const expectedOutput = {
+                        status: "error",
+                        message: "Event not found"
+                    };
+
+                    expect(response.statusCode).toBe(200);
+                    expect(response.body).toEqual(expectedOutput);
+                });
+
+                test("Should not update challenge when its not part of the event", async () => {
+                    const response = await request(server).post("/api/events/1/challenges/99/update").set("Authorization", access_token).send({ title: "New title" });
+
+                    const expectedOutput = {
+                        status: "error",
+                        message: "Challenge not found in this event"
+                    };
+
+                    expect(response.statusCode).toBe(200);
+                    expect(response.body).toEqual(expectedOutput);
+                });
+
+                test("Should not update challenge without proper permissions", async () => {
+                    const response = await request(server).post("/api/events/1/challenges/1/update").set("Authorization", user2_access_token).send({ title: "New title" });
+
+                    const expectedOutput = { status: "error", message: "You don't have permissions" };
+
+                    expect(response.statusCode).toBe(200);
+                    expect(response.body).toEqual(expectedOutput);
+                });
+
+                test("Should update challenge successfully", async () => {
+                    const response = await request(server).post("/api/events/1/challenges/1/update").set("Authorization", access_token).send({ title: "New title" });
+                    const response1 = await request(server).get("/api/challenges/1").set("Authorization", access_token);
+
+                    const expectedOutput = { status: "success", message: "Challenge updated successfully" };
+
+                    expect(response.statusCode).toBe(200);
+                    expect(response.body).toEqual(expectedOutput);
+                    expect(response1.body.data.title).toEqual("New title");
+                });
+            });
+
             test("Should List event challenges", async () => {
                 const response = await request(server).get("/api/events/1/challenges").set("Authorization", access_token);
 
@@ -829,6 +875,44 @@ describe("API Tests:", () => {
     });
 
     describe("Public Challenges", () => {
+        beforeAll(async () => {
+            await request(server).post("/api/challenges/create").set("Authorization", access_token).send(privateChallenge);
+        });
+
+        describe("Challenge Update", () => {
+            test("Should not update challenge when its not part of the event", async () => {
+                const response = await request(server).post("/api/challenges/99/update").set("Authorization", access_token).send({ title: "New title" });
+
+                const expectedOutput = {
+                    status: "error",
+                    message: "Challenge not found"
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should not update challenge without proper permissions", async () => {
+                const response = await request(server).post("/api/challenges/2/update").set("Authorization", user2_access_token).send({ title: "New title" });
+
+                const expectedOutput = { status: "error", message: "You don't have permissions" };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should update challenge successfully", async () => {
+                const response = await request(server).post("/api/challenges/2/update").set("Authorization", access_token).send({ title: "New title" });
+                const response1 = await request(server).get("/api/challenges/2").set("Authorization", access_token);
+
+                const expectedOutput = { status: "success", message: "Challenge updated successfully" };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+                expect(response1.body.data.title).toEqual("New title");
+            });
+        });
+
         describe("Comment Creation", () => {
             test("Should return error for missing comment parameters", async () => {
                 const response = await request(server).post("/api/challenges/1/comments/create").set("Authorization", access_token);
@@ -855,7 +939,6 @@ describe("API Tests:", () => {
             });
 
             test("Should prevent commenting on private challenges", async () => {
-                await request(server).post("/api/challenges/create").set("Authorization", access_token).send(privateChallenge);
                 const response = await request(server).post("/api/challenges/2/comments/create").set("Authorization", access_token).send({ comment: "new comment" });
 
                 const expectedOutput = {

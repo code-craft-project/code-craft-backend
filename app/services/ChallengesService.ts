@@ -17,6 +17,10 @@ export default class ChallengesService {
         return await this.challengesRepository.createChallenge(challenge);
     }
 
+    async updateChallenge(challenge_id: number, challenge: ChallengeEntity): Promise<InsertResultInterface | null> {
+        return await this.challengesRepository.updateChallenge(challenge_id, challenge);
+    }
+
     async getChallengeById(id: number): Promise<ChallengeEntity | null> {
         return await this.challengesRepository.getChallengeById(id);
     }

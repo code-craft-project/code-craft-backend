@@ -4,6 +4,7 @@ import { challengesController } from "@/app/controllers";
 const router = Router();
 
 router.post("/create", challengesController.createChallenge);
+router.post("/:id/update", challengesController.updateChallenge);
 router.get("/:id", challengesController.getChallengeById);
 router.get("/:id/comments", challengesController.getChallengeComments);
 router.post("/:id/comments/create", challengesController.createComment);

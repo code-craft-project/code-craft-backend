@@ -366,4 +366,60 @@ export default class EventsController {
 
         res.status(200).json({ status: "success", data: challenges });
     }
+
+    updateChallenge = async (req: Request, res: Response) => {
+        const { id: event_id, challenge_id } = req.params;
+        const updatedChallenge: ChallengeEntity = req.body;
+
+        const allowedProperties = [
+            "title",
+            "description",
+            "topic",
+            "level",
+            "type",
+        ];
+
+        const propertyNames: string[] = Object.getOwnPropertyNames(updatedChallenge);
+        for (let property of propertyNames) {
+            if (!allowedProperties.includes(property)) {
+                res.status(200).json({ status: "error", message: `Can't update ${property}` });
+                return;
+            }
+        }
+
+        const event = await this.eventsService.getEventById(parseInt(event_id));
+        if (!event) {
+            res.status(200).json({
+                status: "error",
+                message: "Event not found"
+            });
+
+            return;
+        }
+
+        const challenge = await this.eventsService.getChallengeById(parseInt(event_id), parseInt(challenge_id));
+        if (!challenge) {
+            res.status(200).json({
+                status: "error",
+                message: "Challenge not found in this event"
+            });
+
+            return;
+        }
+
+        const user = req.user;
+        const hasPermissions = await this.membersService.isChallengesManager(user?.id!, event.organization_id);
+        if (!hasPermissions) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
+
+        const updateEvent = await this.eventsService.updateEventChallenge(parseInt(challenge_id), updatedChallenge);
+        if (!updateEvent) {
+            res.status(200).json({ status: "error", message: "Something went wrong" });
+            return;
+        }
+
+        res.status(200).json({ status: "success", message: "Challenge updated successfully" });
+    }
 };

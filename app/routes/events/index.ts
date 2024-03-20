@@ -10,6 +10,7 @@ router.post("/:id/teams/delete", eventsController.deleteTeam);
 router.post("/:id/teams/join", eventsController.joinTeam);
 router.post("/:id/teams/leave", eventsController.leaveTeam);
 router.post("/:id/challenges/create", eventsController.createChallenge);
+router.post("/:id/challenges/:challenge_id/update", eventsController.updateChallenge);
 router.get("/:id/challenges", eventsController.getChallenges);
 router.post("/create", eventsController.createEvent);
 router.get("/:id", eventsController.getEventById);
