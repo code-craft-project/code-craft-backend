@@ -24,6 +24,28 @@ export default class TeamsRepository implements TeamsRepositoryInterface {
         return null;
     }
 
+    async updateTeam(id: number, team: TeamEntity): Promise<InsertResultInterface | null> {
+        let query = '';
+
+        const params = [];
+        const propertyNames = Object.getOwnPropertyNames(team);
+        for (let i = 0; i < propertyNames.length; i++) {
+            let property = propertyNames[i];
+            query += `${property} = ?`;
+            params.push((team as any)[property]);
+            if (i < (propertyNames.length - 1)) {
+                query += ',';
+            }
+        }
+
+        let updateTeam = await this.database.query<InsertResultInterface>(`update teams set ${query} where id = ?;`, ...params, id);
+        if (!updateTeam) {
+            return null;
+        }
+
+        return updateTeam;
+    }
+
     async getTeamById(id: number): Promise<TeamEntity | null> {
         const data = await this.database.query<TeamEntity[]>(`select ${TEAM_SELECT_PROPS} from teams where id = ?;`, [id]);
 

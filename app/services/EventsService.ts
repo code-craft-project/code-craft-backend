@@ -64,6 +64,10 @@ export default class EventsService {
         return await this.teamsRepository.createTeam(team);
     }
 
+    async updateTeam(id: number, team: TeamEntity): Promise<InsertResultInterface | null> {
+        return await this.teamsRepository.updateTeam(id, team);
+    }
+
     async deleteTeam(team_id: number): Promise<InsertResultInterface | null> {
         await this.teamMembersRepository.removeMembersByTeamId(team_id);
         return await this.teamsRepository.removeTeamById(team_id);

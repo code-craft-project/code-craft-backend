@@ -220,6 +220,46 @@ export default class EventsController {
         });
     }
 
+    getTeamById = async (req: Request, res: Response) => {
+        const { id: event_id, team_id } = req.params;
+
+        let event = await this.eventsService.getEventById(parseInt(event_id));
+
+        if (!event) {
+            res.status(200).json({
+                status: "error",
+                message: "Event not found"
+            });
+
+            return;
+        }
+
+        let team = await this.eventsService.getTeamById(parseInt(team_id));
+
+        if (!team) {
+            res.status(200).json({
+                status: "error",
+                message: "Team not found"
+            });
+
+            return;
+        }
+
+        if (team.event_id != parseInt(event_id)) {
+            res.status(200).json({
+                status: "error",
+                message: "This Team is not part of this event"
+            });
+
+            return;
+        }
+
+        res.status(200).json({
+            status: "success",
+            data: team
+        });
+    }
+
     createTeam = async (req: Request, res: Response) => {
         const { id: event_id } = req.params;
 
@@ -265,6 +305,76 @@ export default class EventsController {
         await this.eventsService.joinTeam(newTeam.insertId, eventParticipant.id!);
 
         res.status(200).json({ status: "success", message: "Team created successfully", data: newTeam });
+    }
+
+    updateTeam = async (req: Request, res: Response) => {
+        const { id: event_id, team_id } = req.params;
+        const updatedTeam: TeamEntity = req.body;
+
+        const allowedProperties = [
+            "name",
+            "description",
+            "is_private",
+            "password",
+        ];
+
+        const propertyNames: string[] = Object.getOwnPropertyNames(updatedTeam);
+        for (let property of propertyNames) {
+            if (!allowedProperties.includes(property)) {
+                res.status(200).json({ status: "error", message: `Can't update ${property}` });
+                return;
+            }
+        }
+
+        const event = await this.eventsService.getTeamById(parseInt(event_id));
+        if (!event) {
+            res.status(200).json({
+                status: "error",
+                message: "Event not found"
+            });
+
+            return;
+        }
+
+        const team = await this.eventsService.getTeamById(parseInt(team_id));
+        if (!team) {
+            res.status(200).json({
+                status: "error",
+                message: "Team not found"
+            });
+
+            return;
+        }
+
+        const user = req.user;
+        const eventParticipant = await this.eventsService.getParticipantByUserId(parseInt(event_id), user?.id!);
+        if (!eventParticipant) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
+
+        const hasPermissions = team.leader_id == eventParticipant.id;
+        if (!hasPermissions) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
+
+        if (team.event_id != parseInt(event_id)) {
+            res.status(200).json({
+                status: "error",
+                message: "Team is not part of this event"
+            });
+
+            return;
+        }
+
+        const updateTeam = await this.eventsService.updateTeam(parseInt(team_id), updatedTeam);
+        if (!updateTeam) {
+            res.status(200).json({ status: "error", message: "Something went wrong" });
+            return;
+        }
+
+        res.status(200).json({ status: "success", message: "Team updated successfully" });
     }
 
     deleteTeam = async (req: Request, res: Response) => {

@@ -565,14 +565,6 @@ describe("API Tests:", () => {
         });
 
         describe("Teams", () => {
-            test("Should list event teams", async () => {
-                const response = await request(server).get("/api/events/1/teams");
-
-                expect(response.statusCode).toBe(200);
-                expect(response.body.status).toEqual("success");
-                expect(Array.isArray(response.body.data)).toBeTruthy();
-            });
-
             describe("Team Creation", () => {
                 test("Should not create a team if invalid 'Create Team' form is submitted", async () => {
                     const response = await request(server).post("/api/events/1/teams/create").set("Authorization", user2_access_token);
@@ -625,6 +617,70 @@ describe("API Tests:", () => {
 
                     expect(response.statusCode).toBe(200);
                     expect(response.body).toEqual(expectedOutput);
+                });
+            });
+
+            describe("Teams fetch", () => {
+                test("Should list event teams", async () => {
+                    const response = await request(server).get("/api/events/1/teams");
+
+                    expect(response.statusCode).toBe(200);
+                    expect(response.body.status).toEqual("success");
+                    expect(Array.isArray(response.body.data)).toBeTruthy();
+                });
+
+                test("Should return an error if the team is not found", async () => {
+                    const response = await request(server).get("/api/events/1/teams/99");
+
+                    const expectedOutput = {
+                        status: 'error',
+                        message: 'Team not found'
+                    };
+
+                    expect(response.statusCode).toBe(200);
+                    expect(response.body).toEqual(expectedOutput);
+                });
+
+                test("Should retrieve a specific team by its id (1)", async () => {
+                    const response = await request(server).get("/api/events/1/teams/1");
+
+                    expect(response.statusCode).toBe(200);
+                    expect(response.body.status).toEqual("success");
+                    expect(response.body.data.id).toEqual(1);
+                });
+            });
+
+            describe("Team Update", () => {
+                test("Should not update team when event does not exist", async () => {
+                    const response = await request(server).post("/api/events/99/teams/1/update").set("Authorization", access_token).send({ name: "New Name" });
+
+                    const expectedOutput = {
+                        status: "error",
+                        message: "Event not found"
+                    };
+
+                    expect(response.statusCode).toBe(200);
+                    expect(response.body).toEqual(expectedOutput);
+                });
+
+                test("Should not update team without proper permissions", async () => {
+                    const response = await request(server).post("/api/events/1/teams/1/update").set("Authorization", access_token).send({ name: "New Name" });
+
+                    const expectedOutput = { status: "error", message: "You don't have permissions" };
+
+                    expect(response.statusCode).toBe(200);
+                    expect(response.body).toEqual(expectedOutput);
+                });
+
+                test("Should update team successfully", async () => {
+                    const response = await request(server).post("/api/events/1/teams/1/update").set("Authorization", user2_access_token).send({ name: "New Name" });
+                    const response1 = await request(server).get("/api/events/1/teams/1").set("Authorization", user2_access_token);
+
+                    const expectedOutput = { status: "success", message: "Team updated successfully" };
+
+                    expect(response.statusCode).toBe(200);
+                    expect(response.body).toEqual(expectedOutput);
+                    expect(response1.body.data.name).toEqual("New Name");
                 });
             });
 
