@@ -53,4 +53,13 @@ export default class TeamsRepository implements TeamsRepositoryInterface {
 
         return null;
     }
+
+    async getTeamsByPage(event_id: number, page: number = 0, limits: number = 10): Promise<TeamEntity[] | null> {
+        let data = await this.database.query<TeamEntity[]>(`select ${TEAM_SELECT_PROPS} from teams where event_id = ? limit ?;`, event_id, [page, limits]);
+        if (!data) {
+            return null;
+        }
+
+        return data;
+    }
 }

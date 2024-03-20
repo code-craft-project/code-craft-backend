@@ -565,6 +565,14 @@ describe("API Tests:", () => {
         });
 
         describe("Teams", () => {
+            test("Should list event teams", async () => {
+                const response = await request(server).get("/api/events/1/teams");
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body.status).toEqual("success");
+                expect(Array.isArray(response.body.data)).toBeTruthy();
+            });
+
             describe("Team Creation", () => {
                 test("Should not create a team if invalid 'Create Team' form is submitted", async () => {
                     const response = await request(server).post("/api/events/1/teams/create").set("Authorization", user2_access_token);

@@ -187,6 +187,39 @@ export default class EventsController {
         res.status(200).json({ status: "success", message: "You have leaved the event successfully", data: leaveEvent });
     }
 
+    getTeams = async (req: Request, res: Response) => {
+        const { id: event_id } = req.params;
+        const { page, limits } = req.query;
+
+        let offset = 0;
+        let limit = 10;
+
+        if (page) {
+            offset = parseInt(page as string) || 0;
+        }
+
+        if (limits) {
+            limit = parseInt(limits as string) || limit;
+        }
+
+        let data = await this.eventsService.getTeams(parseInt(event_id), offset, limit);
+
+        if (!data) {
+            res.status(200).json({
+                status: "success",
+                message: "No data",
+                data: []
+            });
+
+            return;
+        }
+
+        res.status(200).json({
+            status: "success",
+            data
+        });
+    }
+
     createTeam = async (req: Request, res: Response) => {
         const { id: event_id } = req.params;
 

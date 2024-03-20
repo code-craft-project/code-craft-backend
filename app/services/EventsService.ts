@@ -56,6 +56,10 @@ export default class EventsService {
         return false;
     }
 
+    async getTeams(event_id: number, page?: number, limits?: number): Promise<TeamEntity[] | null> {
+        return await this.teamsRepository.getTeamsByPage(event_id, page, limits);
+    }
+
     async createTeam(team: TeamEntity): Promise<InsertResultInterface | null> {
         return await this.teamsRepository.createTeam(team);
     }
