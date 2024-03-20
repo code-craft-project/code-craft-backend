@@ -5,6 +5,7 @@ import CommentLikesRepository from "@/infrastructure/database/repositories/Comme
 import EventChallengesRepository from "@/infrastructure/database/repositories/EventChallengesRepository";
 import EventParticipantsRepository from "@/infrastructure/database/repositories/EventParticipantsRepository";
 import EventsRepository from "@/infrastructure/database/repositories/EventsRepository";
+import JobApplicationsRepository from "@/infrastructure/database/repositories/JobApplicationsRepository";
 import JobPostsRepository from "@/infrastructure/database/repositories/JobPostsRepository";
 import MembersRepository from "@/infrastructure/database/repositories/MembersRepository";
 import OrganizationsRepository from "@/infrastructure/database/repositories/OrganizationsRepository";
@@ -21,6 +22,7 @@ export const userSessionsRepository = new UserSessionsRepository(database);
 export const challengesRepository = new ChallengesRepository(database);
 export const organizationsRepository = new OrganizationsRepository(database);
 export const jobPostsRepository = new JobPostsRepository(database);
+export const jobApplicationsRepository = new JobApplicationsRepository(database);
 export const eventsRepository = new EventsRepository(database);
 export const membersRepository = new MembersRepository(database);
 export const permissionsRepository = new PermissionsRepository(database);

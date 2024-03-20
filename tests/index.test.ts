@@ -320,6 +320,31 @@ describe("API Tests:", () => {
             expect(response.body).toEqual(expectedOutput);
         });
 
+        describe("Job Post Applications", () => {
+            test("Should successfully apply to the job", async () => {
+                const response = await request(server).post("/api/jobposts/1/apply").set('Authorization', access_token);
+
+                const expectedOutput = {
+                    status: "success",
+                    message: "Job Application sent successfully"
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+            test("Should not allow multiple applications to the same job", async () => {
+                const response = await request(server).post("/api/jobposts/1/apply").set('Authorization', access_token);
+
+                const expectedOutput = {
+                    status: "error",
+                    message: "You already applied to that job"
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+        });
+
         describe("Job Post Update", () => {
             test("Should not update non-existing job post", async () => {
                 const response = await request(server).post("/api/jobposts/99/update").set('Authorization', access_token).send({ title: "New Title" });

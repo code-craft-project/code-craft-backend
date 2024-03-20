@@ -165,4 +165,24 @@ export default class JobPostsController {
 
         res.status(200).json({ status: "success", message: "Job Post deleted successfully" });
     }
+
+    applyToJob = async (req: Request, res: Response) => {
+        const { id: job_post_id } = req.params;
+
+        const user_id = req.user?.id as number;
+
+        const jobApplication = await this.jobPostsService.getUserJobApplicationById(user_id, parseInt(job_post_id));
+        if (jobApplication) {
+            res.status(200).json({ status: "error", message: "You already applied to that job" });
+            return;
+        }
+
+        let createJobApplication = await this.jobPostsService.applyToJob(user_id, parseInt(job_post_id));
+        if (!createJobApplication) {
+            res.status(200).json({ status: "error", message: "Can't apply to job, something went wrong" });
+            return;
+        }
+
+        res.status(200).json({ status: "success", message: "Job Application sent successfully" });
+    }
 };

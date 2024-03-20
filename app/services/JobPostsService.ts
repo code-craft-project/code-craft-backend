@@ -1,10 +1,13 @@
+import JobApplicationsRepository from "@/infrastructure/database/repositories/JobApplicationsRepository";
 import JobPostsRepository from "@/infrastructure/database/repositories/JobPostsRepository";
 
 export default class JobPostsService {
     jobPostsRepository: JobPostsRepository;
+    jobApplicationsRepository: JobApplicationsRepository;
 
-    constructor(jobPostsRepository: JobPostsRepository) {
+    constructor(jobPostsRepository: JobPostsRepository, jobApplicationsRepository: JobApplicationsRepository) {
         this.jobPostsRepository = jobPostsRepository;
+        this.jobApplicationsRepository = jobApplicationsRepository;
     }
 
     async createJobPost(jobPost: JobPostEntity): Promise<InsertResultInterface | null> {
@@ -24,6 +27,15 @@ export default class JobPostsService {
     }
 
     async deleteJobPost(job_post_id: number): Promise<InsertResultInterface | null> {
+        await this.jobApplicationsRepository.deleteJobPostApplications(job_post_id);
         return await this.jobPostsRepository.deleteJobPost(job_post_id);
+    }
+
+    async getUserJobApplicationById(user_id: number, job_post_id: number): Promise<JobApplicationEntity | null> {
+        return await this.jobApplicationsRepository.getUserJobApplicationById(job_post_id, user_id);
+    }
+
+    async applyToJob(user_id: number, job_post_id: number): Promise<InsertResultInterface | null> {
+        return await this.jobApplicationsRepository.createJobApplication({ user_id, job_post_id });
     }
 };

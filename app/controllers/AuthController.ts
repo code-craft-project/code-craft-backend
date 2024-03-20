@@ -23,6 +23,7 @@ const DYNAMIC_PROTECTED_ROUTES: RegExp[] = [
     /^\/events\/[0-9]+\/challenges$/,
     /^\/events\/[0-9]+\/challenges\/create$/,
     /^\/events\/[0-9]+\/challenges\/[0-9]+\/update$/,
+    /^\/jobposts\/[0-9]+\/apply$/,
     /^\/jobposts\/[0-9]+\/update$/,
     /^\/jobposts\/[0-9]+\/delete$/,
     /^\/challenges\/[0-9]+\/comments\/create$/,
