@@ -16,8 +16,11 @@
         "application/json"
     ],
     "paths": {
-        "/users": {
+        "/users/me": {
             "get": {
+                "tags": [
+                    "User Management"
+                ],
                 "description": "Get current user",
                 "operationId": "get_current_user",
                 "produces": [
@@ -57,6 +60,9 @@
                 }
             },
             "post": {
+                "tags": [
+                    "User Management"
+                ],
                 "description": "update user informations",
                 "operationId": "update_user",
                 "produces": [
@@ -121,6 +127,9 @@
         },
         "/users/{id}": {
             "get": {
+                "tags": [
+                    "User Management"
+                ],
                 "description": "Get user by id",
                 "operationId": "get_user_by_id",
                 "produces": [
@@ -163,6 +172,9 @@
         },
         "/auth/sign_in": {
             "post": {
+                "tags": [
+                    "User Management"
+                ],
                 "description": "Sign in with a new session",
                 "operationId": "sign_in",
                 "produces": [
@@ -214,6 +226,9 @@
         },
         "/auth/sign_up": {
             "post": {
+                "tags": [
+                    "User Management"
+                ],
                 "description": "Create new account",
                 "operationId": "sign_up",
                 "produces": [
@@ -274,6 +289,9 @@
         },
         "/organizations": {
             "get": {
+                "tags": [
+                    "Organizations Management"
+                ],
                 "description": "Returns the first page of organizations from the system",
                 "operationId": "getOrganizations",
                 "produces": [
@@ -318,6 +336,9 @@
         },
         "/organizations/{id}": {
             "get": {
+                "tags": [
+                    "Organizations Management"
+                ],
                 "description": "Returns a Organization based on a single ID",
                 "operationId": "getOrganizationById",
                 "produces": [
@@ -360,6 +381,9 @@
         },
         "/organizations/{id}/job_posts": {
             "get": {
+                "tags": [
+                    "Organizations Management"
+                ],
                 "description": "Returns the job posts of an organization",
                 "operationId": "getJobPosts",
                 "produces": [
@@ -405,6 +429,9 @@
         },
         "/organizations/{id}/job_posts/{job_post_id}/applications": {
             "get": {
+                "tags": [
+                    "Organizations Management"
+                ],
                 "description": "Returns the job post applications",
                 "operationId": "getJobPostApplication",
                 "produces": [
@@ -458,6 +485,9 @@
         },
         "/organizations/create": {
             "post": {
+                "tags": [
+                    "Organizations Management"
+                ],
                 "description": "Create a new organization",
                 "operationId": "createOrganization",
                 "produces": [
@@ -512,6 +542,9 @@
         },
         "/organizations/{id}/add_member": {
             "post": {
+                "tags": [
+                    "Organizations Management"
+                ],
                 "description": "Add new organization member",
                 "operationId": "addOrganizationMember",
                 "produces": [
@@ -580,6 +613,9 @@
         },
         "/organizations/{id}/remove_member": {
             "post": {
+                "tags": [
+                    "Organizations Management"
+                ],
                 "description": "remove Organization Member",
                 "operationId": "removeOrganization",
                 "produces": [
@@ -642,6 +678,9 @@
         },
         "/organizations/{id}/give_permission": {
             "post": {
+                "tags": [
+                    "Organizations Management"
+                ],
                 "description": "Give a specific permission to a user",
                 "operationId": "givePermission",
                 "produces": [
@@ -713,6 +752,9 @@
         },
         "/challenges": {
             "get": {
+                "tags": [
+                    "Challenges Management"
+                ],
                 "description": "Returns the first page of challenges from the system",
                 "operationId": "getChallenges",
                 "produces": [
@@ -757,6 +799,9 @@
         },
         "/challenges/{id}": {
             "get": {
+                "tags": [
+                    "Challenges Management"
+                ],
                 "description": "Returns a challenge based on a single ID",
                 "operationId": "getChallengeById",
                 "produces": [
@@ -799,6 +844,9 @@
         },
         "/challenges/{id}/update": {
             "post": {
+                "tags": [
+                    "Challenges Management"
+                ],
                 "description": "Update Challenge",
                 "operationId": "updateChallenge",
                 "produces": [
@@ -876,6 +924,9 @@
         },
         "/challenges/{id}/comments": {
             "get": {
+                "tags": [
+                    "Public Challenges Interactions"
+                ],
                 "description": "Returns a comments based on a challenge ID",
                 "operationId": "getCommentsByChallengeId",
                 "produces": [
@@ -918,6 +969,9 @@
         },
         "/challenges/{id}/comments/create": {
             "post": {
+                "tags": [
+                    "Public Challenges Interactions"
+                ],
                 "description": "Post a comment on a public challenge",
                 "operationId": "createComment",
                 "produces": [
@@ -972,6 +1026,9 @@
         },
         "/challenges/{id}/comments/{comment_id}": {
             "get": {
+                "tags": [
+                    "Public Challenges Interactions"
+                ],
                 "description": "Returns a comment based on a single ID",
                 "operationId": "getChallengeCommentById",
                 "produces": [
@@ -1022,6 +1079,9 @@
         },
         "/challenges/{id}/comments/{comment_id}/toggle_like": {
             "post": {
+                "tags": [
+                    "Public Challenges Interactions"
+                ],
                 "description": "Toggle like for a comment",
                 "operationId": "toggleLike",
                 "produces": [
@@ -1079,6 +1139,9 @@
         },
         "/challenges/{id}/comments/{comment_id}/reply": {
             "post": {
+                "tags": [
+                    "Public Challenges Interactions"
+                ],
                 "description": "Reply to a comment on a public challenge",
                 "operationId": "replyToComment",
                 "produces": [
@@ -1149,6 +1212,9 @@
         },
         "/challenges/create": {
             "post": {
+                "tags": [
+                    "Challenges Management"
+                ],
                 "description": "Creates a new challenge",
                 "operationId": "createChallenge",
                 "produces": [
@@ -1222,6 +1288,9 @@
         },
         "/jobposts": {
             "get": {
+                "tags": [
+                    "Job Posting"
+                ],
                 "description": "Returns the first page of job posts from the system",
                 "operationId": "getJobPosts",
                 "produces": [
@@ -1266,6 +1335,9 @@
         },
         "/jobposts/{id}": {
             "get": {
+                "tags": [
+                    "Job Posting"
+                ],
                 "description": "Returns a Job Post based on a single ID",
                 "operationId": "getJobPostById",
                 "produces": [
@@ -1308,6 +1380,9 @@
         },
         "/jobposts/{id}/apply": {
             "post": {
+                "tags": [
+                    "Job Posting"
+                ],
                 "description": "Apply to Job Post",
                 "operationId": "applyToJobPost",
                 "produces": [
@@ -1357,6 +1432,9 @@
         },
         "/jobposts/{id}/update": {
             "post": {
+                "tags": [
+                    "Job Posting"
+                ],
                 "description": "Update Job Post",
                 "operationId": "updateJobPost",
                 "produces": [
@@ -1428,6 +1506,9 @@
         },
         "/jobposts/{id}/delete": {
             "post": {
+                "tags": [
+                    "Job Posting"
+                ],
                 "description": "Delete Job Post",
                 "operationId": "deleteJobPost",
                 "produces": [
@@ -1499,6 +1580,9 @@
         },
         "/jobposts/create": {
             "post": {
+                "tags": [
+                    "Job Posting"
+                ],
                 "description": "Create a new Job Post",
                 "operationId": "createJobPost",
                 "produces": [
@@ -1553,6 +1637,9 @@
         },
         "/events": {
             "get": {
+                "tags": [
+                    "User Participation"
+                ],
                 "description": "Returns the first page of events from the system",
                 "operationId": "getEvents",
                 "produces": [
@@ -1597,6 +1684,9 @@
         },
         "/events/{id}": {
             "get": {
+                "tags": [
+                    "User Participation"
+                ],
                 "description": "Returns a Event based on a single ID",
                 "operationId": "getEventById",
                 "produces": [
@@ -1639,6 +1729,9 @@
         },
         "/events/{id}/update": {
             "post": {
+                "tags": [
+                    "Events Management"
+                ],
                 "description": "Update Event",
                 "operationId": "updateEvent",
                 "produces": [
@@ -1719,6 +1812,9 @@
         },
         "/events/{id}/join_event": {
             "post": {
+                "tags": [
+                    "User Participation"
+                ],
                 "description": "Join Event",
                 "operationId": "joinEvent",
                 "produces": [
@@ -1781,6 +1877,9 @@
         },
         "/events/{id}/leave_event": {
             "post": {
+                "tags": [
+                    "User Participation"
+                ],
                 "description": "Leave Event",
                 "operationId": "leaveEvent",
                 "produces": [
@@ -1830,6 +1929,9 @@
         },
         "/events/{id}/teams": {
             "get": {
+                "tags": [
+                    "Event Collaboration"
+                ],
                 "description": "Returns the first page of teams from the system",
                 "operationId": "getTeams",
                 "produces": [
@@ -1874,6 +1976,9 @@
         },
         "/events/{id}/teams/{team_id}": {
             "get": {
+                "tags": [
+                    "Event Collaboration"
+                ],
                 "description": "Returns a Team based on a single ID",
                 "operationId": "getTeamById",
                 "produces": [
@@ -1924,6 +2029,9 @@
         },
         "/events/{id}/teams/create": {
             "post": {
+                "tags": [
+                    "Event Collaboration"
+                ],
                 "description": "Create a new team",
                 "operationId": "createTeam",
                 "produces": [
@@ -2001,6 +2109,9 @@
         },
         "/events/{id}/teams/{team_id}/update": {
             "post": {
+                "tags": [
+                    "Event Collaboration"
+                ],
                 "description": "Update Team",
                 "operationId": "updateTeam",
                 "produces": [
@@ -2080,6 +2191,9 @@
         },
         "/events/{id}/teams/delete": {
             "post": {
+                "tags": [
+                    "Event Collaboration"
+                ],
                 "description": "delete Team",
                 "operationId": "deleteTeam",
                 "produces": [
@@ -2142,6 +2256,9 @@
         },
         "/events/{id}/teams/join": {
             "post": {
+                "tags": [
+                    "Event Collaboration"
+                ],
                 "description": "Join Team",
                 "operationId": "joinTeam",
                 "produces": [
@@ -2207,6 +2324,9 @@
         },
         "/events/{id}/teams/leave": {
             "post": {
+                "tags": [
+                    "Event Collaboration"
+                ],
                 "description": "leave Team, no team id is required because the user allowed to be a member of one team only",
                 "operationId": "leaveTeam",
                 "produces": [
@@ -2256,6 +2376,9 @@
         },
         "/events/{id}/challenges/create": {
             "post": {
+                "tags": [
+                    "Challenges Management"
+                ],
                 "description": "create event challenge",
                 "operationId": "createEventChallenge",
                 "produces": [
@@ -2337,6 +2460,9 @@
         },
         "/events/{id}/challenges/{challenge_id}/update": {
             "post": {
+                "tags": [
+                    "Challenges Management"
+                ],
                 "description": "Update Event Challenge",
                 "operationId": "updateEventChallenge",
                 "produces": [
@@ -2422,6 +2548,9 @@
         },
         "/events/{id}/challenges": {
             "get": {
+                "tags": [
+                    "User Participation"
+                ],
                 "description": "Returns the first page of challenges from the system",
                 "operationId": "getChallenges",
                 "produces": [
@@ -2467,6 +2596,9 @@
         },
         "/events/create": {
             "post": {
+                "tags": [
+                    "Events Management"
+                ],
                 "description": "Create a new Event",
                 "operationId": "createEvent",
                 "produces": [
