@@ -90,3 +90,8 @@ export const privateChallenge: ChallengeEntity = {
     is_public: false,
     type: "in_out",
 };
+
+export const testCases: TestCaseEntity[] = [
+    { challenge_id: 1, inputs: [], output: '' },
+    { challenge_id: 1, inputs: [], output: '' },
+];

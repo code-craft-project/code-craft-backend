@@ -261,4 +261,55 @@ export default class ChallengesController {
 
         res.status(200).json({ status: "success", message: "Reply to a comment successfully" });
     }
+
+    createTestCases = async (req: Request, res: Response) => {
+        const { id } = req.params;
+        const { test_cases } = req.body;
+
+        if (!test_cases) {
+            res.status(200).json({ status: "error", message: "TestCases is missing" });
+            return;
+        }
+
+        const challenge = await this.challengesService.getChallengeById(parseInt(id));
+        if (!challenge) {
+            res.status(200).json({ status: "error", message: "Challenge not found" });
+            return;
+        }
+
+        const user = req.user;
+
+        console.log({ user, creator: challenge.creator_id });
+        
+        if (user?.id != challenge.creator_id) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
+
+        for (let i = 0; i < test_cases.length; i++) {
+            await this.challengesService.createTestCase(parseInt(id), test_cases[i].inputs, test_cases[i].output);
+        }
+
+        res.status(200).json({ status: "success", message: "Test Cases created successfully" });
+    }
+
+    getTestCases = async (req: Request, res: Response) => {
+        const { id } = req.params;
+
+        let data = await this.challengesService.getTestCases(parseInt(id));
+
+        if (!data) {
+            res.status(200).json({
+                status: "error",
+                message: "No Test Cases found"
+            });
+
+            return;
+        }
+
+        res.status(200).json({
+            status: "success",
+            data
+        });
+    }
 };

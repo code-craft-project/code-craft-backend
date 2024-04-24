@@ -11,6 +11,8 @@ router.post("/:id/comments/create", challengesController.createComment);
 router.get("/:id/comments/:comment_id", challengesController.getCommentById);
 router.post("/:id/comments/:comment_id/toggle_like", challengesController.toggleLikeAComment);
 router.post("/:id/comments/:comment_id/reply", challengesController.replyToComment);
+router.get("/:id/test_cases", challengesController.getTestCases);
+router.post("/:id/test_cases/create", challengesController.createTestCases);
 router.get("/", challengesController.getChallenges);
 
 export default router;

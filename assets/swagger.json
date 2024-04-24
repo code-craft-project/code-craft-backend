@@ -1286,6 +1286,158 @@
                 }
             }
         },
+        "/challenges/{id}/test_cases": {
+            "get": {
+                "tags": [
+                    "Challenges Management"
+                ],
+                "description": "get list of test cases of a challenge",
+                "operationId": "getTestCases",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of challenge",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "description": "Bearer token for authentication"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "get list of test cases response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Challenge"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/challenges/{id}/test_cases/create": {
+            "post": {
+                "tags": [
+                    "Challenges Management"
+                ],
+                "description": "Creates a test cases",
+                "operationId": "createTestCases",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of challenge",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "create test cases body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "test_cases": {
+                                    "type": "object",
+                                    "properties": {
+                                        "challenge_id": {
+                                            "type": "integer"
+                                        },
+                                        "inputs": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "input": {
+                                                        "type": "string"
+                                                    },
+                                                    "type": {
+                                                        "type": "string"
+                                                    },
+                                                    "index": {
+                                                        "type": "integer"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "output": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "required": [
+                                "test_cases"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "description": "Bearer token for authentication"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "create test cases response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/TestCase"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
         "/jobposts": {
             "get": {
                 "tags": [
@@ -2949,6 +3101,43 @@
                     "type": "integer"
                 },
                 "event_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "TestCase": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "challenge_id": {
+                    "type": "integer"
+                },
+                "input": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/TestCaseInput"
+                    }
+                },
+                "output": {
+                    "type": "string"
+                }
+            }
+        },
+        "TestCaseInput": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "input": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "index": {
                     "type": "integer"
                 }
             }

@@ -5,7 +5,7 @@ import { database } from "@/app/repositories";
 import { MySQLDatabase } from "@/infrastructure/database/MySQLDatabase";
 import { DatabaseMigration } from "@/infrastructure/database/migrations/DatabaseMigration";
 import Logger from "@/infrastructure/logger/Logger";
-import { organization, privateEvent, user, user2, user2Credentials, userCredentials, event, jobpost, privateTeam, team, challenge, privateChallenge } from './test_data';
+import { organization, privateEvent, user, user2, user2Credentials, userCredentials, event, jobpost, privateTeam, team, challenge, privateChallenge, testCases } from './test_data';
 
 let access_token: string = "";
 let user2_access_token: string = "";
@@ -24,7 +24,7 @@ describe("API Tests:", () => {
 
             await databaseMigration.migrateAll();
 
-            expect(spy).toHaveBeenCalledTimes(19);
+            expect(spy).toHaveBeenCalledTimes(21);
         }, 30000);
 
         test("Drop tables", async () => {
@@ -34,7 +34,7 @@ describe("API Tests:", () => {
 
             await databaseMigration.dropAll();
 
-            expect(spy).toHaveBeenCalledTimes(19);
+            expect(spy).toHaveBeenCalledTimes(21);
 
             // IMPORTANT: This step is necessary to allow all other tests to work.
             await databaseMigration.migrateAll();
@@ -1184,5 +1184,48 @@ describe("API Tests:", () => {
                 expect(response1.body.data.replies).toEqual(1);
             });
         });
+    });
+
+    describe("Test Cases", () => {
+        describe("Test Case Creation", () => {
+            test("Should return error when invalid 'Create Test Cases' form data is submitted", async () => {
+                const response = await request(server).post("/api/challenges/1/test_cases/create").set('Authorization', access_token);
+    
+                const expectedOutput = { status: "error", message: "TestCases is missing" };
+    
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+    
+            test("Should return error if challenge not found", async () => {
+                const response = await request(server).post("/api/challenges/99/test_cases/create").set('Authorization', access_token).send({ test_cases: testCases });
+    
+                const expectedOutput = { status: "error", message: "Challenge not found" };
+    
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should not create test cases without proper permissions", async () => {
+                const response = await request(server).post("/api/challenges/1/test_cases/create").set("Authorization", user2_access_token).send({ test_cases: testCases });
+
+                const expectedOutput = { status: "error", message: "You don't have permissions" };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should create test cases successfully", async () => {
+                const response = await request(server).post("/api/challenges/1/test_cases/create").set("Authorization", access_token).send({ test_cases: testCases });
+                const response1 = await request(server).get("/api/challenges/1/test_cases").set("Authorization", access_token);
+
+                const expectedOutput = { status: "success", message: "Test Cases created successfully" };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+                expect(Array.isArray(response1.body.data)).toBeTruthy();
+            });
+        });
+
     });
 });

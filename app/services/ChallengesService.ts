@@ -1,16 +1,22 @@
 import ChallengeCommentsRepository from "@/infrastructure/database/repositories/ChallengeCommentsRepository";
 import ChallengesRepository from "@/infrastructure/database/repositories/ChallengesRepository";
 import CommentLikesRepository from "@/infrastructure/database/repositories/CommentLikesRepository";
+import TestCaseInputsRepository from "@/infrastructure/database/repositories/TestCaseInputsRepository";
+import TestCasesRepository from "@/infrastructure/database/repositories/TestCasesRepository";
 
 export default class ChallengesService {
     challengesRepository: ChallengesRepository;
     challengeCommentsRepository: ChallengeCommentsRepository;
     commentLikesRepository: CommentLikesRepository;
+    testCasesRepository: TestCasesRepository;
+    testCaseInputsRepository: TestCaseInputsRepository;
 
-    constructor(challengesRepository: ChallengesRepository, challengeCommentsRepository: ChallengeCommentsRepository, commentLikesRepository: CommentLikesRepository) {
+    constructor(challengesRepository: ChallengesRepository, challengeCommentsRepository: ChallengeCommentsRepository, commentLikesRepository: CommentLikesRepository, testCasesRepository: TestCasesRepository, testCaseInputsRepository: TestCaseInputsRepository) {
         this.challengesRepository = challengesRepository;
         this.challengeCommentsRepository = challengeCommentsRepository;
         this.commentLikesRepository = commentLikesRepository;
+        this.testCasesRepository = testCasesRepository;
+        this.testCaseInputsRepository = testCaseInputsRepository;
     }
 
     async createChallenge(challenge: ChallengeEntity): Promise<InsertResultInterface | null> {
@@ -51,5 +57,18 @@ export default class ChallengesService {
 
     async getUserLikeByCommentId(user_id: number, comment_id: number): Promise<CommentLikeEntity | null> {
         return await this.commentLikesRepository.getUserLikeByCommentId(user_id, comment_id);
+    }
+
+    async getTestCases(challenge_id: number): Promise<TestCaseEntity[] | null> {
+        return await this.testCasesRepository.getTestCasesByChallengeId(challenge_id);
+    }
+
+    async createTestCase(challenge_id: number, inputs: TestCaseInputEntity[], output: string): Promise<InsertResultInterface | null> {
+        const testCaseResult = await this.testCasesRepository.createTestCase({ challenge_id, output });
+        const promise = inputs.map(input => this.testCaseInputsRepository.createTestCaseInput(input));
+
+        await Promise.all(promise);
+
+        return testCaseResult;
     }
 };

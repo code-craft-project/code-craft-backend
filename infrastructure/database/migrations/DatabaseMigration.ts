@@ -19,6 +19,8 @@ import TeamMembersTableMigration from "./TeamMembersTableMigration";
 import UserSessionsTableMigration from "./UserSessionsTableMigration";
 import OrganizationsTableMigration from "./OrganizationsTableMigration";
 import EventChallengesTableMigration from "./EventChallengesTableMigration";
+import TestCasesTableMigration from "./TestCasesTableMigration";
+import TestCaseInputsTableMigration from "./TestCaseInputsTableMigration";
 
 export class DatabaseMigration {
     private database: MySQLDatabase;
@@ -41,6 +43,7 @@ export class DatabaseMigration {
             let events_table = new EventsTableMigration(this.database, this.logger);
             let job_posts_table = new JobPostsTableMigration(this.database, this.logger);
             let challenge_comments_table = new ChallengeCommentsTableMigration(this.database, this.logger);
+            let test_cases_table = new TestCasesTableMigration(this.database, this.logger);
             let submittions_table = new SubmittionsTableMigration(this.database, this.logger);
 
             let event_participants_table = new EventParticipantsTableMigration(this.database, this.logger);
@@ -48,6 +51,7 @@ export class DatabaseMigration {
             let permissions_table = new PermissionsTableMigration(this.database, this.logger);
             let job_applications_table = new JobApplicationsTableMigration(this.database, this.logger);
             let comment_likes_table = new CommentLikesTableMigration(this.database, this.logger);
+            let test_case_inputs_table = new TestCaseInputsTableMigration(this.database, this.logger);
             let reviews_table = new ReviewsTableMigration(this.database, this.logger);
             let submittion_files_table = new SubmittionFilesTableMigration(this.database, this.logger);
 
@@ -74,6 +78,7 @@ export class DatabaseMigration {
                 events_table.migrate(),
                 job_posts_table.migrate(),
                 challenge_comments_table.migrate(),
+                test_cases_table.migrate(),
                 submittions_table.migrate(),
             ]);
 
@@ -84,6 +89,7 @@ export class DatabaseMigration {
                 permissions_table.migrate(),
                 job_applications_table.migrate(),
                 comment_likes_table.migrate(),
+                test_case_inputs_table.migrate(),
                 reviews_table.migrate(),
                 submittion_files_table.migrate(),
             ]);
@@ -116,6 +122,7 @@ export class DatabaseMigration {
             let events_table = new EventsTableMigration(this.database, this.logger);
             let job_posts_table = new JobPostsTableMigration(this.database, this.logger);
             let challenge_comments_table = new ChallengeCommentsTableMigration(this.database, this.logger);
+            let test_cases_table = new TestCasesTableMigration(this.database, this.logger);
             let submittions_table = new SubmittionsTableMigration(this.database, this.logger);
 
             let event_participants_table = new EventParticipantsTableMigration(this.database, this.logger);
@@ -123,6 +130,7 @@ export class DatabaseMigration {
             let permissions_table = new PermissionsTableMigration(this.database, this.logger);
             let job_applications_table = new JobApplicationsTableMigration(this.database, this.logger);
             let comment_likes_table = new CommentLikesTableMigration(this.database, this.logger);
+            let test_case_inputs_table = new TestCaseInputsTableMigration(this.database, this.logger);
             let reviews_table = new ReviewsTableMigration(this.database, this.logger);
             let submittion_files_table = new SubmittionFilesTableMigration(this.database, this.logger);
 
@@ -147,6 +155,7 @@ export class DatabaseMigration {
                 permissions_table.drop(),
                 job_applications_table.drop(),
                 comment_likes_table.drop(),
+                test_case_inputs_table.drop(),
                 reviews_table.drop(),
                 submittion_files_table.drop(),
             ]);
@@ -157,6 +166,7 @@ export class DatabaseMigration {
                 events_table.drop(),
                 job_posts_table.drop(),
                 challenge_comments_table.drop(),
+                test_cases_table.drop(),
                 submittions_table.drop(),
             ]);
 
