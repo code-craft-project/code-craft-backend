@@ -13,6 +13,7 @@ export default class OrganizationsRepository implements OrganizationsRepositoryI
             `insert into organizations (${ORGANIZATION_CREATE_PROPS}) values (?);`,
             [
                 organization.name,
+                organization.description,
                 organization.type,
                 organization.creator_id,
                 organization.profile_image_url,

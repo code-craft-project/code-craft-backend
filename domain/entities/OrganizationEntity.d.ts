@@ -1,6 +1,7 @@
 interface OrganizationEntity {
     id?: number;
     name: string;
+    description: string;
     creator_id?: number;
     type: 'club' | 'company';
     profile_image_url?: string;

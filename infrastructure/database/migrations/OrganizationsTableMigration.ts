@@ -5,6 +5,7 @@ export default class OrganizationsTableMigration extends TableMigration {
         await this.database.query(`create table if not exists organizations (
             id int AUTO_INCREMENT primary key,
             name varchar(255),
+            description text,
             creator_id int,
             profile_image_url varchar(255),
             type varchar(255),

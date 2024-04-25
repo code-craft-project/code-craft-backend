@@ -25,8 +25,13 @@ export const user2Credentials = {
 };
 
 export const organization: OrganizationEntity = {
-    name: "test",
-    type: "company"
+    id: 1,
+    name: "Google",
+    description: `Google, founded in 1998 by Larry Page and Sergey Brin while they were Ph.D. students at Stanford University, has evolved into one of the world's most influential technology companies. Renowned for its innovative approach to internet-based services and products, Google has fundamentally transformed the way people interact with information and technology.`,
+    creator_id: 1,
+    type: 'company',
+    profile_image_url: "https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA",
+    created_at: "2004-09-04"
 };
 
 export const jobpost: JobPostEntity = {
