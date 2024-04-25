@@ -280,7 +280,7 @@ export default class ChallengesController {
         const user = req.user;
 
         console.log({ user, creator: challenge.creator_id });
-        
+
         if (user?.id != challenge.creator_id) {
             res.status(200).json({ status: "error", message: "You don't have permissions" });
             return;
@@ -310,6 +310,27 @@ export default class ChallengesController {
         res.status(200).json({
             status: "success",
             data
+        });
+    }
+
+    getSubmissions = async (req: Request, res: Response) => {
+        const { id } = req.params;
+
+        const user = req.user!;
+        let submissions = await this.challengesService.getSubmissions(user.id!, parseInt(id));
+
+        if (!submissions) {
+            res.status(200).json({
+                status: "error",
+                message: "Something went wrong"
+            });
+
+            return;
+        }
+
+        res.status(200).json({
+            status: "success",
+            data: submissions
         });
     }
 };

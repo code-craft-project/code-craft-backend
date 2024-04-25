@@ -9,8 +9,8 @@ import CommentLikesTableMigration from "./CommentLikesTableMigration";
 import EventParticipantsTableMigration from "./EventParticipantsTableMigration";
 import JobPostsTableMigration from "./JobPostsTableMigration";
 import JobApplicationsTableMigration from "./JobApplicationsTableMigration";
-import SubmittionsTableMigration from "./SubmittionsTableMigration";
-import SubmittionFilesTableMigration from "./SubmittionFilesTableMigration";
+import SubmissionsTableMigration from "./SubmissionsTableMigration";
+import SubmissionFilesTableMigration from "./SubmissionFilesTableMigration";
 import ReviewsTableMigration from "./ReviewsTableMigration";
 import PermissionsTableMigration from "./PermissionsTableMigration";
 import NotificationsTableMigration from "./NotificationsTableMigration";
@@ -44,7 +44,7 @@ export class DatabaseMigration {
             let job_posts_table = new JobPostsTableMigration(this.database, this.logger);
             let challenge_comments_table = new ChallengeCommentsTableMigration(this.database, this.logger);
             let test_cases_table = new TestCasesTableMigration(this.database, this.logger);
-            let submittions_table = new SubmittionsTableMigration(this.database, this.logger);
+            let submissions_table = new SubmissionsTableMigration(this.database, this.logger);
 
             let event_participants_table = new EventParticipantsTableMigration(this.database, this.logger);
             let event_challenges_table = new EventChallengesTableMigration(this.database, this.logger);
@@ -53,7 +53,7 @@ export class DatabaseMigration {
             let comment_likes_table = new CommentLikesTableMigration(this.database, this.logger);
             let test_case_inputs_table = new TestCaseInputsTableMigration(this.database, this.logger);
             let reviews_table = new ReviewsTableMigration(this.database, this.logger);
-            let submittion_files_table = new SubmittionFilesTableMigration(this.database, this.logger);
+            let submission_files_table = new SubmissionFilesTableMigration(this.database, this.logger);
 
             let teams_table = new TeamsTableMigration(this.database, this.logger);
 
@@ -79,7 +79,7 @@ export class DatabaseMigration {
                 job_posts_table.migrate(),
                 challenge_comments_table.migrate(),
                 test_cases_table.migrate(),
-                submittions_table.migrate(),
+                submissions_table.migrate(),
             ]);
 
             // Level 04
@@ -91,7 +91,7 @@ export class DatabaseMigration {
                 comment_likes_table.migrate(),
                 test_case_inputs_table.migrate(),
                 reviews_table.migrate(),
-                submittion_files_table.migrate(),
+                submission_files_table.migrate(),
             ]);
 
             // Level 05
@@ -123,7 +123,7 @@ export class DatabaseMigration {
             let job_posts_table = new JobPostsTableMigration(this.database, this.logger);
             let challenge_comments_table = new ChallengeCommentsTableMigration(this.database, this.logger);
             let test_cases_table = new TestCasesTableMigration(this.database, this.logger);
-            let submittions_table = new SubmittionsTableMigration(this.database, this.logger);
+            let submissions_table = new SubmissionsTableMigration(this.database, this.logger);
 
             let event_participants_table = new EventParticipantsTableMigration(this.database, this.logger);
             let event_challenges_table = new EventChallengesTableMigration(this.database, this.logger);
@@ -132,7 +132,7 @@ export class DatabaseMigration {
             let comment_likes_table = new CommentLikesTableMigration(this.database, this.logger);
             let test_case_inputs_table = new TestCaseInputsTableMigration(this.database, this.logger);
             let reviews_table = new ReviewsTableMigration(this.database, this.logger);
-            let submittion_files_table = new SubmittionFilesTableMigration(this.database, this.logger);
+            let submission_files_table = new SubmissionFilesTableMigration(this.database, this.logger);
 
             let teams_table = new TeamsTableMigration(this.database, this.logger);
 
@@ -157,7 +157,7 @@ export class DatabaseMigration {
                 comment_likes_table.drop(),
                 test_case_inputs_table.drop(),
                 reviews_table.drop(),
-                submittion_files_table.drop(),
+                submission_files_table.drop(),
             ]);
 
             // Level 03
@@ -167,7 +167,7 @@ export class DatabaseMigration {
                 job_posts_table.drop(),
                 challenge_comments_table.drop(),
                 test_cases_table.drop(),
-                submittions_table.drop(),
+                submissions_table.drop(),
             ]);
 
             // Level 02

@@ -13,6 +13,7 @@ router.post("/:id/comments/:comment_id/toggle_like", challengesController.toggle
 router.post("/:id/comments/:comment_id/reply", challengesController.replyToComment);
 router.get("/:id/test_cases", challengesController.getTestCases);
 router.post("/:id/test_cases/create", challengesController.createTestCases);
+router.get("/:id/submissions", challengesController.getSubmissions);
 router.get("/", challengesController.getChallenges);
 
 export default router;

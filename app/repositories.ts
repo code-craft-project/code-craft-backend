@@ -10,6 +10,7 @@ import JobPostsRepository from "@/infrastructure/database/repositories/JobPostsR
 import MembersRepository from "@/infrastructure/database/repositories/MembersRepository";
 import OrganizationsRepository from "@/infrastructure/database/repositories/OrganizationsRepository";
 import PermissionsRepository from "@/infrastructure/database/repositories/PermissionsRepository";
+import SubmissionsRepository from "@/infrastructure/database/repositories/SubmissionsRepository";
 import TeamMembersRepository from "@/infrastructure/database/repositories/TeamMembersRepository";
 import TeamsRepository from "@/infrastructure/database/repositories/TeamsRepository";
 import TestCaseInputsRepository from "@/infrastructure/database/repositories/TestCaseInputsRepository";
@@ -36,3 +37,4 @@ export const challengeCommentsRepository = new ChallengeCommentsRepository(datab
 export const commentLikesRepository = new CommentLikesRepository(database);
 export const testCasesRepository = new TestCasesRepository(database);
 export const testCaseInputsRepository = new TestCaseInputsRepository(database);
+export const submissionsRepository = new SubmissionsRepository(database);

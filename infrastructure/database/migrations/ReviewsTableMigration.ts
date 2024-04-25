@@ -7,11 +7,11 @@ export default class ReviewsTableMigration extends TableMigration {
             message varchar(255),
             score int,
             challenge_id int,
-            submittion_id int,
+            submission_id int,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             foreign key(challenge_id) references challenges(id),
-            foreign key(submittion_id) references submittions(id)
+            foreign key(submission_id) references submissions(id)
         );`);
     }
 

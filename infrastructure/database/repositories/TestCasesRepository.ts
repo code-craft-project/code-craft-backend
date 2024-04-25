@@ -22,7 +22,7 @@ export default class TestCasesRepository implements TestCasesRepositoryInterface
     }
 
     async getTestCaseById(id: number): Promise<TestCaseEntity | null> {
-        const data = await this.database.query<TestCaseEntity[]>(`select ${TEST_CASE_SELECT_PROPS}, JSON_OBJECT(${TEST_CASE_INPUT_JOIN_PROPS}) AS inputs from test_cases join test_case_inputs on test_cases.id = test_case_inputs.test_case_id where id = ?;`, [id]);
+        const data = await this.database.query<TestCaseEntity[]>(`select ${TEST_CASE_SELECT_PROPS}, JSON_ARRAYAGG(JSON_OBJECT(${TEST_CASE_INPUT_JOIN_PROPS})) AS inputs from test_cases left join test_case_inputs on test_cases.id = test_case_inputs.test_case_id where test_cases.id = ? group by test_cases.id, test_cases.output, test_cases.challenge_id, test_cases.created_at;`, [id]);
 
         if (data && data.length > 0) {
             return data[0];
@@ -32,7 +32,7 @@ export default class TestCasesRepository implements TestCasesRepositoryInterface
     }
 
     async getTestCasesByChallengeId(challengeId: number): Promise<TestCaseEntity[] | null> {
-        let data = await this.database.query<TestCaseEntity[]>(`select ${TEST_CASE_SELECT_PROPS}, JSON_OBJECT(${TEST_CASE_INPUT_JOIN_PROPS}) AS inputs from test_cases join test_case_inputs on test_cases.id = test_case_inputs.test_case_id where challenge_id = ?;`, [challengeId]);
+        let data = await this.database.query<TestCaseEntity[]>(`select ${TEST_CASE_SELECT_PROPS}, JSON_ARRAYAGG(JSON_OBJECT(${TEST_CASE_INPUT_JOIN_PROPS})) AS inputs from test_cases left join test_case_inputs on test_cases.id = test_case_inputs.test_case_id where test_cases.challenge_id = ? group by test_cases.id, test_cases.output, test_cases.challenge_id, test_cases.created_at;`, [challengeId]);
 
         if (data) {
             return data;

@@ -1,10 +1,10 @@
 import TableMigration from "./TableMigration";
 
-export default class SubmittionsTableMigration extends TableMigration {
+export default class SubmissionsTableMigration extends TableMigration {
     async createTable(): Promise<void> {
-        await this.database.query(`create table if not exists submittions (
+        await this.database.query(`create table if not exists submissions (
             id int AUTO_INCREMENT primary key,
-            type varchar(255),
+            status varchar(255),
             content text,
             challenge_id int,
             user_id int,
@@ -14,6 +14,6 @@ export default class SubmittionsTableMigration extends TableMigration {
         );`);
     }
 
-    name(): string { return "Submittions" };
-    tableName(): string { return "submittions" };
+    name(): string { return "Submissions" };
+    tableName(): string { return "submissions" };
 }

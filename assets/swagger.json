@@ -1438,6 +1438,61 @@
                 }
             }
         },
+        "/challenges/{id}/submissions": {
+            "get": {
+                "tags": [
+                    "Challenges Management"
+                ],
+                "description": "get list of user submissions in a challenge",
+                "operationId": "getTestCases",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of challenge",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "description": "Bearer token for authentication"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "get list of user submissions in a challenge response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Submission"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
         "/jobposts": {
             "get": {
                 "tags": [
@@ -3139,6 +3194,31 @@
                 },
                 "index": {
                     "type": "integer"
+                }
+            }
+        },
+        "Submission": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "challenge_id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "'correct' | 'wrong'"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2024-02-28T20:20:48.000Z"
                 }
             }
         },

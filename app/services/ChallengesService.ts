@@ -1,6 +1,7 @@
 import ChallengeCommentsRepository from "@/infrastructure/database/repositories/ChallengeCommentsRepository";
 import ChallengesRepository from "@/infrastructure/database/repositories/ChallengesRepository";
 import CommentLikesRepository from "@/infrastructure/database/repositories/CommentLikesRepository";
+import SubmissionsRepository from "@/infrastructure/database/repositories/SubmissionsRepository";
 import TestCaseInputsRepository from "@/infrastructure/database/repositories/TestCaseInputsRepository";
 import TestCasesRepository from "@/infrastructure/database/repositories/TestCasesRepository";
 
@@ -10,13 +11,15 @@ export default class ChallengesService {
     commentLikesRepository: CommentLikesRepository;
     testCasesRepository: TestCasesRepository;
     testCaseInputsRepository: TestCaseInputsRepository;
+    submissionsRepository: SubmissionsRepository;
 
-    constructor(challengesRepository: ChallengesRepository, challengeCommentsRepository: ChallengeCommentsRepository, commentLikesRepository: CommentLikesRepository, testCasesRepository: TestCasesRepository, testCaseInputsRepository: TestCaseInputsRepository) {
+    constructor(challengesRepository: ChallengesRepository, challengeCommentsRepository: ChallengeCommentsRepository, commentLikesRepository: CommentLikesRepository, testCasesRepository: TestCasesRepository, testCaseInputsRepository: TestCaseInputsRepository, submissionsRepository: SubmissionsRepository) {
         this.challengesRepository = challengesRepository;
         this.challengeCommentsRepository = challengeCommentsRepository;
         this.commentLikesRepository = commentLikesRepository;
         this.testCasesRepository = testCasesRepository;
         this.testCaseInputsRepository = testCaseInputsRepository;
+        this.submissionsRepository = submissionsRepository;
     }
 
     async createChallenge(challenge: ChallengeEntity): Promise<InsertResultInterface | null> {
@@ -70,5 +73,9 @@ export default class ChallengesService {
         await Promise.all(promise);
 
         return testCaseResult;
+    }
+
+    async getSubmissions(user_id: number, challenge_id: number): Promise<SubmissionEntity[] | null> {
+        return await this.submissionsRepository.getUserSubmissionsByChallengeId(user_id, challenge_id);
     }
 };

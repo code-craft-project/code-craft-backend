@@ -1228,4 +1228,14 @@ describe("API Tests:", () => {
         });
 
     });
+
+    describe("Submissions", () => {
+        test("Should list user submissions", async () => {
+            const response = await request(server).get("/api/challenges/1/submissions").set('Authorization', access_token);
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body.status).toEqual("success");
+            expect(Array.isArray(response.body.data)).toBeTruthy();
+        });
+    });
 });
