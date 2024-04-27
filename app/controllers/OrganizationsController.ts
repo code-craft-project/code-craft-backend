@@ -356,6 +356,15 @@ export default class OrganizationsController {
             limit = parseInt(limits as string) || limit;
         }
 
+        const user = req.user;
+
+        const hasPermissions = await this.membersService.isEventsManager(user?.id!, parseInt(organization_id));
+
+        if (!hasPermissions) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
+
         let data = await this.organizationsService.getEvents(parseInt(organization_id), offset, limit);
 
         if (!data) {
@@ -375,6 +384,15 @@ export default class OrganizationsController {
 
     getChallenges = async (req: Request, res: Response) => {
         const { id: organization_id } = req.params;
+
+        const user = req.user;
+
+        const hasPermissions = await this.membersService.isChallengesManager(user?.id!, parseInt(organization_id));
+
+        if (!hasPermissions) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
 
         const challenges = await this.organizationsService.getChallenges(parseInt(organization_id));
 
@@ -418,6 +436,14 @@ export default class OrganizationsController {
     getMembers = async (req: Request, res: Response) => {
         const { id: organization_id } = req.params;
 
+        const user = req.user;
+
+        const hasPermissions = await this.membersService.isAdmin(user?.id!, parseInt(organization_id));
+
+        if (!hasPermissions) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
         const members = await this.membersService.getOrganizationMembers(parseInt(organization_id));
 
         res.status(200).json({ status: "success", data: members });
@@ -427,8 +453,11 @@ export default class OrganizationsController {
         const { id: organization_id } = req.params;
 
         const user = req.user;
-        
+
         const member = await this.membersService.getMemberByOrganizationId(user?.id as number, parseInt(organization_id));
+        if (!member) {
+            return res.status(200).json({ status: "error", message: 'You are not a member' });
+        }
 
         res.status(200).json({ status: "success", data: member });
     }
@@ -438,6 +467,10 @@ export default class OrganizationsController {
 
         // Check if user has permissions
         const user = req.user;
+        const member = await this.membersService.getMemberByOrganizationId(user?.id as number, parseInt(organization_id));
+        if (!member) {
+            return res.status(200).json({ status: "error", message: 'You are not a member' });
+        }
 
         // Fetch dashboard stats
         const organizationDashboardStats = await this.organizationsService.getOrganizationDashboard(parseInt(organization_id));

@@ -11,6 +11,10 @@ const STATIC_PROTECTED_ROUTES: string[] = ["/organizations/create", "/challenges
 const DYNAMIC_PROTECTED_ROUTES: RegExp[] = [
     /^\/organizations\/[0-9]+\/update$/,
     /^\/organizations\/[0-9]+\/members\/me$/,
+    /^\/organizations\/[0-9]+\/members$/,
+    /^\/organizations\/[0-9]+\/events$/,
+    /^\/organizations\/[0-9]+\/challenges$/,
+    /^\/organizations\/[0-9]+\/dashboard$/,
     /^\/organizations\/[0-9]+\/add_member$/,
     /^\/organizations\/[0-9]+\/remove_member$/,
     /^\/organizations\/[0-9]+\/give_permission$/,
