@@ -8,6 +8,7 @@ import EventsRepository from "@/infrastructure/database/repositories/EventsRepos
 import JobApplicationsRepository from "@/infrastructure/database/repositories/JobApplicationsRepository";
 import JobPostsRepository from "@/infrastructure/database/repositories/JobPostsRepository";
 import MembersRepository from "@/infrastructure/database/repositories/MembersRepository";
+import OrganizationChallengesRepository from "@/infrastructure/database/repositories/OrganizationChallengesRepository";
 import OrganizationsRepository from "@/infrastructure/database/repositories/OrganizationsRepository";
 import PermissionsRepository from "@/infrastructure/database/repositories/PermissionsRepository";
 import SubmissionsRepository from "@/infrastructure/database/repositories/SubmissionsRepository";
@@ -38,3 +39,4 @@ export const commentLikesRepository = new CommentLikesRepository(database);
 export const testCasesRepository = new TestCasesRepository(database);
 export const testCaseInputsRepository = new TestCaseInputsRepository(database);
 export const submissionsRepository = new SubmissionsRepository(database);
+export const organizationChallengesRepository = new OrganizationChallengesRepository(database);

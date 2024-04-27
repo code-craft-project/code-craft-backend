@@ -7,4 +7,6 @@ interface ChallengeEntity {
     is_public: boolean;
     type: "in_out" | "project";
     creator_id?: number;
+    comments?: number;
+    submissions?: number;
 };

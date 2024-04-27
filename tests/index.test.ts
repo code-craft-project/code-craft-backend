@@ -5,7 +5,7 @@ import { database } from "@/app/repositories";
 import { MySQLDatabase } from "@/infrastructure/database/MySQLDatabase";
 import { DatabaseMigration } from "@/infrastructure/database/migrations/DatabaseMigration";
 import Logger from "@/infrastructure/logger/Logger";
-import { organization, privateEvent, user, user2, user2Credentials, userCredentials, event, jobpost, privateTeam, team, challenge, privateChallenge, testCases } from './test_data';
+import { organization, privateEvent, user, user2, user2Credentials, userCredentials, event, jobpost, privateTeam, team, challenge, privateChallenge, testCases, organizationChallengesIds, eventChallengesIds, publicChallengesIds } from './test_data';
 
 let access_token: string = "";
 let user2_access_token: string = "";
@@ -24,7 +24,7 @@ describe("API Tests:", () => {
 
             await databaseMigration.migrateAll();
 
-            expect(spy).toHaveBeenCalledTimes(21);
+            expect(spy).toHaveBeenCalledTimes(22);
         }, 30000);
 
         test("Drop tables", async () => {
@@ -34,7 +34,7 @@ describe("API Tests:", () => {
 
             await databaseMigration.dropAll();
 
-            expect(spy).toHaveBeenCalledTimes(21);
+            expect(spy).toHaveBeenCalledTimes(22);
 
             // IMPORTANT: This step is necessary to allow all other tests to work.
             await databaseMigration.migrateAll();
@@ -251,6 +251,46 @@ describe("API Tests:", () => {
             expect(response.body).toEqual(expectedOutput);
         });
 
+        describe("Organization Update", () => {
+            test("Should not update non-existing organization", async () => {
+                const response = await request(server).post("/api/organizations/99/update").set('Authorization', access_token).send({ name: "New Name" });
+
+                const expectedOutput = {
+                    status: "error",
+                    message: "Organization not found"
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should not update organization without proper permissions", async () => {
+                const response = await request(server).post("/api/organizations/1/update").set('Authorization', user2_access_token).send({ name: "New Name" });
+
+                const expectedOutput = {
+                    status: "error",
+                    message: "You don't have permissions"
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+            });
+
+            test("Should update job post successfully", async () => {
+                const response = await request(server).post("/api/organizations/1/update").set('Authorization', access_token).send({ name: "New Name" });
+                const response1 = await request(server).get("/api/organizations/1");
+
+                const expectedOutput = {
+                    status: "success",
+                    message: "Organization updated successfully"
+                };
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toEqual(expectedOutput);
+                expect(response1.body.data.name).toEqual("New Name");
+            });
+        });
+
         describe("Organization Job Posts and Job Applications", () => {
             test("Should list organization job posts", async () => {
                 const response = await request(server).get("/api/organizations/1/job_posts");
@@ -276,6 +316,106 @@ describe("API Tests:", () => {
                 expect(response.body.status).toEqual("success");
                 expect(Array.isArray(response.body.data)).toBeTruthy();
             });
+        });
+
+        describe("Organization Challenges", () => {
+            describe("Challenge Creation", () => {
+                test("Should not create challenge when missing parameters", async () => {
+                    const response = await request(server).post("/api/organizations/1/challenges/create").set("Authorization", access_token);
+
+                    const expectedOutput = {
+                        status: 'error',
+                        message: 'Invalid body parameters',
+                        errors: [
+                            "is_public is missing",
+                            "level is missing",
+                            "title is missing",
+                            "description is missing",
+                            "topic is missing",
+                            "type is missing",
+                        ]
+                    };
+
+                    expect(response.statusCode).toBe(200);
+                    expect(response.body).toEqual(expectedOutput);
+                });
+
+                test("Should not create challenge when organization does not exist", async () => {
+                    const response = await request(server).post("/api/organizations/99/challenges/create").set("Authorization", access_token).send(challenge);
+
+                    const expectedOutput = {
+                        status: "error",
+                        message: "Organization does not exist"
+                    };
+
+                    expect(response.statusCode).toBe(200);
+                    expect(response.body).toEqual(expectedOutput);
+                });
+
+                test("Should not create challenge without proper permissions", async () => {
+                    const response = await request(server).post("/api/organizations/1/challenges/create").set("Authorization", user2_access_token).send(challenge);
+
+                    const expectedOutput = {
+                        status: "error",
+                        message: "You don't have permissions"
+                    };
+
+                    expect(response.statusCode).toBe(200);
+                    expect(response.body).toEqual(expectedOutput);
+                });
+
+                test("Should create challenge successfully", async () => {
+                    const response = await request(server).post("/api/organizations/1/challenges/create").set("Authorization", access_token).send(challenge);
+                    // TODO: Get the Id from response
+                    organizationChallengesIds.push(1);
+                    const expectedOutput = { status: "success", message: "Challenge created successfully" };
+
+                    expect(response.statusCode).toBe(200);
+                    expect(response.body).toEqual(expectedOutput);
+                });
+            });
+
+            test("Should list organization challenges", async () => {
+                const response = await request(server).get("/api/organizations/1/challenges").set("Authorization", access_token);
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body.status).toEqual("success");
+                expect(Array.isArray(response.body.data)).toBeTruthy();
+            });
+        });
+
+        describe("Organization Members", () => {
+            test("Should list organization members", async () => {
+                const response = await request(server).get("/api/organizations/1/members").set("Authorization", access_token);
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body.status).toEqual("success");
+                expect(Array.isArray(response.body.data)).toBeTruthy();
+            });
+
+            test("Should get organization member of the current user", async () => {
+                const response = await request(server).get("/api/organizations/1/members/me").set("Authorization", access_token);
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body.status).toEqual("success");
+            });
+        });
+
+        describe("Organization Events", () => {
+            test("Should list organization events", async () => {
+                const response = await request(server).get("/api/organizations/1/events").set("Authorization", access_token);
+
+                expect(response.statusCode).toBe(200);
+                expect(response.body.status).toEqual("success");
+                expect(Array.isArray(response.body.data)).toBeTruthy();
+            });
+        });
+
+        test("Should get organization dashboard stats", async () => {
+            const response = await request(server).get("/api/organizations/1/dashboard").set("Authorization", access_token);
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body.status).toEqual("success");
         });
     });
 
@@ -926,6 +1066,8 @@ describe("API Tests:", () => {
 
                 test("Should create challenge successfully", async () => {
                     const response = await request(server).post("/api/events/1/challenges/create").set("Authorization", access_token).send(challenge);
+                    // TODO: Get the Id from response
+                    eventChallengesIds.push(2);
 
                     const expectedOutput = { status: "success", message: "Challenge created successfully" };
 
@@ -960,7 +1102,8 @@ describe("API Tests:", () => {
                 });
 
                 test("Should not update challenge without proper permissions", async () => {
-                    const response = await request(server).post("/api/events/1/challenges/1/update").set("Authorization", user2_access_token).send({ title: "New title" });
+                    const challengeId = eventChallengesIds.length > 0 ? eventChallengesIds[0] : 2;
+                    const response = await request(server).post(`/api/events/1/challenges/${challengeId}/update`).set("Authorization", user2_access_token).send({ title: "New title" });
 
                     const expectedOutput = { status: "error", message: "You don't have permissions" };
 
@@ -969,8 +1112,9 @@ describe("API Tests:", () => {
                 });
 
                 test("Should update challenge successfully", async () => {
-                    const response = await request(server).post("/api/events/1/challenges/1/update").set("Authorization", access_token).send({ title: "New title" });
-                    const response1 = await request(server).get("/api/challenges/1").set("Authorization", access_token);
+                    const challengeId = eventChallengesIds.length > 0 ? eventChallengesIds[0] : 2;
+                    const response = await request(server).post(`/api/events/1/challenges/${challengeId}/update`).set("Authorization", access_token).send({ title: "New title" });
+                    const response1 = await request(server).get(`/api/challenges/${challengeId}`).set("Authorization", access_token);
 
                     const expectedOutput = { status: "success", message: "Challenge updated successfully" };
 
@@ -993,6 +1137,8 @@ describe("API Tests:", () => {
     describe("Public Challenges", () => {
         beforeAll(async () => {
             await request(server).post("/api/challenges/create").set("Authorization", access_token).send(privateChallenge);
+            // TODO: Get the Id from response
+            publicChallengesIds.push(3);
         });
 
         describe("Challenge Update", () => {
@@ -1055,7 +1201,7 @@ describe("API Tests:", () => {
             });
 
             test("Should prevent commenting on private challenges", async () => {
-                const response = await request(server).post("/api/challenges/2/comments/create").set("Authorization", access_token).send({ comment: "new comment" });
+                const response = await request(server).post("/api/challenges/3/comments/create").set("Authorization", access_token).send({ comment: "new comment" });
 
                 const expectedOutput = {
                     status: "error",
@@ -1190,18 +1336,18 @@ describe("API Tests:", () => {
         describe("Test Case Creation", () => {
             test("Should return error when invalid 'Create Test Cases' form data is submitted", async () => {
                 const response = await request(server).post("/api/challenges/1/test_cases/create").set('Authorization', access_token);
-    
+
                 const expectedOutput = { status: "error", message: "TestCases is missing" };
-    
+
                 expect(response.statusCode).toBe(200);
                 expect(response.body).toEqual(expectedOutput);
             });
-    
+
             test("Should return error if challenge not found", async () => {
                 const response = await request(server).post("/api/challenges/99/test_cases/create").set('Authorization', access_token).send({ test_cases: testCases });
-    
+
                 const expectedOutput = { status: "error", message: "Challenge not found" };
-    
+
                 expect(response.statusCode).toBe(200);
                 expect(response.body).toEqual(expectedOutput);
             });

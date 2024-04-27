@@ -21,6 +21,7 @@ import OrganizationsTableMigration from "./OrganizationsTableMigration";
 import EventChallengesTableMigration from "./EventChallengesTableMigration";
 import TestCasesTableMigration from "./TestCasesTableMigration";
 import TestCaseInputsTableMigration from "./TestCaseInputsTableMigration";
+import OrganizationChallengesTableMigration from "./OrganizationChallengesTableMigration";
 
 export class DatabaseMigration {
     private database: MySQLDatabase;
@@ -42,6 +43,7 @@ export class DatabaseMigration {
             let members_table = new MembersTableMigration(this.database, this.logger);
             let events_table = new EventsTableMigration(this.database, this.logger);
             let job_posts_table = new JobPostsTableMigration(this.database, this.logger);
+            let organization_challenges_table = new OrganizationChallengesTableMigration(this.database, this.logger);
             let challenge_comments_table = new ChallengeCommentsTableMigration(this.database, this.logger);
             let test_cases_table = new TestCasesTableMigration(this.database, this.logger);
             let submissions_table = new SubmissionsTableMigration(this.database, this.logger);
@@ -77,6 +79,7 @@ export class DatabaseMigration {
                 members_table.migrate(),
                 events_table.migrate(),
                 job_posts_table.migrate(),
+                organization_challenges_table.migrate(),
                 challenge_comments_table.migrate(),
                 test_cases_table.migrate(),
                 submissions_table.migrate(),
@@ -121,6 +124,7 @@ export class DatabaseMigration {
             let members_table = new MembersTableMigration(this.database, this.logger);
             let events_table = new EventsTableMigration(this.database, this.logger);
             let job_posts_table = new JobPostsTableMigration(this.database, this.logger);
+            let organization_challenges_table = new OrganizationChallengesTableMigration(this.database, this.logger);
             let challenge_comments_table = new ChallengeCommentsTableMigration(this.database, this.logger);
             let test_cases_table = new TestCasesTableMigration(this.database, this.logger);
             let submissions_table = new SubmissionsTableMigration(this.database, this.logger);
@@ -165,6 +169,7 @@ export class DatabaseMigration {
                 members_table.drop(),
                 events_table.drop(),
                 job_posts_table.drop(),
+                organization_challenges_table.drop(),
                 challenge_comments_table.drop(),
                 test_cases_table.drop(),
                 submissions_table.drop(),

@@ -8,6 +8,7 @@ import PermissionValidator from "@/infrastructure/validators/PermissionValidator
 import ChallengesService from "../services/ChallengesService";
 import EventsService from "../services/EventsService";
 import PermissionsService from "../services/PermissionsService";
+import ChallengeValidator from "@/infrastructure/validators/ChallengeValidator";
 
 export interface OrganizationsControllerConfig {
     organizationsService: OrganizationsService;
@@ -18,6 +19,7 @@ export interface OrganizationsControllerConfig {
     organizationValidator: OrganizationValidator;
     memberValidator: MemberValidator;
     permissionValidator: PermissionValidator;
+    challengeValidator: ChallengeValidator;
 };
 
 export default class OrganizationsController {
@@ -29,6 +31,7 @@ export default class OrganizationsController {
     organizationValidator: OrganizationValidator;
     memberValidator: MemberValidator;
     permissionValidator: PermissionValidator;
+    challengeValidator: ChallengeValidator;
 
     constructor(organizationsControllerConfig: OrganizationsControllerConfig) {
         this.organizationsService = organizationsControllerConfig.organizationsService;
@@ -39,6 +42,7 @@ export default class OrganizationsController {
         this.organizationValidator = organizationsControllerConfig.organizationValidator;
         this.memberValidator = organizationsControllerConfig.memberValidator;
         this.permissionValidator = organizationsControllerConfig.permissionValidator;
+        this.challengeValidator = organizationsControllerConfig.challengeValidator;
     }
 
     getOrganizations = async (req: Request, res: Response) => {
@@ -122,6 +126,47 @@ export default class OrganizationsController {
         }
 
         res.status(200).json({ status: "success", data: result });
+    }
+
+    updateOrganization = async (req: Request, res: Response) => {
+        const { id: organization_id } = req.params;
+        const organization: OrganizationEntity = req.body;
+
+        const allowedProperties = ["name", "description"];
+        const propertyNames: string[] = Object.getOwnPropertyNames(organization);
+        for (let property of propertyNames) {
+            if (!allowedProperties.includes(property)) {
+                res.status(200).json({ status: "error", message: `Can't update ${property}` });
+                return;
+            }
+        }
+
+        let data = await this.organizationsService.getOrganizationById(parseInt(organization_id));
+        if (!data) {
+            res.status(200).json({
+                status: "error",
+                message: "Organization not found"
+            });
+
+            return;
+        }
+
+        const user = req.user;
+
+        const hasPermissions = await this.membersService.isAdmin(user?.id!, parseInt(organization_id));
+
+        if (!hasPermissions) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
+
+        const updateJobPost = await this.organizationsService.updateOrganization(parseInt(organization_id), organization);
+        if (!updateJobPost) {
+            res.status(200).json({ status: "error", message: "Something went wrong" });
+            return;
+        }
+
+        res.status(200).json({ status: "success", message: "Organization updated successfully" });
     }
 
     addOrganizationMember = async (req: Request, res: Response) => {
@@ -294,5 +339,109 @@ export default class OrganizationsController {
             status: "success",
             data
         });
+    }
+
+    getEvents = async (req: Request, res: Response) => {
+        const { id: organization_id } = req.params;
+        const { page, limits } = req.query;
+
+        let offset = 0;
+        let limit = 10;
+
+        if (page) {
+            offset = parseInt(page as string) || 0;
+        }
+
+        if (limits) {
+            limit = parseInt(limits as string) || limit;
+        }
+
+        let data = await this.organizationsService.getEvents(parseInt(organization_id), offset, limit);
+
+        if (!data) {
+            res.status(200).json({
+                status: "success",
+                data: []
+            });
+
+            return;
+        }
+
+        res.status(200).json({
+            status: "success",
+            data
+        });
+    }
+
+    getChallenges = async (req: Request, res: Response) => {
+        const { id: organization_id } = req.params;
+
+        const challenges = await this.organizationsService.getChallenges(parseInt(organization_id));
+
+        res.status(200).json({ status: "success", data: challenges });
+    }
+
+    createChallenge = async (req: Request, res: Response) => {
+        const { id: organization_id } = req.params;
+        const challenge: ChallengeEntity = req.body;
+
+        let validate_result: ValidatorResult = this.challengeValidator.validate(challenge);
+        if (!validate_result.is_valid) {
+            res.status(200).json({ status: "error", message: "Invalid body parameters", errors: validate_result.messages });
+            return;
+        }
+
+        const organization = await this.organizationsService.getOrganizationById(parseInt(organization_id));
+        if (!organization) {
+            res.status(200).json({ status: "error", message: "Organization does not exist" });
+            return;
+        }
+
+        const user_id = req.user?.id as number;
+
+        const hasPermissions = await this.membersService.isChallengesManager(user_id, organization.id as number);
+        if (!hasPermissions) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
+
+        const creator_id = req.user?.id as number;
+        let result = await this.organizationsService.createChallenge(parseInt(organization_id), { ...challenge, creator_id });
+        if (!result) {
+            res.status(200).json({ status: "error", message: "Can't create challenge, something went wrong" });
+            return;
+        }
+
+        res.status(200).json({ status: "success", message: "Challenge created successfully" });
+    }
+
+    getMembers = async (req: Request, res: Response) => {
+        const { id: organization_id } = req.params;
+
+        const members = await this.membersService.getOrganizationMembers(parseInt(organization_id));
+
+        res.status(200).json({ status: "success", data: members });
+    }
+
+    getMemberByUser = async (req: Request, res: Response) => {
+        const { id: organization_id } = req.params;
+
+        const user = req.user;
+        
+        const member = await this.membersService.getMemberByOrganizationId(user?.id as number, parseInt(organization_id));
+
+        res.status(200).json({ status: "success", data: member });
+    }
+
+    getOrganizationDashboard = async (req: Request, res: Response) => {
+        const { id: organization_id } = req.params;
+
+        // Check if user has permissions
+        const user = req.user;
+
+        // Fetch dashboard stats
+        const organizationDashboardStats = await this.organizationsService.getOrganizationDashboard(parseInt(organization_id));
+
+        res.status(200).json({ status: "success", data: organizationDashboardStats });
     }
 };

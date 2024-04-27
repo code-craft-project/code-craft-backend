@@ -1,4 +1,5 @@
-import { challengeCommentsRepository, challengesRepository, commentLikesRepository, eventChallengesRepository, eventParticipantsRepository, eventsRepository, jobApplicationsRepository, jobPostsRepository, membersRepository, organizationsRepository, permissionsRepository, submissionsRepository, teamMembersRepository, teamsRepository, testCaseInputsRepository, testCasesRepository, userSessionsRepository, usersRepository } from "./repositories";
+import OrganizationChallengesRepository from "@/infrastructure/database/repositories/OrganizationChallengesRepository";
+import { challengeCommentsRepository, challengesRepository, commentLikesRepository, eventChallengesRepository, eventParticipantsRepository, eventsRepository, jobApplicationsRepository, jobPostsRepository, membersRepository, organizationChallengesRepository, organizationsRepository, permissionsRepository, submissionsRepository, teamMembersRepository, teamsRepository, testCaseInputsRepository, testCasesRepository, userSessionsRepository, usersRepository } from "./repositories";
 import ChallengesService from "./services/ChallengesService";
 import EventsService from "./services/EventsService";
 import JobPostsService from "./services/JobPostsService";
@@ -14,5 +15,5 @@ export const challengesService = new ChallengesService(challengesRepository, cha
 export const eventsService = new EventsService(eventsRepository, eventParticipantsRepository, teamsRepository, teamMembersRepository, challengesRepository, eventChallengesRepository);
 export const membersService = new MembersService(membersRepository);
 export const permissionsService = new PermissionsService(permissionsRepository);
-export const organizationsService = new OrganizationsService(organizationsRepository, jobPostsRepository, jobApplicationsRepository);
+export const organizationsService = new OrganizationsService(organizationsRepository, jobPostsRepository, jobApplicationsRepository, eventsRepository, challengesRepository, organizationChallengesRepository, membersRepository);
 export const jobPostsService = new JobPostsService(jobPostsRepository, jobApplicationsRepository);

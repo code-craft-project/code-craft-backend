@@ -68,4 +68,22 @@ export default class EventsRepository implements EventsRepositoryInterface {
 
         return updateEvent;
     }
+
+    async getOrganizationEventsByPage(organization_id: number, page: number, limits: number) {
+        let data = await this.database.query<EventEntity[]>(`select ${EVENT_SELECT_PROPS} from events where organization_id = ? limit ?;`, organization_id, [page, limits]);
+        if (!data) {
+            return null;
+        }
+
+        return data;
+    }
+
+    async getOrganizationLatestEvents(organization_id: number): Promise<EventEntity[] | null> {
+        let data = await this.database.query<EventEntity[]>(`select ${EVENT_SELECT_PROPS} from events where organization_id = ? order by events.created_at limit 3;`, organization_id);
+        if (!data) {
+            return null;
+        }
+
+        return data;
+    }
 }

@@ -50,7 +50,8 @@ export const event: EventEntity = {
     end_at: new Date(Date.now() + 1000 * 3600 * 24),
     is_team_based: true,
     max_team_members: 5,
-    organization_id: 1
+    organization_id: 1,
+    logo_url: 'https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210125191729/Google%E2%80%99s-Coding-Competitions-You-Can-Consider-in-2021.png'
 };
 
 export const privateEvent: EventEntity = {
@@ -61,7 +62,8 @@ export const privateEvent: EventEntity = {
     start_at: new Date(),
     end_at: new Date(Date.now() + 1000 * 3600 * 24),
     is_team_based: false,
-    organization_id: 1
+    organization_id: 1,
+    logo_url: 'https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210125191729/Google%E2%80%99s-Coding-Competitions-You-Can-Consider-in-2021.png'
 };
 
 export const team: TeamEntity = {
@@ -100,3 +102,7 @@ export const testCases: TestCaseEntity[] = [
     { challenge_id: 1, inputs: [], output: '' },
     { challenge_id: 1, inputs: [], output: '' },
 ];
+
+export const eventChallengesIds: number[] = [];
+export const organizationChallengesIds: number[] = [];
+export const publicChallengesIds: number[] = [];

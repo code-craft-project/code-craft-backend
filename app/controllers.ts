@@ -15,7 +15,8 @@ const organizationsControllerConfig: OrganizationsControllerConfig = {
     organizationsService,
     organizationValidator,
     permissionsService,
-    permissionValidator
+    permissionValidator,
+    challengeValidator
 };
 
 // IMPORTANT: When adding new method to a controller, it must be an arrow function so it can capture the class instance when using 'this'.

@@ -54,4 +54,40 @@ export default class OrganizationsRepository implements OrganizationsRepositoryI
 
         return data;
     }
+
+    async getDashboardStat(organization_id: number): Promise<OrganizationStats | null> {
+        let data = await this.database.query<OrganizationStats[]>(`select (select count(*) from members where members.organization_id = ?) as total_members, (select count(*) from organization_challenges where organization_challenges.organization_id = ?) as total_challenges, (select count(*) from events where organization_id = ?) as total_events, (select count(*) from event_participants where event_id in (select id from events where organization_id = ?)) as total_participants;`, organization_id, organization_id, organization_id, organization_id);
+
+        if (!data) {
+            return null;
+        }
+
+        if (data.length > 0) {
+            return data[0];
+        }
+
+        return null;
+    }
+
+    async updateOrganizationById(organization_id: number, organization: OrganizationEntity): Promise<InsertResultInterface | null> {
+        let query = '';
+
+        const params = [];
+        const propertyNames = Object.getOwnPropertyNames(organization);
+        for (let i = 0; i < propertyNames.length; i++) {
+            let property = propertyNames[i];
+            query += `${property} = ?`;
+            params.push((organization as any)[property]);
+            if (i < (propertyNames.length - 1)) {
+                query += ',';
+            }
+        }
+
+        let updateOrganization = await this.database.query<InsertResultInterface>(`update organizations set ${query} where id = ?;`, ...params, organization_id);
+        if (!updateOrganization) {
+            return null;
+        }
+
+        return updateOrganization;
+    }
 }
