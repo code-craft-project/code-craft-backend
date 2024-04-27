@@ -3,8 +3,8 @@ import { Router } from "express";
 
 const router = Router();
 
+router.post("/me", usersController.updateUser);
+router.get("/me", usersController.getCurrentUser);
 router.get("/:id", usersController.getUserById);
-router.post("/", usersController.updateUser);
-router.get("/", usersController.getCurrentUser);
 
 export default router;

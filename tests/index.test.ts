@@ -125,7 +125,7 @@ describe("API Tests:", () => {
 
     describe("User Management", () => {
         test("Should retrieve the current user of the session", async () => {
-            const response = await request(server).get("/api/users").set('Authorization', access_token);
+            const response = await request(server).get("/api/users/me").set('Authorization', access_token);
 
             expect(response.statusCode).toBe(200);
             expect(response.body.status).toEqual("success");
@@ -153,7 +153,7 @@ describe("API Tests:", () => {
         });
 
         test("Should not update username to an existing one", async () => {
-            const response = await request(server).post("/api/users").set('Authorization', access_token).send({ username: 'user2' });
+            const response = await request(server).post("/api/users/me").set('Authorization', access_token).send({ username: 'user2' });
 
             const expectedOutput = {
                 status: 'error',
@@ -165,7 +165,7 @@ describe("API Tests:", () => {
         });
 
         test("Should not update email to an existing one", async () => {
-            const response = await request(server).post("/api/users").set('Authorization', access_token).send({ email: 'user2@jest.com' });
+            const response = await request(server).post("/api/users/me").set('Authorization', access_token).send({ email: 'user2@jest.com' });
 
             const expectedOutput = {
                 status: 'error',
@@ -177,7 +177,7 @@ describe("API Tests:", () => {
         });
 
         test("Should successfully update user information", async () => {
-            const response = await request(server).post("/api/users").set('Authorization', access_token).send({ first_name: "test_user" });
+            const response = await request(server).post("/api/users/me").set('Authorization', access_token).send({ first_name: "test_user" });
 
             const expectedOutput = { status: "success", message: "User updated successfully" };
 
