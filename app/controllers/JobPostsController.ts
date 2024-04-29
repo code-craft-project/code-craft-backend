@@ -97,7 +97,7 @@ export default class JobPostsController {
         const { id: job_post_id } = req.params;
         const jobPost: JobPostEntity = req.body;
 
-        const allowedProperties = ["title", "description", "role", "type"];
+        const allowedProperties = ["title", "description", "role", "type", "location", "contractType"];
 
         const propertyNames: string[] = Object.getOwnPropertyNames(jobPost);
         for (let property of propertyNames) {

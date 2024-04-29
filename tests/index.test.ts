@@ -419,6 +419,8 @@ describe("API Tests:", () => {
                     "description is missing",
                     "role is missing",
                     "type is missing",
+                    "location is missing",
+                    "contractType is missing",
                     "organization_id is missing",
                 ]
             };

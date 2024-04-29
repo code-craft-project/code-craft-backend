@@ -5,9 +5,11 @@ export default class JobPostsTableMigration extends TableMigration {
         await this.database.query(`create table if not exists job_posts (
             id int AUTO_INCREMENT primary key,
             title varchar(255),
-            description varchar(255),
+            description text,
             role varchar(255),
+            contractType varchar(255),
             type varchar(255),
+            location varchar(255),
             organization_id int,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

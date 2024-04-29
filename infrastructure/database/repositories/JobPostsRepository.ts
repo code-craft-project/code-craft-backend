@@ -14,6 +14,8 @@ export default class JobPostsRepository implements JobPostsRepositoryInterface {
             job_post.description,
             job_post.role,
             job_post.type,
+            job_post.location,
+            job_post.contractType,
             job_post.organization_id,
         ]);
 

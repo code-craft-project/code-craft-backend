@@ -39,7 +39,9 @@ export const jobpost: JobPostEntity = {
     description: "A software engineer that can contribute to our project",
     organization_id: 1,
     role: "Software Engineer",
-    type: "full-time"
+    type: "on-site",
+    contractType: 'full-time',
+    location: 'Medea Algeria',
 };
 
 export const event: EventEntity = {
