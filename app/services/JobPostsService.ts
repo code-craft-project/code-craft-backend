@@ -10,8 +10,12 @@ export default class JobPostsService {
         this.jobApplicationsRepository = jobApplicationsRepository;
     }
 
-    async createJobPost(jobPost: JobPostEntity): Promise<InsertResultInterface | null> {
-        return await this.jobPostsRepository.createJobPost(jobPost);
+    async createJobPost(jobPost: JobPostEntity): Promise<JobPostEntity | null> {
+        const insertResult = await this.jobPostsRepository.createJobPost(jobPost);
+        if (insertResult) {
+            return await this.jobPostsRepository.getJobPostById(insertResult.insertId);
+        }
+        return null;
     }
 
     async getJobPostById(id: number): Promise<JobPostEntity | null> {
@@ -35,7 +39,11 @@ export default class JobPostsService {
         return await this.jobApplicationsRepository.getUserJobApplicationById(job_post_id, user_id);
     }
 
-    async applyToJob(user_id: number, job_post_id: number): Promise<InsertResultInterface | null> {
-        return await this.jobApplicationsRepository.createJobApplication({ user_id, job_post_id });
+    async applyToJob(user_id: number, job_post_id: number): Promise<JobApplicationEntity | null> {
+        const insertResult = await this.jobApplicationsRepository.createJobApplication({ user_id, job_post_id });
+        if (insertResult) {
+            return await this.jobApplicationsRepository.getJobApplicationById(insertResult.insertId);
+        }
+        return null;
     }
 };

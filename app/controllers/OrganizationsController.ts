@@ -119,7 +119,7 @@ export default class OrganizationsController {
             return;
         }
 
-        const member = await this.membersService.createMember({ role: 'admin', user_id: creator_id, organization_id: result.insertId });
+        const member = await this.membersService.createMember({ role: 'admin', user_id: creator_id, organization_id: result.id! });
         if (!member) {
             res.status(200).json({ status: "error", message: "Can't create admin member, something went wrong" });
             return;

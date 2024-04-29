@@ -302,7 +302,7 @@ export default class EventsController {
             return;
         }
 
-        await this.eventsService.joinTeam(newTeam.insertId, eventParticipant.id!);
+        await this.eventsService.joinTeam(newTeam.id!, eventParticipant.id!);
 
         res.status(200).json({ status: "success", message: "Team created successfully", data: newTeam });
     }

@@ -31,7 +31,7 @@ export default class ChallengeCommentsRepository implements ChallengeCommentsRep
             ${CHALLENGE_COMMENT_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS user,
             (SELECT COUNT(*) FROM comment_likes WHERE comment_likes.comment_id = challenge_comments.id) AS likes,
             (SELECT COUNT(*) FROM challenge_comments WHERE challenge_comments.reply_to_comment_id = cc_id) AS replies
-        from challenge_comments join users on user_id = users.id where challenge_comments.id = ?;`, [id]);
+        from challenge_comments left join users on user_id = users.id where challenge_comments.id = ?;`, [id]);
 
         if (data && data.length > 0) {
             return data[0];

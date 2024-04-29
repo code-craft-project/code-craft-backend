@@ -23,8 +23,13 @@ export default class EventsService {
 
     }
 
-    async createEvent(event: EventEntity): Promise<InsertResultInterface | null> {
-        return await this.eventsRepository.createEvent(event);
+    async createEvent(event: EventEntity): Promise<EventEntity | null> {
+        const insertResult = await this.eventsRepository.createEvent(event);
+        if (insertResult) {
+            return await this.eventsRepository.getEventById(insertResult.insertId);
+        }
+
+        return null;
     }
 
     async getEventById(id: number): Promise<EventEntity | null> {
@@ -60,8 +65,12 @@ export default class EventsService {
         return await this.teamsRepository.getTeamsByPage(event_id, page, limits);
     }
 
-    async createTeam(team: TeamEntity): Promise<InsertResultInterface | null> {
-        return await this.teamsRepository.createTeam(team);
+    async createTeam(team: TeamEntity): Promise<TeamEntity | null> {
+        const insertResult = await this.teamsRepository.createTeam(team);
+        if (insertResult) {
+            return await this.teamsRepository.getTeamById(insertResult.insertId);
+        }
+        return null;
     }
 
     async updateTeam(id: number, team: TeamEntity): Promise<InsertResultInterface | null> {
@@ -85,8 +94,12 @@ export default class EventsService {
         return await this.eventParticipantsRepository.getEventParticipantByUserId(user_id, event_id);
     }
 
-    async joinTeam(team_id: number, event_participant_id: number): Promise<InsertResultInterface | null> {
-        return await this.teamMembersRepository.createTeamMember({ team_id, event_participant_id });
+    async joinTeam(team_id: number, event_participant_id: number): Promise<TeamEntity | null> {
+        const insertResult = await this.teamMembersRepository.createTeamMember({ team_id, event_participant_id });
+        if (insertResult) {
+            return await this.getTeamById(insertResult.insertId);
+        }
+        return null;
     }
 
     async leaveTeam(team_member_id: number): Promise<InsertResultInterface | null> {
@@ -97,13 +110,14 @@ export default class EventsService {
         return await this.eventsRepository.updateEvent(event_id, event);
     }
 
-    async createChallenge(event_id: number, challenge: ChallengeEntity): Promise<InsertResultInterface | null> {
+    async createChallenge(event_id: number, challenge: ChallengeEntity): Promise<ChallengeEntity | null> {
         const createChallenge = await this.challengesRepository.createChallenge(challenge);
         if (!createChallenge) {
             return null;
         }
 
-        return await this.eventChallengesRepository.createEventChallenge({ event_id, challenge_id: createChallenge.insertId });
+        await this.eventChallengesRepository.createEventChallenge({ event_id, challenge_id: createChallenge.insertId });
+        return await this.challengesRepository.getChallengeById(createChallenge.insertId);
     }
 
     async getChallenges(event_id: number): Promise<ChallengeEntity[] | null> {

@@ -25,8 +25,12 @@ export default class OrganizationsService {
         this.membersRepository = membersRepository;
     }
 
-    async createOrganization(organization: OrganizationEntity): Promise<InsertResultInterface | null> {
-        return await this.organizationsRepository.createOrganization(organization);
+    async createOrganization(organization: OrganizationEntity): Promise<OrganizationEntity | null> {
+        const insertResult = await this.organizationsRepository.createOrganization(organization);
+        if (insertResult) {
+            return await this.organizationsRepository.getOrganizationById(insertResult.insertId);
+        }
+        return null;
     }
 
     async updateOrganization(organization_id: number, organization: OrganizationEntity): Promise<InsertResultInterface | null> {
@@ -61,13 +65,14 @@ export default class OrganizationsService {
         return await this.challengesRepository.getChallengesByOrganizationId(organization_id);
     }
 
-    async createChallenge(organization_id: number, challenge: ChallengeEntity): Promise<InsertResultInterface | null> {
+    async createChallenge(organization_id: number, challenge: ChallengeEntity): Promise<ChallengeEntity | null> {
         const createChallenge = await this.challengesRepository.createChallenge(challenge);
         if (!createChallenge) {
             return null;
         }
 
-        return await this.organizationChallengesRepository.createOrganizationChallenge({ organization_id, challenge_id: createChallenge.insertId });
+        await this.organizationChallengesRepository.createOrganizationChallenge({ organization_id, challenge_id: createChallenge.insertId });
+        return await this.challengesRepository.getChallengeById(createChallenge.insertId);
     }
 
     async getOrganizationDashboard(organization_id: number): Promise<OrganizationDashboardStats> {

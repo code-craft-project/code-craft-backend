@@ -206,21 +206,9 @@ describe("API Tests:", () => {
         test("Should create new organization", async () => {
             const response = await request(server).post("/api/organizations/create").set('Authorization', access_token).send(organization);
 
-            const expectedOutput = {
-                status: 'success',
-                data: {
-                    fieldCount: 0,
-                    affectedRows: 1,
-                    insertId: 1,
-                    info: '',
-                    serverStatus: 2,
-                    warningStatus: 0,
-                    changedRows: 0
-                }
-            };
-
             expect(response.statusCode).toBe(200);
-            expect(response.body).toEqual(expectedOutput);
+            expect(response.body.status).toBe('success');
+            expect(response.body.data).toHaveProperty('id');
         });
 
         test("Should list organizations", async () => {
@@ -442,21 +430,9 @@ describe("API Tests:", () => {
         test("Should create new jobpost | POST /api/jobposts/create", async () => {
             const response = await request(server).post("/api/jobposts/create").set('Authorization', access_token).send(jobpost);
 
-            const expectedOutput = {
-                status: 'success',
-                data: {
-                    fieldCount: 0,
-                    affectedRows: 1,
-                    insertId: 1,
-                    info: '',
-                    serverStatus: 2,
-                    warningStatus: 0,
-                    changedRows: 0
-                }
-            };
-
             expect(response.statusCode).toBe(200);
-            expect(response.body).toEqual(expectedOutput);
+            expect(response.body.status).toEqual('success');
+            expect(response.body.data).toHaveProperty('id');
         });
 
         test("Should list job posts | GET /api/jobposts", async () => {
@@ -618,21 +594,9 @@ describe("API Tests:", () => {
         test("Should create new event", async () => {
             const response = await request(server).post("/api/events/create").set('Authorization', access_token).send(event);
 
-            const expectedOutput = {
-                status: 'success',
-                data: {
-                    fieldCount: 0,
-                    affectedRows: 1,
-                    insertId: 1,
-                    info: '',
-                    serverStatus: 2,
-                    warningStatus: 0,
-                    changedRows: 0
-                }
-            };
-
             expect(response.statusCode).toBe(200);
-            expect(response.body).toEqual(expectedOutput);
+            expect(response.body.status).toEqual('success');
+            expect(response.body.data).toHaveProperty('id');
         });
 
         test("Should list events", async () => {
