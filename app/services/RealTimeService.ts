@@ -59,12 +59,16 @@ export default class RealTimeService {
                     return;
                 }
 
-                let executionResultOutput = task.executionResult.output;
-                if (executionResultOutput.slice(-1) == '\n') {
-                    executionResultOutput = executionResultOutput.slice(0, -1);
-                }
-
-                if (testCase.output != executionResultOutput) {
+                try {
+                    let executionResultOutput = JSON.stringify(JSON.parse(task.executionResult.output));
+                    const output = JSON.stringify(JSON.parse(testCase.output));
+                    if (output != executionResultOutput) {
+                        submissionMap.set(task.executionPayload.tempSubmissionId, false);
+                        if (!firstWrongTestCaseMap.get(task.executionPayload.tempSubmissionId)) {
+                            firstWrongTestCaseMap.set(task.executionPayload.tempSubmissionId, testCase);
+                        }
+                    }
+                } catch (err) {
                     submissionMap.set(task.executionPayload.tempSubmissionId, false);
                     if (!firstWrongTestCaseMap.get(task.executionPayload.tempSubmissionId)) {
                         firstWrongTestCaseMap.set(task.executionPayload.tempSubmissionId, testCase);
