@@ -3415,6 +3415,9 @@
                 },
                 "organization_id": {
                     "type": "integer"
+                },
+                "organization": {
+                    "$ref": "#/definitions/Organization"
                 }
             }
         },

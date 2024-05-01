@@ -1,3 +1,4 @@
+import { ORGANIZATION_JOIN_PROPS } from "@/domain/repositories/OrganizationsRepositoryInterface";
 import { MySQLDatabase } from "../MySQLDatabase";
 import { EVENT_CREATE_PROPS, EVENT_SELECT_PROPS, EventsRepositoryInterface } from "@/domain/repositories/EventsRepositoryInterface";
 
@@ -29,7 +30,7 @@ export default class EventsRepository implements EventsRepositoryInterface {
     }
 
     async getEventById(id: number): Promise<EventEntity | null> {
-        let data = await this.database.query<EventEntity[]>(`select ${EVENT_SELECT_PROPS} from events where events.id = ?;`, [id]);
+        let data = await this.database.query<EventEntity[]>(`select ${EVENT_SELECT_PROPS}, JSON_OBJECT(${ORGANIZATION_JOIN_PROPS}) AS organization from events join organizations on organization_id = organizations.id where events.id = ?;`, [id]);
 
         if (data && data.length > 0) {
             return data[0];
@@ -39,7 +40,7 @@ export default class EventsRepository implements EventsRepositoryInterface {
     }
 
     async getEventsByPage(page: number = 0, limits: number = 10): Promise<EventEntity[] | null> {
-        let data = await this.database.query<EventEntity[]>(`select ${EVENT_SELECT_PROPS} from events limit ?;`, [page, limits]);
+        let data = await this.database.query<EventEntity[]>(`select ${EVENT_SELECT_PROPS}, JSON_OBJECT(${ORGANIZATION_JOIN_PROPS}) AS organization from events join organizations on organization_id = organizations.id limit ?;`, [page, limits]);
         if (!data) {
             return null;
         }
@@ -70,7 +71,7 @@ export default class EventsRepository implements EventsRepositoryInterface {
     }
 
     async getOrganizationEventsByPage(organization_id: number, page: number, limits: number) {
-        let data = await this.database.query<EventEntity[]>(`select ${EVENT_SELECT_PROPS} from events where organization_id = ? limit ?;`, organization_id, [page, limits]);
+        let data = await this.database.query<EventEntity[]>(`select ${EVENT_SELECT_PROPS}, JSON_OBJECT(${ORGANIZATION_JOIN_PROPS}) AS organization from events join organizations on organization_id = organizations.id where organization_id = ? limit ?;`, organization_id, [page, limits]);
         if (!data) {
             return null;
         }
@@ -79,7 +80,7 @@ export default class EventsRepository implements EventsRepositoryInterface {
     }
 
     async getOrganizationLatestEvents(organization_id: number): Promise<EventEntity[] | null> {
-        let data = await this.database.query<EventEntity[]>(`select ${EVENT_SELECT_PROPS} from events where organization_id = ? order by events.created_at limit 3;`, organization_id);
+        let data = await this.database.query<EventEntity[]>(`select ${EVENT_SELECT_PROPS}, JSON_OBJECT(${ORGANIZATION_JOIN_PROPS}) AS organization from events join organizations on organization_id = organizations.id where organization_id = ? order by events.created_at limit 3;`, organization_id);
         if (!data) {
             return null;
         }
