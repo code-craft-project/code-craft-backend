@@ -1,4 +1,4 @@
-import { USER_SESSION_CREATE_PROPS, UserSessionsRepositoryInterface } from "@/domain/repositories/UserSessionsRepositoryInterface";
+import { USER_SESSION_CREATE_PROPS, USER_SESSION_SELECT_PROPS, UserSessionsRepositoryInterface } from "@/domain/repositories/UserSessionsRepositoryInterface";
 import { MySQLDatabase } from "../MySQLDatabase";
 
 export default class UserSessionsRepository implements UserSessionsRepositoryInterface {
@@ -17,6 +17,26 @@ export default class UserSessionsRepository implements UserSessionsRepositoryInt
         );
         if (result) {
             return result;
+        }
+
+        return null;
+    }
+
+    async deleteUserSessionByAccessToken(accessToken: string): Promise<InsertResultInterface | null> {
+        let result = await this.database.query<InsertResultInterface>(`delete from user_sessions where access_token = ?;`, [accessToken]);
+
+        if (result) {
+            return result;
+        }
+
+        return null;
+    }
+
+    async getUserSessionByAccessToken(accessToken: string): Promise<UserSessionEntity | null> {
+        let data = await this.database.query<UserSessionEntity[]>(`select ${USER_SESSION_SELECT_PROPS} from user_sessions where access_token = ?;`, accessToken);
+
+        if (data && data.length > 0) {
+            return data[0];
         }
 
         return null;

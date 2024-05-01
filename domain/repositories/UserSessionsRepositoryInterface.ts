@@ -3,4 +3,6 @@ export const USER_SESSION_CREATE_PROPS: string = 'user_id, access_token';
 
 export interface UserSessionsRepositoryInterface {
     createUserSession(user: UserSessionEntity): Promise<InsertResultInterface | null>;
+    deleteUserSessionByAccessToken(accessToken: string): Promise<InsertResultInterface | null>;
+    getUserSessionByAccessToken(accessToken: string): Promise<UserSessionEntity | null>;
 };

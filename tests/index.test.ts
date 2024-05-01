@@ -110,6 +110,23 @@ describe("API Tests:", () => {
             user2_access_token = response1.body.data.access_token;
         });
 
+        test("Should return a invalid session when user sign out", async () => {
+            const response = await request(server).post("/api/auth/sign_in").send(userCredentials);
+            const response1 = await request(server).post("/api/auth/sign_out").set('Authorization', response.body.data.access_token);
+
+            console.log({ access_token, response1: response.body.data.access_token });
+
+            expect(response1.statusCode).toBe(200);
+            expect(response1.body.status).toEqual("success");
+            expect(response1.body.message).toEqual("Sign out success");
+
+            const response2 = await request(server).get("/api/users/me").set('Authorization', response.body.data.access_token);
+
+            expect(response2.statusCode).toBe(200);
+            expect(response2.body.status).toEqual("error");
+            expect(response2.body.message).toEqual("Invalid session");
+        });
+
         test("Should return an error for unauthorized access to a protected route", async () => {
             const response = await request(server).post("/api/organizations/create");
 

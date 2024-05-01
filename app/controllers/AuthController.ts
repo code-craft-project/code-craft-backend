@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import { generateToken, verifyToken } from "@/infrastructure/jwt";
 import UserSessionsService from "../services/UserSessionsService";
 import UserValidator from "@/infrastructure/validators/UserValidator";
+import crypto from 'crypto';
 
 const STATIC_PROTECTED_ROUTES: string[] = ["/organizations/create", "/challenges/create", "/jobposts/create", "/events/create", "/users", "/users/me"];
 const DYNAMIC_PROTECTED_ROUTES: RegExp[] = [
@@ -40,6 +41,7 @@ const DYNAMIC_PROTECTED_ROUTES: RegExp[] = [
     /^\/challenges\/[0-9]+\/update$/,
     /^\/challenges\/[0-9]+\/test_cases\/create$/,
     /^\/challenges\/[0-9]+\/submissions$/,
+    /^\/auth\/sign_out$/,
 ];
 
 export default class AuthController {
@@ -76,7 +78,7 @@ export default class AuthController {
             return;
         }
 
-        const access_token = generateToken({ id: user.id, username: user.username, email: user.email });
+        const access_token = generateToken({ id: user.id, username: user.username, email: user.email, uuid: crypto.randomUUID() });
 
         await this.userSessionsService.createUserSession({ user_id: user.id as number, access_token });
 
@@ -116,11 +118,26 @@ export default class AuthController {
         res.status(200).json({ status: "success", data: create_user });
     }
 
+    signOut = async (req: Request, res: Response): Promise<void> => {
+        const accessToken = req.headers.authorization;
+
+        await this.userSessionsService.deleteUserSessionByAccessToken(accessToken as string);
+
+        res.status(200).json({ status: "success", message: 'Sign out success' });
+    }
+
     auth = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         const access_token = req.headers.authorization;
 
         if (!access_token) {
             res.status(200).json({ status: "error", message: "missing Authorization Header" });
+            return;
+        }
+
+        const userSession = await this.userSessionsService.getUserSessionByAccessToken(access_token);
+        console.log({ userSession });
+        if (!userSession) {
+            res.status(200).json({ status: "error", message: "Invalid session" });
             return;
         }
 
