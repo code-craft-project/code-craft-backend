@@ -16,6 +16,7 @@ router.get("/:id/events", organizationsController.getEvents);
 router.post("/:id/challenges/create", organizationsController.createChallenge);
 router.get("/:id/challenges", organizationsController.getChallenges);
 router.get("/:id/dashboard", organizationsController.getOrganizationDashboard);
+router.get("/me", organizationsController.getUserOrganizations);
 router.get("/:id", organizationsController.getOrganizationById);
 router.get("/", organizationsController.getOrganizations);
 

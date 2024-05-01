@@ -77,6 +77,25 @@ export default class OrganizationsController {
         });
     }
 
+    getUserOrganizations  = async (req: Request, res: Response) => {
+        const user_id = req.user?.id;
+        let data = await this.organizationsService.getOrganizationsByUserId(user_id as number);
+
+        if (!data) {
+            res.status(200).json({
+                status: "success",
+                data: []
+            });
+
+            return;
+        }
+
+        res.status(200).json({
+            status: "success",
+            data
+        });
+    }
+
     getOrganizationById = async (req: Request, res: Response) => {
         const { id } = req.params;
 

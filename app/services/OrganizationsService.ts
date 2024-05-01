@@ -49,6 +49,11 @@ export default class OrganizationsService {
         return await this.organizationsRepository.getOrganizationsByPage(page, limits);
     }
 
+    async getOrganizationsByUserId(user_id: number): Promise<OrganizationEntity[] | null> {
+        return await this.organizationsRepository.getOrganizationsByUserId(user_id);
+    }
+
+
     async getOrganizationJobPosts(organization_id: number): Promise<JobPostEntity[] | null> {
         return await this.jobPostsRepository.getOrganizationJobPosts(organization_id);
     }

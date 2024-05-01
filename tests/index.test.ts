@@ -405,6 +405,14 @@ describe("API Tests:", () => {
             expect(response.statusCode).toBe(200);
             expect(response.body.status).toEqual("success");
         });
+
+        test("Should list user organizations", async () => {
+            const response = await request(server).get("/api/organizations/me").set("Authorization", access_token);
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body.status).toEqual("success");
+            expect(Array.isArray(response.body.data)).toBeTruthy();
+        });
     });
 
     describe("JobPosts", () => {

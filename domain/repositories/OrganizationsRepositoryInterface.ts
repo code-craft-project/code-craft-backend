@@ -8,4 +8,5 @@ export interface OrganizationsRepositoryInterface {
     getOrganizationByName(name: string): Promise<OrganizationEntity | null>;
     getOrganizationsByPage(page: number, limits: number): Promise<OrganizationEntity[] | null>;
     updateOrganizationById(organization_id: number, organization: OrganizationEntity): Promise<InsertResultInterface | null>;
+    getOrganizationsByUserId(user_id: number): Promise<OrganizationEntity[] | null>;
 };

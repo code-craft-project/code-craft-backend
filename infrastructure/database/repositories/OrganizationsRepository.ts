@@ -90,4 +90,13 @@ export default class OrganizationsRepository implements OrganizationsRepositoryI
 
         return updateOrganization;
     }
+
+    async getOrganizationsByUserId(user_id: number): Promise<OrganizationEntity[] | null> {
+        let data = await this.database.query<OrganizationEntity[]>(`select ${ORGANIZATION_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS creator from organizations join users on creator_id = users.id where organizations.id in (select organization_id from members where members.user_id = ?);`, user_id);
+        if (!data) {
+            return null;
+        }
+
+        return data;
+    }
 }
