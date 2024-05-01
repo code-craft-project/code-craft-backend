@@ -1,4 +1,4 @@
-type TestCaseInputType = 'number' | 'array' | 'string';
+type TestCaseInputType = 'number' | 'string' | 'boolean' | 'array_of_numbers' | 'array_of_strings' | 'array_of_booleans';
 
 interface TestCaseInputEntity {
     id?: number;

@@ -51,9 +51,8 @@ export default class ChallengesController {
 
         if (!data) {
             res.status(200).json({
-                status: "success",
-                message: "Challenge not found",
-                data: []
+                status: "error",
+                message: "Challenge not found"
             });
 
             return;
@@ -134,7 +133,7 @@ export default class ChallengesController {
     getChallengeComments = async (req: Request, res: Response) => {
         const { id } = req.params;
 
-        let data = await this.challengesService.getComments(parseInt(id));
+        let data = await this.challengesService.getComments(parseInt(id), req.user?.id);
 
         if (!data) {
             res.status(200).json({
@@ -259,7 +258,7 @@ export default class ChallengesController {
             return;
         }
 
-        res.status(200).json({ status: "success", message: "Reply to a comment successfully" });
+        res.status(200).json({ status: "success", message: "Reply to a comment successfully", data: result });
     }
 
     createTestCases = async (req: Request, res: Response) => {

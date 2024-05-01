@@ -43,8 +43,8 @@ export default class ChallengesService {
         return await this.challengesRepository.getChallengesByPage(page, limits);
     }
 
-    async getComments(challenge_id: number): Promise<ChallengeCommentEntity[] | null> {
-        return await this.challengeCommentsRepository.getChallengeComments(challenge_id);
+    async getComments(challenge_id: number, user_id: number = 0): Promise<ChallengeCommentEntity[] | null> {
+        return await this.challengeCommentsRepository.getChallengeComments(challenge_id, user_id);
     }
 
     async getCommentById(comment_id: number): Promise<ChallengeCommentEntity | null> {

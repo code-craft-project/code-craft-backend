@@ -135,7 +135,7 @@ export default class AuthController {
         }
 
         const userSession = await this.userSessionsService.getUserSessionByAccessToken(access_token);
-        console.log({ userSession });
+
         if (!userSession) {
             res.status(200).json({ status: "error", message: "Invalid session" });
             return;
@@ -158,6 +158,38 @@ export default class AuthController {
         next();
     }
 
+    optionalAuth = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        const access_token = req.headers.authorization;
+
+        if (!access_token) {
+            next();
+            return;
+        }
+
+        const userSession = await this.userSessionsService.getUserSessionByAccessToken(access_token);
+
+        if (!userSession) {
+            next();
+            return;
+        }
+
+        const decoded = verifyToken(access_token);
+        if (!decoded) {
+            next();
+            return;
+        }
+
+        const user = await this.usersService.getUserByEmail(decoded.email);
+        if (!user) {
+            next();
+            return;
+        }
+
+        req.user = user;
+
+        next();
+    }
+
     routeProtectionMiddleWare = async (req: Request, res: Response, next: NextFunction) => {
         for (let index = 0; index < DYNAMIC_PROTECTED_ROUTES.length; index++) {
             const regex = DYNAMIC_PROTECTED_ROUTES[index];
@@ -170,7 +202,7 @@ export default class AuthController {
         if (STATIC_PROTECTED_ROUTES.includes(req.path)) {
             this.auth(req, res, next);
         } else {
-            next();
+            this.optionalAuth(req, res, next);
         }
     }
 };
