@@ -8,7 +8,7 @@ import UserSessionsService from "../services/UserSessionsService";
 import UserValidator from "@/infrastructure/validators/UserValidator";
 import crypto from 'crypto';
 
-const STATIC_PROTECTED_ROUTES: string[] = ["/organizations/create", "/challenges/create", "/jobposts/create", "/events/create", "/users", "/users/me"];
+const STATIC_PROTECTED_ROUTES: string[] = ["/organizations/create", "/challenges/create", "/jobposts/create", "/events/create", "/users", "/users/me", "/users/my_progress"];
 const DYNAMIC_PROTECTED_ROUTES: RegExp[] = [
     /^\/organizations\/me$/,
     /^\/organizations\/[0-9]+\/update$/,

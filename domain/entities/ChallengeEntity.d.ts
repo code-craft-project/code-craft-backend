@@ -10,3 +10,5 @@ interface ChallengeEntity {
     comments?: number;
     submissions?: number;
 };
+
+type ChallengeTopic = 'all topics' | 'problem solving' | 'algorithms' | 'data structures' | 'databases';

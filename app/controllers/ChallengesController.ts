@@ -26,12 +26,44 @@ export default class ChallengesController {
             limit = parseInt(limits as string) || limit;
         }
 
-        let data = await this.challengesService.getChallengesByPage(offset, limit);
+        let data = await this.challengesService.getChallengesByPage(offset, limit, req.user?.id);
 
         if (!data) {
             res.status(200).json({
                 status: "success",
                 message: "No data",
+                data: []
+            });
+
+            return;
+        }
+
+        res.status(200).json({
+            status: "success",
+            data
+        });
+    }
+
+    getChallengesByTopic = async (req: Request, res: Response) => {
+        const { topic } = req.params;
+        const { page, limits } = req.query;
+
+        let offset = 0;
+        let limit = 10;
+
+        if (page) {
+            offset = parseInt(page as string) || 0;
+        }
+
+        if (limits) {
+            limit = parseInt(limits as string) || limit;
+        }
+
+        let data = await this.challengesService.getChallengesByTopic(topic as ChallengeTopic || "all topics", offset, limit);
+
+        if (!data) {
+            res.status(200).json({
+                status: "success",
                 data: []
             });
 

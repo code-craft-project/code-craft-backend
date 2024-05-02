@@ -73,4 +73,25 @@ export default class UsersController {
 
         res.status(200).json({ status: "success", message: "User updated successfully" });
     }
+
+    getUserProgress = async (req: Request, res: Response) => {
+        const userProgress = await this.usersService.getUserProgress(req.user!.id as number);
+        if (!userProgress) {
+            const _userProgress: UserProgress = {
+                correct_easy_submissions: 0,
+                correct_hard_submissions: 0,
+                correct_medium_submissions: 0,
+                total_correct_submissions: 0,
+                total_easy_submissions: 0,
+                total_hard_submissions: 0,
+                total_medium_submissions: 0,
+                total_submissions: 0
+            };
+
+            res.status(200).json({ status: "success", data: _userProgress });
+            return;
+        }
+
+        res.status(200).json({ status: "success", data: userProgress });
+    }
 };

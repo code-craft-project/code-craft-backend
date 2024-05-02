@@ -39,8 +39,12 @@ export default class ChallengesService {
         return await this.challengesRepository.getChallengeById(id);
     }
 
-    async getChallengesByPage(page?: number, limits?: number): Promise<ChallengeEntity[] | null> {
-        return await this.challengesRepository.getChallengesByPage(page, limits);
+    async getChallengesByPage(page?: number, limits?: number, user_id: number = 0): Promise<ChallengeEntity[] | null> {
+        return await this.challengesRepository.getChallengesByPage(page, limits, user_id);
+    }
+
+    async getChallengesByTopic(topic: ChallengeTopic, page?: number, limits?: number): Promise<ChallengeEntity[] | null> {
+        return await this.challengesRepository.getChallengesByTopic(topic, page, limits);
     }
 
     async getComments(challenge_id: number, user_id: number = 0): Promise<ChallengeCommentEntity[] | null> {

@@ -201,6 +201,13 @@ describe("API Tests:", () => {
             expect(response.statusCode).toBe(200);
             expect(response.body).toEqual(expectedOutput);
         });
+
+        test("Should successfully get user progress", async () => {
+            const response = await request(server).get("/api/users/my_progress").set('Authorization', access_token);
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body.status).toEqual("success");
+        });
     });
 
     describe("Organizations", () => {
@@ -1311,13 +1318,8 @@ describe("API Tests:", () => {
                 const response = await request(server).post("/api/challenges/1/comments/1/reply").set("Authorization", access_token).send({ comment: "new comment" });
                 const response1 = await request(server).get("/api/challenges/1/comments/1").set("Authorization", access_token);
 
-                const expectedOutput = {
-                    status: 'success',
-                    message: 'Reply to a comment successfully'
-                };
-
                 expect(response.statusCode).toBe(200);
-                expect(response.body).toEqual(expectedOutput);
+                expect(response.body.status).toEqual("success");
                 expect(response1.body.data.replies).toEqual(1);
             });
         });

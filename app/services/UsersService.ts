@@ -26,4 +26,8 @@ export default class UsersService {
     async updateUser(user_id: number, user: UserEntity): Promise<InsertResultInterface | null> {
         return await this.usersRepository.updateUser(user_id, user);
     }
+
+    async getUserProgress(user_id: number): Promise<UserProgress | null> {
+        return await this.usersRepository.getUserProgress(user_id);
+    }
 };

@@ -36,8 +36,24 @@ export default class ChallengesRepository implements ChallengesRepositoryInterfa
         return null;
     }
 
-    async getChallengesByPage(page: number = 0, limits: number = 10): Promise<ChallengeEntity[] | null> {
-        let data = await this.database.query<ChallengeEntity[]>(`select ${CHALLENGE_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS creator, ${COUNT_CHALLENGE_COMMENTS}, ${COUNT_CHALLENGE_SUBMISSIONS} from challenges join users on creator_id = users.id where challenges.id not in (select challenge_id from event_challenges) limit ?;`, [page, limits]);
+    async getChallengesByPage(page: number = 0, limits: number = 10, user_id: number = 0): Promise<ChallengeEntity[] | null> {
+        let data = await this.database.query<ChallengeEntity[]>(`SELECT 
+        ${CHALLENGE_SELECT_PROPS},
+        JSON_OBJECT(${USER_JOIN_PROPS}) AS creator,
+        ${COUNT_CHALLENGE_COMMENTS},
+        ${COUNT_CHALLENGE_SUBMISSIONS},
+        CASE 
+            WHEN EXISTS (SELECT 1 FROM submissions WHERE challenge_id = challenges.id AND user_id = ? AND status = 'correct') THEN 'done'
+            WHEN EXISTS (SELECT 1 FROM submissions WHERE challenge_id = challenges.id AND user_id = ?) THEN 'wrong answer'
+            ELSE 'not started'
+        END AS status
+    FROM 
+        challenges
+    JOIN 
+        users ON creator_id = users.id
+    WHERE 
+        challenges.id NOT IN (SELECT challenge_id FROM event_challenges)
+    LIMIT ?;`, user_id, user_id, [page, limits]);
         if (!data) {
             return null;
         }
@@ -97,6 +113,15 @@ export default class ChallengesRepository implements ChallengesRepositoryInterfa
 
     async getOrganizationLatestChallenges(organization_id: number): Promise<ChallengeEntity[] | null> {
         let data = await this.database.query<ChallengeEntity[]>(`select ${CHALLENGE_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS creator, ${COUNT_CHALLENGE_COMMENTS}, ${COUNT_CHALLENGE_SUBMISSIONS} from challenges join organization_challenges on organization_challenges.challenge_id = challenges.id join users on creator_id = users.id where organization_challenges.organization_id = ? order by challenges.created_at desc limit 3;`, [organization_id]);
+        if (!data) {
+            return null;
+        }
+
+        return data;
+    }
+
+    async getChallengesByTopic(topic: ChallengeTopic, page?: number | undefined, limits?: number | undefined): Promise<ChallengeEntity[] | null> {
+        let data = await this.database.query<ChallengeEntity[]>(`select ${CHALLENGE_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS creator, ${COUNT_CHALLENGE_COMMENTS}, ${COUNT_CHALLENGE_SUBMISSIONS} from challenges join users on creator_id = users.id where challenges.id not in (select challenge_id from event_challenges) and topic = ? limit ?;`, topic, [page, limits]);
         if (!data) {
             return null;
         }

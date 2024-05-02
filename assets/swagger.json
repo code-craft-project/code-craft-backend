@@ -125,6 +125,50 @@
                 }
             }
         },
+        "/users/my_progress": {
+            "get": {
+                "tags": [
+                    "User Management"
+                ],
+                "description": "Get current user progress",
+                "operationId": "getCurrentUserProgress",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "description": "Bearer token for authentication"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "current user response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "data": {
+                                    "$ref": "#/definitions/UserProgress"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
         "/users/{id}": {
             "get": {
                 "tags": [
@@ -1206,6 +1250,61 @@
                     "application/json"
                 ],
                 "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "number of page",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "challenges response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Challenge"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/challenges/{topic}": {
+            "get": {
+                "tags": [
+                    "Challenges Management"
+                ],
+                "description": "Returns the first page of challenges from the system",
+                "operationId": "getChallengesByTopic",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "topic",
+                        "in": "path",
+                        "description": "Topic to filter",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
                     {
                         "name": "page",
                         "in": "query",
@@ -3362,6 +3461,35 @@
                 "updated_at": {
                     "type": "string",
                     "example": "2024-02-28T20:20:48.000Z"
+                }
+            }
+        },
+        "UserProgress": {
+            "type": "object",
+            "properties": {
+                "correct_easy_submissions": {
+                    "type": "integer"
+                },
+                "total_easy_submissions": {
+                    "type": "integer"
+                },
+                "correct_medium_submissions": {
+                    "type": "integer"
+                },
+                "total_medium_submissions": {
+                    "type": "integer"
+                },
+                "correct_hard_submissions": {
+                    "type": "integer"
+                },
+                "total_hard_submissions": {
+                    "type": "integer"
+                },
+                "total_correct_submissions": {
+                    "type": "integer"
+                },
+                "total_submissions": {
+                    "type": "integer"
                 }
             }
         },

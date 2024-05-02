@@ -74,4 +74,31 @@ export default class UsersRepository implements UsersRepositoryInterface {
 
         return users;
     }
+
+    async getUserProgress(user_id: number): Promise<UserProgress | null> {
+        const query = `SELECT 
+        user_id,
+        SUM(CASE WHEN s.status = 'correct' AND c.level = 'easy' THEN 1 ELSE 0 END) AS correct_easy_submissions,
+        SUM(CASE WHEN c.level = 'easy' THEN 1 ELSE 0 END) AS total_easy_submissions,
+        SUM(CASE WHEN s.status = 'correct' AND c.level = 'medium' THEN 1 ELSE 0 END) AS correct_medium_submissions,
+        SUM(CASE WHEN c.level = 'medium' THEN 1 ELSE 0 END) AS total_medium_submissions,
+        SUM(CASE WHEN s.status = 'correct' AND c.level = 'hard' THEN 1 ELSE 0 END) AS correct_hard_submissions,
+        SUM(CASE WHEN c.level = 'hard' THEN 1 ELSE 0 END) AS total_hard_submissions,
+        SUM(CASE WHEN s.status = 'correct' THEN 1 ELSE 0 END) AS total_correct_submissions,
+        COUNT(*) AS total_submissions
+    FROM 
+        submissions s
+    JOIN 
+        challenges c ON s.challenge_id = c.id
+    WHERE
+        s.user_id = ?
+    GROUP BY 
+        user_id;`;
+        let users = await this.database.query<UserProgress[]>(query, [user_id]);
+        if (!users || users?.length == 0) {
+            return null;
+        }
+
+        return users[0];
+    }
 }
