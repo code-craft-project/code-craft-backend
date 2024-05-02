@@ -104,7 +104,7 @@ export default class EventsController {
         const { id: event_id } = req.params;
         const event: EventEntity = req.body;
 
-        const allowedProperties = ["title", "description", "is_public", "start_at", "end_at", "is_team_based"];
+        const allowedProperties = ["title", "description", "is_public", "start_at", "end_at", "is_team_based", "max_team_members"];
 
         const propertyNames: string[] = Object.getOwnPropertyNames(event);
         for (let property of propertyNames) {
