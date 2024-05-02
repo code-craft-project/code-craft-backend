@@ -1,8 +1,10 @@
 import AuthController from "./controllers/AuthController";
 import ChallengesController from "./controllers/ChallengesController";
 import EventsController from "./controllers/EventsController";
+import FilesServeController from "./controllers/FilesServeController";
 import JobPostsController from "./controllers/JobPostsController";
 import OrganizationsController, { OrganizationsControllerConfig } from "./controllers/OrganizationsController";
+import UploadController from "./controllers/UploadController";
 import UsersController from "./controllers/UsersController";
 import { challengesService, eventsService, jobPostsService, membersService, organizationsService, permissionsService, userSessionsService, usersService } from "./services";
 import { challengeValidator, credentialsValidator, eventValidator, jobPostValidator, memberValidator, organizationValidator, permissionValidator, teamValidator, userValidator } from "./validators";
@@ -26,3 +28,5 @@ export const challengesController = new ChallengesController(challengesService, 
 export const organizationsController = new OrganizationsController(organizationsControllerConfig);
 export const jobPostsController = new JobPostsController(jobPostsService, membersService, jobPostValidator);
 export const eventsController = new EventsController(eventsService, membersService, eventValidator, teamValidator, challengeValidator);
+export const uploadController = new UploadController();
+export const filesServeController = new FilesServeController();

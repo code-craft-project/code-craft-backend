@@ -6,6 +6,7 @@ import authRouter from "./authRouter";
 import jobPostsRouter from "./jobposts/index";
 import eventsRouter from "./events/index";
 import userRouter from "./user/index";
+import uploadRouter from "./uploadRouter";
 
 import { authController } from "../controllers";
 
@@ -18,5 +19,6 @@ router.use("/challenges", challengesRouter);
 router.use("/organizations", organizationsRouter);
 router.use("/jobposts", jobPostsRouter);
 router.use("/events", eventsRouter);
+router.use("/upload", uploadRouter);
 
 export default router;

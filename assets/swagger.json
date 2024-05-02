@@ -3419,6 +3419,57 @@
                     }
                 }
             }
+        },
+        "/upload/image": {
+            "post": {
+                "tags": [
+                    "Upload Management"
+                ],
+                "description": "Upload image",
+                "operationId": "uploadImage",
+                "produces": [
+                    "multipart/form-data"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "image",
+                        "required": true,
+                        "type": "file"
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "description": "Bearer token for authentication"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "upload image response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "data": {
+                                    "type": "string",
+                                    "example":"/public/images/0001020759_03052024.png"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

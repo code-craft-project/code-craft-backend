@@ -151,7 +151,7 @@ export default class OrganizationsController {
         const { id: organization_id } = req.params;
         const organization: OrganizationEntity = req.body;
 
-        const allowedProperties = ["name", "description"];
+        const allowedProperties = ["name", "description", "profile_image_url"];
         const propertyNames: string[] = Object.getOwnPropertyNames(organization);
         for (let property of propertyNames) {
             if (!allowedProperties.includes(property)) {
