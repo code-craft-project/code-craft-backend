@@ -6,6 +6,7 @@ export default class EventChallengesTableMigration extends TableMigration {
             id int AUTO_INCREMENT primary key,
             challenge_id int,
             event_id int,
+            score int,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             foreign key(challenge_id) references challenges(id),
             foreign key(event_id) references events(id)

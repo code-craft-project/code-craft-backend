@@ -32,8 +32,8 @@ export default class EventsService {
         return null;
     }
 
-    async getEventById(id: number): Promise<EventEntity | null> {
-        return await this.eventsRepository.getEventById(id);
+    async getEventById(id: number, user_id: number = 0): Promise<EventEntity | null> {
+        return await this.eventsRepository.getEventById(id, user_id);
     }
 
     async getChallengeById(event_id: number, challenge_id: number): Promise<ChallengeEntity | null> {
@@ -126,5 +126,9 @@ export default class EventsService {
 
     async updateEventChallenge(challenge_id: number, challenge: ChallengeEntity): Promise<InsertResultInterface | null> {
         return await this.challengesRepository.updateChallenge(challenge_id, challenge);
+    }
+
+    async getUserTeam(user_id: number, event_id: number): Promise<TeamEntity | null> {
+        return await this.teamsRepository.getUserTeamByEventId(user_id, event_id);
     }
 };

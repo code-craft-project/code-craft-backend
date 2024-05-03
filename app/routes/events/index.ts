@@ -5,6 +5,7 @@ const router = Router();
 
 router.post("/:id/join_event", eventsController.joinEvent);
 router.post("/:id/leave_event", eventsController.leaveEvent);
+router.get("/:id/teams/me", eventsController.getUserTeam);
 router.get("/:id/teams", eventsController.getTeams);
 router.get("/:id/teams/:team_id", eventsController.getTeamById);
 router.post("/:id/teams/:team_id/update", eventsController.updateTeam);

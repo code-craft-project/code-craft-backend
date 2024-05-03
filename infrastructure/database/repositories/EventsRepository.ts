@@ -29,8 +29,12 @@ export default class EventsRepository implements EventsRepositoryInterface {
         return null;
     }
 
-    async getEventById(id: number): Promise<EventEntity | null> {
-        let data = await this.database.query<EventEntity[]>(`select ${EVENT_SELECT_PROPS}, JSON_OBJECT(${ORGANIZATION_JOIN_PROPS}) AS organization from events join organizations on organization_id = organizations.id where events.id = ?;`, [id]);
+    async getEventById(id: number, user_id: number = 0): Promise<EventEntity | null> {
+        let data = await this.database.query<EventEntity[]>(`select 
+        ${EVENT_SELECT_PROPS},
+        JSON_OBJECT(${ORGANIZATION_JOIN_PROPS}) AS organization,
+        case when (select user_id from event_participants where event_participants.user_id = ? and event_participants.event_id = ?) then true else false end as didJoin
+        from events join organizations on organization_id = organizations.id where events.id = ?;`, user_id, id, id);
 
         if (data && data.length > 0) {
             return data[0];

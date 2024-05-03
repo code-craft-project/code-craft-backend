@@ -1,3 +1,4 @@
+import { USER_JOIN_PROPS } from "@/domain/repositories/UsersRepositoryInterface";
 import { MySQLDatabase } from "../MySQLDatabase";
 import { TEAM_CREATE_PROPS, TEAM_SELECT_PROPS, TeamsRepositoryInterface } from "@/domain/repositories/TeamsRepositoryInterface";
 
@@ -47,7 +48,36 @@ export default class TeamsRepository implements TeamsRepositoryInterface {
     }
 
     async getTeamById(id: number): Promise<TeamEntity | null> {
-        const data = await this.database.query<TeamEntity[]>(`select ${TEAM_SELECT_PROPS} from teams where id = ?;`, [id]);
+        const data = await this.database.query<TeamEntity[]>(`
+        SELECT ${TEAM_SELECT_PROPS},
+        JSON_OBJECT(${USER_JOIN_PROPS}) AS leader,
+        (select count(*) from team_members where team_members.team_id = teams.id) as members,
+        IFNULL(score, 0) AS score
+        FROM 
+            teams 
+        LEFT JOIN 
+            event_participants ON event_participants.id = teams.leader_id 
+        LEFT JOIN 
+            users ON event_participants.user_id = users.id 
+        LEFT JOIN (
+            SELECT 
+                team_members.team_id, 
+                SUM(event_challenges.score) AS score
+            FROM 
+                team_members
+            JOIN 
+                event_participants ON event_participants.id = team_members.event_participant_id
+            JOIN 
+                submissions ON submissions.user_id = event_participants.user_id
+            JOIN 
+                event_challenges ON event_challenges.challenge_id = submissions.challenge_id
+            WHERE 
+                submissions.status = 'correct'
+            GROUP BY 
+                team_members.team_id
+        ) AS team_scores ON team_scores.team_id = teams.id
+        WHERE 
+            teams.id = ?;`, [id]);
 
         if (data && data.length > 0) {
             return data[0];
@@ -57,7 +87,36 @@ export default class TeamsRepository implements TeamsRepositoryInterface {
     }
 
     async getTeamsByEventId(event_id: number): Promise<TeamEntity[] | null> {
-        let data = await this.database.query<TeamEntity[]>(`select ${TEAM_SELECT_PROPS} from teams where event_id = ?;`, [event_id]);
+        let data = await this.database.query<TeamEntity[]>(`SELECT 
+        ${TEAM_SELECT_PROPS},
+        JSON_OBJECT(${USER_JOIN_PROPS}) AS leader,
+        (select count(*) from team_members where team_members.team_id = teams.id) as members,
+        IFNULL(score, 0) AS score
+        FROM 
+            teams 
+        LEFT JOIN 
+            event_participants ON event_participants.id = teams.leader_id 
+        LEFT JOIN 
+            users ON event_participants.user_id = users.id 
+        LEFT JOIN (
+            SELECT 
+                team_members.team_id, 
+                SUM(event_challenges.score) AS score
+            FROM 
+                team_members
+            JOIN 
+                event_participants ON event_participants.id = team_members.event_participant_id
+            JOIN 
+                submissions ON submissions.user_id = event_participants.user_id
+            JOIN 
+                event_challenges ON event_challenges.challenge_id = submissions.challenge_id
+            WHERE 
+                submissions.status = 'correct'
+            GROUP BY 
+                team_members.team_id
+        ) AS team_scores ON team_scores.team_id = teams.id
+        WHERE 
+            teams.event_id = ?;`, [event_id]);
 
         if (data) {
             return data;
@@ -77,11 +136,81 @@ export default class TeamsRepository implements TeamsRepositoryInterface {
     }
 
     async getTeamsByPage(event_id: number, page: number = 0, limits: number = 10): Promise<TeamEntity[] | null> {
-        let data = await this.database.query<TeamEntity[]>(`select ${TEAM_SELECT_PROPS} from teams where event_id = ? limit ?;`, event_id, [page, limits]);
+        let data = await this.database.query<TeamEntity[]>(`SELECT 
+        ${TEAM_SELECT_PROPS},
+        JSON_OBJECT(${USER_JOIN_PROPS}) AS leader,
+        (select count(*) from team_members where team_members.team_id = teams.id) as members,
+        IFNULL(score, 0) AS score
+        FROM 
+            teams 
+        LEFT JOIN 
+            event_participants ON event_participants.id = teams.leader_id 
+        LEFT JOIN 
+            users ON event_participants.user_id = users.id 
+        LEFT JOIN (
+            SELECT 
+                team_members.team_id, 
+                SUM(event_challenges.score) AS score
+            FROM 
+                team_members
+            JOIN 
+                event_participants ON event_participants.id = team_members.event_participant_id
+            JOIN 
+                submissions ON submissions.user_id = event_participants.user_id
+            JOIN 
+                event_challenges ON event_challenges.challenge_id = submissions.challenge_id
+            WHERE 
+                submissions.status = 'correct'
+            GROUP BY 
+                team_members.team_id
+        ) AS team_scores ON team_scores.team_id = teams.id
+        WHERE 
+            teams.event_id = ? limit ?;`, event_id, [page, limits]);
         if (!data) {
             return null;
         }
 
         return data;
+    }
+
+    async getUserTeamByEventId(user_id: number, event_id: number): Promise<TeamEntity | null> {
+        const data = await this.database.query<TeamEntity[]>(`SELECT 
+        ${TEAM_SELECT_PROPS},
+        JSON_OBJECT(${USER_JOIN_PROPS}) AS leader,
+        (select count(*) from team_members where team_members.team_id = teams.id) as members,
+        IFNULL(score, 0) AS score
+        FROM 
+            teams 
+        LEFT JOIN 
+            event_participants ON event_participants.id = teams.leader_id 
+        LEFT JOIN 
+            users ON event_participants.user_id = users.id 
+        LEFT JOIN (
+            SELECT 
+                team_members.team_id, 
+                SUM(event_challenges.score) AS score
+            FROM 
+                team_members
+            JOIN 
+                event_participants ON event_participants.id = team_members.event_participant_id
+            JOIN 
+                submissions ON submissions.user_id = event_participants.user_id
+            JOIN 
+                event_challenges ON event_challenges.challenge_id = submissions.challenge_id
+            WHERE 
+                submissions.status = 'correct'
+            GROUP BY 
+                team_members.team_id
+        ) AS team_scores ON team_scores.team_id = teams.id
+        WHERE 
+            teams.id in (select team_id from team_members join event_participants on team_members.event_participant_id = event_participants.id where event_participants.user_id = ?)
+            and
+            teams.event_id = ?;`, user_id, event_id);
+
+        if (data && data.length > 0) {
+            return data[0];
+        }
+
+        return null;
     }
 }

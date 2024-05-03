@@ -57,7 +57,7 @@ export default class EventsController {
     getEventById = async (req: Request, res: Response) => {
         const { id } = req.params;
 
-        let data = await this.eventsService.getEventById(parseInt(id));
+        let data = await this.eventsService.getEventById(parseInt(id), req.user?.id);
 
         if (!data) {
             res.status(200).json({
@@ -220,6 +220,27 @@ export default class EventsController {
         });
     }
 
+    getUserTeam = async (req: Request, res: Response) => {
+        const { id: event_id } = req.params;
+
+        let data = await this.eventsService.getUserTeam(req.user!.id!, parseInt(event_id));
+
+        if (!data) {
+            res.status(200).json({
+                status: "error",
+                message: "You are not in a team",
+                data: null
+            });
+
+            return;
+        }
+
+        res.status(200).json({
+            status: "success",
+            data
+        });
+    }
+
     getTeamById = async (req: Request, res: Response) => {
         const { id: event_id, team_id } = req.params;
 
@@ -326,7 +347,7 @@ export default class EventsController {
             }
         }
 
-        const event = await this.eventsService.getTeamById(parseInt(event_id));
+        const event = await this.eventsService.getEventById(parseInt(event_id));
         if (!event) {
             res.status(200).json({
                 status: "error",
@@ -378,16 +399,23 @@ export default class EventsController {
     }
 
     deleteTeam = async (req: Request, res: Response) => {
-        const { team_id } = req.body;
         const { id: event_id } = req.params;
 
-        const team = await this.eventsService.getTeamById(parseInt(team_id));
+        const user_id = req.user?.id as number;
+
+        const teamMember = await this.eventsService.getTeamMemberByEventId(parseInt(event_id), user_id);
+
+        if (!teamMember) {
+            res.status(200).json({ status: "error", message: "You are not a member of a team" });
+            return;
+        }
+
+        const team = await this.eventsService.getTeamById(teamMember.team_id);
         if (!team) {
             res.status(200).json({ status: "error", message: "No Team Found" });
             return;
         }
 
-        const user_id = req.user?.id as number;
         const eventParticipant = await this.eventsService.getParticipantByUserId(parseInt(event_id), user_id);
         if (!eventParticipant) {
             res.status(200).json({ status: "error", message: "You are not a participant in this event" });
@@ -399,7 +427,7 @@ export default class EventsController {
             return;
         }
 
-        await this.eventsService.deleteTeam(parseInt(team_id));
+        await this.eventsService.deleteTeam(teamMember.team_id);
 
         res.status(200).json({ status: "success", message: "Team deleted successfuly" });
     }
@@ -442,7 +470,7 @@ export default class EventsController {
 
         const joinTeamResult = await this.eventsService.joinTeam(team_id, eventParticipant.id!);
 
-        res.status(200).json({ status: "success", message: "Team joined successfully", data: joinTeamResult });
+        res.status(200).json({ status: "success", message: "Team joined successfully", data: team });
     }
 
     leaveTeam = async (req: Request, res: Response) => {
@@ -458,7 +486,7 @@ export default class EventsController {
         }
 
         const team = await this.eventsService.getTeamById(teamMember.team_id);
-        if (team && team.leader_id == teamMember.id) {
+        if (team && team.leader_id == teamMember.event_participant_id) {
             res.status(200).json({ status: "error", message: "You are the leader can't leave the team but you can delete it" });
             return;
         }

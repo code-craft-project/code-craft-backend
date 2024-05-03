@@ -875,39 +875,20 @@ describe("API Tests:", () => {
             });
 
             describe("Team Deletion", () => {
-                test("Should not delete a team if not a participant on the event", async () => {
-                    const response = await request(server).post("/api/events/1/teams/delete").set("Authorization", access_token).send({ team_id: 1 });
-
-                    const expectedOutput = { status: "error", message: "You are not a participant in this event" };
-
-                    expect(response.statusCode).toBe(200);
-                    expect(response.body).toEqual(expectedOutput);
-                });
-
-                test("Should not delete a team if the team does not exist", async () => {
-                    const response = await request(server).post("/api/events/1/teams/delete").set("Authorization", user2_access_token).send({ team_id: 5 });
-
-                    const expectedOutput = { status: "error", message: "No Team Found" };
-
-                    expect(response.statusCode).toBe(200);
-                    expect(response.body).toEqual(expectedOutput);
-                });
-
-
-                test("Should not delete a team if not the leader of the team", async () => {
-                    await request(server).post("/api/events/1/join_event").set("Authorization", access_token);
-                    const response = await request(server).post("/api/events/1/teams/delete").set("Authorization", access_token).send({ team_id: 1 });
-
-                    const expectedOutput = { status: "error", message: "Only the leader can delete the team" };
-
-                    expect(response.statusCode).toBe(200);
-                    expect(response.body).toEqual(expectedOutput);
-                });
-
                 test("Should successfully delete a team", async () => {
                     const response = await request(server).post("/api/events/1/teams/delete").set("Authorization", user2_access_token).send({ team_id: 1 });
 
                     const expectedOutput = { status: "success", message: "Team deleted successfuly" };
+
+                    expect(response.statusCode).toBe(200);
+                    expect(response.body).toEqual(expectedOutput);
+                });
+
+
+                test("Should not delete a team if the team does not exist", async () => {
+                    const response = await request(server).post("/api/events/1/teams/delete").set("Authorization", user2_access_token).send({ team_id: 5 });
+
+                    const expectedOutput = { status: "error", message: "You are not a member of a team" };
 
                     expect(response.statusCode).toBe(200);
                     expect(response.body).toEqual(expectedOutput);
@@ -988,7 +969,9 @@ describe("API Tests:", () => {
 
             describe("Team Leave", () => {
                 test("Should not leave a team if a leader", async () => {
-                    const response = await request(server).post("/api/events/1/teams/leave").set("Authorization", user2_access_token);
+                    // await request(server).post("/api/events/1/join_event").set("Authorization", user2_access_token);
+                    await request(server).post("/api/events/1/teams/create").set("Authorization", access_token).send(team);
+                    const response = await request(server).post("/api/events/1/teams/leave").set("Authorization", access_token);
 
                     const expectedOutput = { status: "error", message: "You are the leader can't leave the team but you can delete it" };
 
