@@ -375,15 +375,6 @@ export default class OrganizationsController {
             limit = parseInt(limits as string) || limit;
         }
 
-        const user = req.user;
-
-        const hasPermissions = await this.membersService.isEventsManager(user?.id!, parseInt(organization_id));
-
-        if (!hasPermissions) {
-            res.status(200).json({ status: "error", message: "You don't have permissions" });
-            return;
-        }
-
         let data = await this.organizationsService.getEvents(parseInt(organization_id), offset, limit);
 
         if (!data) {
