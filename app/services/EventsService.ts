@@ -124,6 +124,10 @@ export default class EventsService {
         return await this.challengesRepository.getChallengesByEventId(event_id);
     }
 
+    async getChallengesByTopic(event_id: number, challengeTopic: ChallengeTopic): Promise<ChallengeEntity[] | null> {
+        return await this.challengesRepository.getEventChallengesByTopic(event_id, challengeTopic);
+    }
+
     async updateEventChallenge(challenge_id: number, challenge: ChallengeEntity): Promise<InsertResultInterface | null> {
         return await this.challengesRepository.updateChallenge(challenge_id, challenge);
     }

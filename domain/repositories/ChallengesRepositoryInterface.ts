@@ -9,6 +9,7 @@ export interface ChallengesRepositoryInterface {
     getChallengeById(id: number): Promise<ChallengeEntity | null>;
     getChallengesByPage(page: number, limits: number): Promise<ChallengeEntity[] | null>;
     getChallengesByTopic(topic: ChallengeTopic, page?: number, limits?: number): Promise<ChallengeEntity[] | null>;
+    getEventChallengesByTopic(event_id: number,topic: ChallengeTopic): Promise<ChallengeEntity[] | null>;
     getChallengesByEventId(event_id: number): Promise<ChallengeEntity[] | null>;
     getChallengesByOrganizationId(organization_id: number): Promise<ChallengeEntity[] | null>;
     getEventChallengeById(event_id: number, challenge_id: number): Promise<ChallengeEntity | null>;

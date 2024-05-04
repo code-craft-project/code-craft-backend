@@ -128,4 +128,13 @@ export default class ChallengesRepository implements ChallengesRepositoryInterfa
 
         return data;
     }
+
+    async getEventChallengesByTopic(event_id: number, topic: ChallengeTopic): Promise<ChallengeEntity[] | null> {
+        let data = await this.database.query<ChallengeEntity[]>(`select ${CHALLENGE_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS creator, ${COUNT_CHALLENGE_COMMENTS}, ${COUNT_CHALLENGE_SUBMISSIONS} from challenges join event_challenges on event_challenges.challenge_id = challenges.id join users on creator_id = users.id where event_challenges.event_id = ? and challenges.topic = ?;`, event_id, topic);
+        if (!data) {
+            return null;
+        }
+
+        return data;
+    }
 }

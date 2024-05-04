@@ -538,6 +538,27 @@ export default class EventsController {
         res.status(200).json({ status: "success", data: challenges });
     }
 
+    getChallengesByTopic = async (req: Request, res: Response) => {
+        const { id: event_id } = req.params;
+        const { topic } = req.params;
+
+        let data = await this.eventsService.getChallengesByTopic(parseInt(event_id), topic as ChallengeTopic || "all topics");
+
+        if (!data) {
+            res.status(200).json({
+                status: "success",
+                data: []
+            });
+
+            return;
+        }
+
+        res.status(200).json({
+            status: "success",
+            data
+        });
+    }
+
     updateChallenge = async (req: Request, res: Response) => {
         const { id: event_id, challenge_id } = req.params;
         const updatedChallenge: ChallengeEntity = req.body;

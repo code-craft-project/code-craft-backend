@@ -16,6 +16,7 @@ router.post("/:id/teams/leave", eventsController.leaveTeam);
 router.post("/:id/challenges/create", eventsController.createChallenge);
 router.post("/:id/challenges/:challenge_id/update", eventsController.updateChallenge);
 router.get("/:id/challenges", eventsController.getChallenges);
+router.get("/:id/challenges/topic/:topic", eventsController.getChallengesByTopic);
 router.post("/create", eventsController.createEvent);
 router.get("/:id", eventsController.getEventById);
 router.post("/:id/update", eventsController.updateEvent);
