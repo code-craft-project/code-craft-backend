@@ -440,7 +440,7 @@ export default class OrganizationsController {
             return;
         }
 
-        res.status(200).json({ status: "success", message: "Challenge created successfully" });
+        res.status(200).json({ status: "success", message: "Challenge created successfully", data: result });
     }
 
     getMembers = async (req: Request, res: Response) => {
