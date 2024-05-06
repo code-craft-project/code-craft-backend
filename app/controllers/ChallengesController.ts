@@ -310,8 +310,6 @@ export default class ChallengesController {
 
         const user = req.user;
 
-        console.log({ user, creator: challenge.creator_id });
-
         if (user?.id != challenge.creator_id) {
             res.status(200).json({ status: "error", message: "You don't have permissions" });
             return;

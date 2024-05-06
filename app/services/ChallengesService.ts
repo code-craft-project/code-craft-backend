@@ -82,7 +82,7 @@ export default class ChallengesService {
 
     async createTestCase(challenge_id: number, inputs: TestCaseInputEntity[], output: string): Promise<TestCaseEntity | null> {
         const testCaseResult = await this.testCasesRepository.createTestCase({ challenge_id, output });
-        const promise = inputs.map(input => this.testCaseInputsRepository.createTestCaseInput(input));
+        const promise = inputs.map(input => this.testCaseInputsRepository.createTestCaseInput({ ...input, test_case_id: testCaseResult?.insertId }));
 
         await Promise.all(promise);
 
