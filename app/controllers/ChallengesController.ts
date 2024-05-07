@@ -232,7 +232,7 @@ export default class ChallengesController {
             return;
         }
 
-        res.status(200).json({ status: "success", message: "Comment posted successfully" });
+        res.status(200).json({ status: "success", message: "Comment posted successfully", data: result });
     }
 
     toggleLikeAComment = async (req: Request, res: Response) => {

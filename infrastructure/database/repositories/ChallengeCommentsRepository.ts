@@ -75,7 +75,9 @@ WHERE
     challenge_comments.challenge_id = ?
     AND challenge_comments.is_reply = false
 GROUP BY 
-    challenge_comments.id;
+    challenge_comments.id
+ORDER BY 
+    challenge_comments.created_at DESC;
 `, user_id, challenge_id);
 
         if (data) {
