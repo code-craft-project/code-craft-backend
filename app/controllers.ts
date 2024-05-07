@@ -27,6 +27,6 @@ export const authController = new AuthController(usersService, userSessionsServi
 export const challengesController = new ChallengesController(challengesService, challengeValidator);
 export const organizationsController = new OrganizationsController(organizationsControllerConfig);
 export const jobPostsController = new JobPostsController(jobPostsService, membersService, jobPostValidator);
-export const eventsController = new EventsController(eventsService, membersService, eventValidator, teamValidator, challengeValidator);
+export const eventsController = new EventsController(eventsService, membersService, eventValidator, teamValidator, challengeValidator, challengesService);
 export const uploadController = new UploadController();
 export const filesServeController = new FilesServeController();

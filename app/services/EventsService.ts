@@ -4,6 +4,8 @@ import EventParticipantsRepository from "@/infrastructure/database/repositories/
 import EventsRepository from "@/infrastructure/database/repositories/EventsRepository";
 import TeamMembersRepository from "@/infrastructure/database/repositories/TeamMembersRepository";
 import TeamsRepository from "@/infrastructure/database/repositories/TeamsRepository";
+import TestCaseInputsRepository from "@/infrastructure/database/repositories/TestCaseInputsRepository";
+import TestCasesRepository from "@/infrastructure/database/repositories/TestCasesRepository";
 
 export default class EventsService {
     eventsRepository: EventsRepository;
@@ -12,15 +14,18 @@ export default class EventsService {
     teamMembersRepository: TeamMembersRepository;
     challengesRepository: ChallengesRepository;
     eventChallengesRepository: EventChallengesRepository;
+    testCasesRepository: TestCasesRepository;
+    testCaseInputsRepository: TestCaseInputsRepository;
 
-    constructor(eventsRepository: EventsRepository, eventParticipantsRepository: EventParticipantsRepository, teamsRepository: TeamsRepository, teamMembersRepository: TeamMembersRepository, challengesRepository: ChallengesRepository, eventChallengesRepository: EventChallengesRepository) {
+    constructor(eventsRepository: EventsRepository, eventParticipantsRepository: EventParticipantsRepository, teamsRepository: TeamsRepository, teamMembersRepository: TeamMembersRepository, challengesRepository: ChallengesRepository, eventChallengesRepository: EventChallengesRepository, testCasesRepository: TestCasesRepository, testCaseInputsRepository: TestCaseInputsRepository) {
         this.eventsRepository = eventsRepository;
         this.eventParticipantsRepository = eventParticipantsRepository;
         this.teamsRepository = teamsRepository;
         this.teamMembersRepository = teamMembersRepository;
         this.challengesRepository = challengesRepository;
         this.eventChallengesRepository = eventChallengesRepository;
-
+        this.testCasesRepository = testCasesRepository;
+        this.testCaseInputsRepository = testCaseInputsRepository;
     }
 
     async createEvent(event: EventEntity): Promise<EventEntity | null> {
@@ -134,5 +139,21 @@ export default class EventsService {
 
     async getUserTeam(user_id: number, event_id: number): Promise<TeamEntity | null> {
         return await this.teamsRepository.getUserTeamByEventId(user_id, event_id);
+    }
+
+    async deleteEventChallenge(event_id: number, challenge_id: number): Promise<InsertResultInterface | null> {
+        const deleteOrganizationChallenge = await this.eventChallengesRepository.removeEventChallenge({ challenge_id, event_id });
+        if (!deleteOrganizationChallenge) {
+            return null;
+        }
+
+        const testCases = await this.testCasesRepository.getTestCasesByChallengeId(challenge_id);
+        testCases?.forEach(async (t) => {
+            await this.testCaseInputsRepository.removeByTestCaseId(t.id!);
+        });
+
+        await this.testCasesRepository.removeByChallengeId(challenge_id);
+
+        return await this.challengesRepository.removeChallengeById(challenge_id);
     }
 };

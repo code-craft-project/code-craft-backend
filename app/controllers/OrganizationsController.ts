@@ -480,6 +480,19 @@ export default class OrganizationsController {
         }
 
         const oldTestCases = await this.challengesService.getTestCases(parseInt(challenge_id));
+        
+        if (oldTestCases) {
+            // Check if user removed a TestCase
+            for (let i = 0; i < oldTestCases.length; i++) {
+                const oldTestCase = oldTestCases[i];
+                const didFind = test_cases.find((t => t.id == oldTestCase.id));
+                if(!didFind){
+                    // Remove
+                    await this.challengesService.removeTestCaseById(oldTestCase.id!);
+                }
+            }
+        }
+
         // Update And Create New TestCases
         for (let i = 0; i < test_cases.length; i++) {
             const testCase = test_cases[i];
@@ -491,33 +504,6 @@ export default class OrganizationsController {
                 }
             } else {
                 await this.challengesService.createTestCase(parseInt(challenge_id), testCase.inputs || [], testCase.output);
-            }
-        }
-
-        const hasTheSameInputs = (testCase1Inputs: TestCaseInputEntity[], testCase2Inputs: TestCaseInputEntity[]): boolean => {
-            if (testCase1Inputs.length != testCase2Inputs.length) {
-                return false;
-            }
-
-            testCase1Inputs.forEach(i => {
-                const didFind = testCase2Inputs.find(e => e.input == i.input && e.type == i.type);
-                if (!didFind) {
-                    return false;
-                }
-            })
-
-            return true;
-        }
-
-        if (oldTestCases) {
-            // Check if user removed a TestCase
-            for (let i = 0; i < oldTestCases.length; i++) {
-                const oldTestCase = oldTestCases[i];
-                const didFind = test_cases.find((t => t.output == oldTestCase.output && hasTheSameInputs(oldTestCase.inputs || [], t.inputs || [])));
-                if(!didFind){
-                    // Remove
-                    await this.challengesService.removeTestCaseById(oldTestCase.id!);
-                }
             }
         }
 

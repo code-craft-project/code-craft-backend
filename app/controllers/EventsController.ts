@@ -13,13 +13,15 @@ export default class EventsController {
     eventValidator: EventValidator;
     teamValidator: TeamValidator;
     challengeValidator: ChallengeValidator;
+    challengesService: ChallengesService;
 
-    constructor(eventsService: EventsService, membersService: MembersService, eventValidator: EventValidator, teamValidator: TeamValidator, challengeValidator: ChallengeValidator) {
+    constructor(eventsService: EventsService, membersService: MembersService, eventValidator: EventValidator, teamValidator: TeamValidator, challengeValidator: ChallengeValidator, challengesService: ChallengesService) {
         this.eventsService = eventsService;
         this.membersService = membersService;
         this.eventValidator = eventValidator;
         this.teamValidator = teamValidator;
         this.challengeValidator = challengeValidator;
+        this.challengesService = challengesService;
     }
 
     getEvents = async (req: Request, res: Response) => {
@@ -527,7 +529,7 @@ export default class EventsController {
             return;
         }
 
-        res.status(200).json({ status: "success", message: "Challenge created successfully" });
+        res.status(200).json({ status: "success", message: "Challenge created successfully", data: result });
     }
 
     getChallenges = async (req: Request, res: Response) => {
@@ -569,6 +571,7 @@ export default class EventsController {
             "topic",
             "level",
             "type",
+            "is_public"
         ];
 
         const propertyNames: string[] = Object.getOwnPropertyNames(updatedChallenge);
@@ -613,5 +616,95 @@ export default class EventsController {
         }
 
         res.status(200).json({ status: "success", message: "Challenge updated successfully" });
+    }
+
+    updateChallengeTestCases = async (req: Request, res: Response) => {
+        const { id, challenge_id } = req.params;
+        const { test_cases }: { test_cases: TestCaseEntity[] } = req.body;
+
+
+        const event = await this.eventsService.getEventById(parseInt(id));
+        if (!event) {
+            res.status(200).json({
+                status: "error",
+                message: "Event not found"
+            });
+
+            return;
+        }
+
+        const challenge = await this.eventsService.getChallengeById(event.organization_id, parseInt(challenge_id));
+        if (!challenge) {
+            res.status(200).json({
+                status: "error",
+                message: "Challenge not found"
+            });
+
+            return;
+        }
+
+        const user = req.user;
+
+        const hasPermissions = await this.membersService.isChallengesManager(user?.id!, event.organization_id);
+        if (!hasPermissions) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
+
+        const oldTestCases = await this.challengesService.getTestCases(parseInt(challenge_id));
+
+        if (oldTestCases) {
+            // Check if user removed a TestCase
+            for (let i = 0; i < oldTestCases.length; i++) {
+                const oldTestCase = oldTestCases[i];
+                const didFind = test_cases.find((t => t.id == oldTestCase.id));
+                if (!didFind) {
+                    // Remove
+                    await this.challengesService.removeTestCaseById(oldTestCase.id!);
+                }
+            }
+        }
+
+        // Update And Create New TestCases
+        for (let i = 0; i < test_cases.length; i++) {
+            const testCase = test_cases[i];
+            if (testCase.id != undefined) {
+                const updateTestCase = await this.challengesService.updateTestCase(testCase.id, testCase.inputs || [], testCase.output);
+                if (!updateTestCase) {
+                    res.status(200).json({ status: "error", message: "Something went wrong" });
+                    return;
+                }
+            } else {
+                await this.challengesService.createTestCase(parseInt(challenge_id), testCase.inputs || [], testCase.output);
+            }
+        }
+
+        res.status(200).json({ status: "success", message: "TestCases updated successfully" });
+    }
+
+    deleteChallenge = async (req: Request, res: Response) => {
+        const { id, challenge_id } = req.params;
+
+        const event = await this.eventsService.getEventById(parseInt(id));
+        if (!event) {
+            res.status(200).json({ status: "error", message: "Event Does not exists" });
+            return;
+        }
+
+        const user = req.user;
+
+        const hasPermissions = await this.membersService.isChallengesManager(user?.id!, event.organization_id);
+        if (!hasPermissions) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
+
+        const deleteOrganizationChallenge = await this.eventsService.deleteEventChallenge(parseInt(id), parseInt(challenge_id));
+        if (!deleteOrganizationChallenge) {
+            res.status(200).json({ status: "error", message: "Something went wrong" });
+            return;
+        }
+
+        res.status(200).json({ status: "success", message: "Challenge deleted successfully" });
     }
 };

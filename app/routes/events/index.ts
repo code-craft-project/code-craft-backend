@@ -15,6 +15,8 @@ router.post("/:id/teams/join", eventsController.joinTeam);
 router.post("/:id/teams/leave", eventsController.leaveTeam);
 router.post("/:id/challenges/create", eventsController.createChallenge);
 router.post("/:id/challenges/:challenge_id/update", eventsController.updateChallenge);
+router.post("/:id/challenges/:challenge_id/update_test_cases", eventsController.updateChallengeTestCases);
+router.post("/:id/challenges/:challenge_id/delete", eventsController.deleteChallenge);
 router.get("/:id/challenges", eventsController.getChallenges);
 router.get("/:id/challenges/topic/:topic", eventsController.getChallengesByTopic);
 router.post("/create", eventsController.createEvent);

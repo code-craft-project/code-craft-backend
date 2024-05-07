@@ -5,7 +5,8 @@ import JobPostsRepository from "@/infrastructure/database/repositories/JobPostsR
 import MembersRepository from "@/infrastructure/database/repositories/MembersRepository";
 import OrganizationChallengesRepository from "@/infrastructure/database/repositories/OrganizationChallengesRepository";
 import OrganizationsRepository from "@/infrastructure/database/repositories/OrganizationsRepository";
-import { testCaseInputsRepository, testCasesRepository } from "../repositories";
+import TestCasesRepository from "@/infrastructure/database/repositories/TestCasesRepository";
+import TestCaseInputsRepository from "@/infrastructure/database/repositories/TestCaseInputsRepository";
 
 export default class OrganizationsService {
     organizationsRepository: OrganizationsRepository;
@@ -15,8 +16,10 @@ export default class OrganizationsService {
     challengesRepository: ChallengesRepository;
     organizationChallengesRepository: OrganizationChallengesRepository;
     membersRepository: MembersRepository;
+    testCasesRepository: TestCasesRepository;
+    testCaseInputsRepository: TestCaseInputsRepository;
 
-    constructor(organizationsRepository: OrganizationsRepository, jobPostsRepository: JobPostsRepository, jobApplicationsRepository: JobApplicationsRepository, eventsRepository: EventsRepository, challengesRepository: ChallengesRepository, organizationChallengesRepository: OrganizationChallengesRepository, membersRepository: MembersRepository) {
+    constructor(organizationsRepository: OrganizationsRepository, jobPostsRepository: JobPostsRepository, jobApplicationsRepository: JobApplicationsRepository, eventsRepository: EventsRepository, challengesRepository: ChallengesRepository, organizationChallengesRepository: OrganizationChallengesRepository, membersRepository: MembersRepository, testCasesRepository: TestCasesRepository, testCaseInputsRepository: TestCaseInputsRepository) {
         this.organizationsRepository = organizationsRepository;
         this.jobPostsRepository = jobPostsRepository;
         this.jobApplicationsRepository = jobApplicationsRepository;
@@ -24,6 +27,8 @@ export default class OrganizationsService {
         this.challengesRepository = challengesRepository;
         this.organizationChallengesRepository = organizationChallengesRepository;
         this.membersRepository = membersRepository;
+        this.testCasesRepository = testCasesRepository;
+        this.testCaseInputsRepository = testCaseInputsRepository;
     }
 
     async createOrganization(organization: OrganizationEntity): Promise<OrganizationEntity | null> {
@@ -91,13 +96,13 @@ export default class OrganizationsService {
             return null;
         }
 
-        const testCases = await testCasesRepository.getTestCasesByChallengeId(challenge_id);
+        const testCases = await this.testCasesRepository.getTestCasesByChallengeId(challenge_id);
         testCases?.forEach(async (t) => {
-            await testCaseInputsRepository.removeByTestCaseId(t.id!);
+            await this.testCaseInputsRepository.removeByTestCaseId(t.id!);
         });
-        
-        await testCasesRepository.removeByChallengeId(challenge_id);
-        
+
+        await this.testCasesRepository.removeByChallengeId(challenge_id);
+
         return await this.challengesRepository.removeChallengeById(challenge_id);
     }
 
