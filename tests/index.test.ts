@@ -5,7 +5,7 @@ import { database } from "@/app/repositories";
 import { MySQLDatabase } from "@/infrastructure/database/MySQLDatabase";
 import { DatabaseMigration } from "@/infrastructure/database/migrations/DatabaseMigration";
 import Logger from "@/infrastructure/logger/Logger";
-import { organization, privateEvent, user, user2, user2Credentials, userCredentials, event, jobpost, privateTeam, team, challenge, privateChallenge, testCases, organizationChallengesIds, eventChallengesIds, publicChallengesIds } from './test_data';
+import { query, organization, privateEvent, user, user2, user2Credentials, userCredentials, event, jobpost, privateTeam, team, challenge, privateChallenge, testCases, organizationChallengesIds, eventChallengesIds, publicChallengesIds } from './test_data';
 
 let access_token: string = "";
 let user2_access_token: string = "";
@@ -1391,6 +1391,40 @@ describe("API Tests:", () => {
     describe("Submissions", () => {
         test("Should list user submissions", async () => {
             const response = await request(server).get("/api/challenges/1/submissions").set('Authorization', access_token);
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body.status).toEqual("success");
+            expect(Array.isArray(response.body.data)).toBeTruthy();
+        });
+    });
+
+    describe("Search", () => {
+        test("Should search for job posts", async () => {
+            const response = await request(server).get(`/api/search/job_posts?q=${query}`).set('Authorization', access_token);
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body.status).toEqual("success");
+            expect(Array.isArray(response.body.data)).toBeTruthy();
+        });
+
+        test("Should search for events", async () => {
+            const response = await request(server).get(`/api/search/events?q=${query}`).set('Authorization', access_token);
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body.status).toEqual("success");
+            expect(Array.isArray(response.body.data)).toBeTruthy();
+        });
+
+        test("Should search for challenges", async () => {
+            const response = await request(server).get(`/api/search/challenges?q=${query}`).set('Authorization', access_token);
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body.status).toEqual("success");
+            expect(Array.isArray(response.body.data)).toBeTruthy();
+        });
+
+        test("Should search for organizations", async () => {
+            const response = await request(server).get(`/api/search/organizations?q=${query}`).set('Authorization', access_token);
 
             expect(response.statusCode).toBe(200);
             expect(response.body.status).toEqual("success");

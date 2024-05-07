@@ -16,4 +16,5 @@ export interface ChallengesRepositoryInterface {
     getOrganizationLatestChallenges(organization_id: number): Promise<ChallengeEntity[] | null>;
     getOrganizationChallengeById(organization_id: number, challenge_id: number): Promise<ChallengeEntity | null>;
     removeChallengeById(challenge_id: number): Promise<InsertResultInterface | null>;
+    searchChallenges(query: string): Promise<ChallengeEntity[] | null>;
 };

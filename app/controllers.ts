@@ -4,9 +4,10 @@ import EventsController from "./controllers/EventsController";
 import FilesServeController from "./controllers/FilesServeController";
 import JobPostsController from "./controllers/JobPostsController";
 import OrganizationsController, { OrganizationsControllerConfig } from "./controllers/OrganizationsController";
+import SearchController from "./controllers/SearchController";
 import UploadController from "./controllers/UploadController";
 import UsersController from "./controllers/UsersController";
-import { challengesService, eventsService, jobPostsService, membersService, organizationsService, permissionsService, userSessionsService, usersService } from "./services";
+import { challengesService, eventsService, jobPostsService, membersService, organizationsService, permissionsService, searchService, userSessionsService, usersService } from "./services";
 import { challengeValidator, credentialsValidator, eventValidator, jobPostValidator, memberValidator, organizationValidator, permissionValidator, teamValidator, userValidator } from "./validators";
 
 const organizationsControllerConfig: OrganizationsControllerConfig = {
@@ -30,3 +31,4 @@ export const jobPostsController = new JobPostsController(jobPostsService, member
 export const eventsController = new EventsController(eventsService, membersService, eventValidator, teamValidator, challengeValidator, challengesService);
 export const uploadController = new UploadController();
 export const filesServeController = new FilesServeController();
+export const searchController = new SearchController(searchService);

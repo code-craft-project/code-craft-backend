@@ -85,4 +85,14 @@ export default class JobPostsRepository implements JobPostsRepositoryInterface {
 
         return data;
     }
+
+    async searchJobPosts(query: string): Promise<JobPostEntity[] | null> {
+        const searchQuery = `%${query}%`;
+        let data = await this.database.query<JobPostEntity[]>(`select ${JOBPOST_SELECT_PROPS}, JSON_OBJECT(${ORGANIZATION_JOIN_PROPS}) AS organization from job_posts join organizations on organization_id = organizations.id where job_posts.title like ? or job_posts.description like ? or job_posts.role like ? or organizations.name like ?;`, searchQuery, searchQuery, searchQuery, searchQuery);
+        if (!data) {
+            return null;
+        }
+
+        return data;
+    }
 }

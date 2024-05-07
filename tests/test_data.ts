@@ -108,3 +108,4 @@ export const testCases: TestCaseEntity[] = [
 export const eventChallengesIds: number[] = [];
 export const organizationChallengesIds: number[] = [];
 export const publicChallengesIds: number[] = [];
+export const query = 'search';

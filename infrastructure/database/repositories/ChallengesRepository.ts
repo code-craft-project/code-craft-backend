@@ -157,4 +157,30 @@ export default class ChallengesRepository implements ChallengesRepositoryInterfa
 
         return null;
     }
+
+    async searchChallenges(query: string, user_id: number = 0): Promise<ChallengeEntity[] | null> {
+        const searchQuery = `%${query}%`;
+        let data = await this.database.query<ChallengeEntity[]>(`SELECT 
+        ${CHALLENGE_SELECT_PROPS},
+        JSON_OBJECT(${USER_JOIN_PROPS}) AS creator,
+        ${COUNT_CHALLENGE_COMMENTS},
+        ${COUNT_CHALLENGE_SUBMISSIONS},
+        CASE 
+            WHEN EXISTS (SELECT 1 FROM submissions WHERE challenge_id = challenges.id AND user_id = ? AND status = 'correct') THEN 'done'
+            WHEN EXISTS (SELECT 1 FROM submissions WHERE challenge_id = challenges.id AND user_id = ?) THEN 'wrong answer'
+            ELSE 'not started'
+        END AS status
+    FROM 
+        challenges
+    JOIN 
+        users ON creator_id = users.id
+    WHERE 
+        challenges.id NOT IN (SELECT challenge_id FROM event_challenges)
+    AND challenges.title like ? or challenges.description like ? or challenges.topic like ?;`, user_id, user_id, searchQuery, searchQuery, searchQuery);
+        if (!data) {
+            return null;
+        }
+
+        return data;
+    }
 }

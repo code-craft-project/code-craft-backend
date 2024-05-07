@@ -91,4 +91,14 @@ export default class EventsRepository implements EventsRepositoryInterface {
 
         return data;
     }
+
+    async searchEvents(query: string): Promise<EventEntity[] | null> {
+        const searchQuery = `%${query}%`;
+        let data = await this.database.query<EventEntity[]>(`select ${EVENT_SELECT_PROPS}, JSON_OBJECT(${ORGANIZATION_JOIN_PROPS}) AS organization from events join organizations on organization_id = organizations.id where events.title like ? or events.description like ? or organizations.name like ?;`, searchQuery, searchQuery, searchQuery);
+        if (!data) {
+            return null;
+        }
+
+        return data;
+    }
 }

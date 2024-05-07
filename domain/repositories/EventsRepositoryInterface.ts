@@ -7,4 +7,5 @@ export interface EventsRepositoryInterface {
     getEventById(id: number): Promise<EventEntity | null>;
     getEventsByPage(page: number, limits: number): Promise<EventEntity[] | null>;
     updateEvent(id: number, event: EventEntity): Promise<InsertResultInterface | null>;
+    searchEvents(query: string): Promise<EventEntity[] | null>;
 };

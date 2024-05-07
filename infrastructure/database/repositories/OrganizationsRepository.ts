@@ -99,4 +99,14 @@ export default class OrganizationsRepository implements OrganizationsRepositoryI
 
         return data;
     }
+
+    async searchOrganizations(query: string): Promise<OrganizationEntity[] | null> {
+        const searchQuery = `%${query}%`;
+        let data = await this.database.query<OrganizationEntity[]>(`select ${ORGANIZATION_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS creator from organizations join users on creator_id = users.id where organizations.name like ? or organizations.description like ?;`, searchQuery, searchQuery);
+        if (!data) {
+            return null;
+        }
+
+        return data;
+    }
 }
