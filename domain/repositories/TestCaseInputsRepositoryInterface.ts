@@ -5,4 +5,6 @@ export const TEST_CASE_INPUT_SELECT_PROPS: string = 'test_case_inputs.id as id, 
 export interface TestCaseInputsRepositoryInterface {
     createTestCaseInput(testCaseInput: TestCaseInputEntity): Promise<InsertResultInterface | null>;
     getTestCasesByTestCaseId(testCaseId: number): Promise<TestCaseInputEntity[] | null>;
+    removeByTestCaseId(testCaseId: number): Promise<InsertResultInterface | null>;
+    updateTestCaseInput(testCaseInputId: number, testCaseInput: TestCaseInputEntity): Promise<InsertResultInterface | null>;
 };

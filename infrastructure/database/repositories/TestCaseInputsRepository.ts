@@ -31,4 +31,23 @@ export default class TestCaseInputsRepository implements TestCaseInputsRepositor
 
         return null;
     }
+
+    async removeByTestCaseId(testCaseId: number): Promise<InsertResultInterface | null> {
+        let result = await this.database.query<InsertResultInterface>(`delete from test_case_inputs where test_case_id = ?;`, testCaseId);
+
+        if (result) {
+            return result;
+        }
+
+        return null;
+    }
+
+    async updateTestCaseInput(testCaseInputId: number, testCaseInput: TestCaseInputEntity): Promise<InsertResultInterface | null> {
+        let updateTestCaseInputResult = await this.database.query<InsertResultInterface>(`update test_case_inputs set input = ?, type = ? where id = ?;`, testCaseInput.input, testCaseInput.type, testCaseInputId);
+        if (!updateTestCaseInputResult) {
+            return null;
+        }
+
+        return updateTestCaseInputResult;
+    }
 }

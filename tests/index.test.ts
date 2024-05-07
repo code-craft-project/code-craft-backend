@@ -388,6 +388,40 @@ describe("API Tests:", () => {
                 });
             });
 
+            describe("Challenge Update", () => {
+                test("Should not update challenge when its not part of the organization", async () => {
+                    const response = await request(server).post("/api/organizations/1/challenges/99/update").set("Authorization", access_token).send({ title: "New title" });
+
+                    const expectedOutput = {
+                        status: "error",
+                        message: "Challenge not found"
+                    };
+
+                    expect(response.statusCode).toBe(200);
+                    expect(response.body).toEqual(expectedOutput);
+                });
+
+                test("Should not update challenge without proper permissions", async () => {
+                    const response = await request(server).post(`/api/organizations/1/challenges/${organizationChallengesIds[0]}/update`).set("Authorization", user2_access_token).send({ title: "New title" });
+
+                    const expectedOutput = { status: "error", message: "You don't have permissions" };
+
+                    expect(response.statusCode).toBe(200);
+                    expect(response.body).toEqual(expectedOutput);
+                });
+
+                test("Should update challenge successfully", async () => {
+                    const response = await request(server).post(`/api/organizations/1/challenges/${organizationChallengesIds[0]}/update`).set("Authorization", access_token).send({ title: "New title" });
+                    const response1 = await request(server).get(`/api/challenges/${organizationChallengesIds[0]}`).set("Authorization", access_token);
+
+                    const expectedOutput = { status: "success", message: "Challenge updated successfully" };
+
+                    expect(response.statusCode).toBe(200);
+                    expect(response.body).toEqual(expectedOutput);
+                    expect(response1.body.data.title).toEqual("New title");
+                });
+            });
+
             test("Should list organization challenges", async () => {
                 const response = await request(server).get("/api/organizations/1/challenges").set("Authorization", access_token);
 

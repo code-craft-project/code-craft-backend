@@ -5,4 +5,7 @@ export interface TestCasesRepositoryInterface {
     createTestCase(testCase: TestCaseEntity): Promise<InsertResultInterface | null>;
     getTestCaseById(id: number): Promise<TestCaseEntity | null>;
     getTestCasesByChallengeId(challengeId: number): Promise<TestCaseEntity[] | null>;
+    removeByChallengeId(challengeId: number): Promise<InsertResultInterface | null>;
+    updateTestCase(testCaseId: number, output: string): Promise<InsertResultInterface | null>;
+    removeById(testCaseId: number): Promise<InsertResultInterface | null>;
 };

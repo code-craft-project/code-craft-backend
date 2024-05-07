@@ -137,4 +137,24 @@ export default class ChallengesRepository implements ChallengesRepositoryInterfa
 
         return data;
     }
+
+    async getOrganizationChallengeById(organization_id: number, challenge_id: number): Promise<ChallengeEntity | null> {
+        let data = await this.database.query<ChallengeEntity[]>(`select ${CHALLENGE_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS creator, ${COUNT_CHALLENGE_COMMENTS}, ${COUNT_CHALLENGE_SUBMISSIONS} from challenges join users on creator_id = users.id join organization_challenges on organization_challenges.challenge_id = challenges.id where organization_challenges.challenge_id = ? and organization_challenges.organization_id = ?;`, challenge_id, organization_id);
+
+        if (data && data.length > 0) {
+            return data[0];
+        }
+
+        return null;
+    }
+
+    async removeChallengeById(challenge_id: number): Promise<InsertResultInterface | null> {
+        let result = await this.database.query<InsertResultInterface>(`delete from challenges where id = ?;`, challenge_id);
+
+        if (result) {
+            return result;
+        }
+
+        return null;
+    }
 }

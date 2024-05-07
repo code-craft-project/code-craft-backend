@@ -40,4 +40,33 @@ export default class TestCasesRepository implements TestCasesRepositoryInterface
 
         return null;
     }
+
+    async removeByChallengeId(challengeId: number): Promise<InsertResultInterface | null> {
+        let result = await this.database.query<InsertResultInterface>(`delete from test_cases where challenge_id = ?;`, challengeId);
+
+        if (result) {
+            return result;
+        }
+
+        return null;
+    }
+
+    async updateTestCase(testCaseId: number, output: string): Promise<InsertResultInterface | null> {
+        let updateTestCaseResult = await this.database.query<InsertResultInterface>(`update test_cases set output = ? where id = ?;`, output, testCaseId);
+        if (!updateTestCaseResult) {
+            return null;
+        }
+
+        return updateTestCaseResult;
+    }
+
+    async removeById(testCaseId: number): Promise<InsertResultInterface | null> {
+        let result = await this.database.query<InsertResultInterface>(`delete from test_cases where id = ?;`, testCaseId);
+
+        if (result) {
+            return result;
+        }
+
+        return null;
+    }
 }

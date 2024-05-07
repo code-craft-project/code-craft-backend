@@ -1,6 +1,7 @@
 import ChallengeCommentsRepository from "@/infrastructure/database/repositories/ChallengeCommentsRepository";
 import ChallengesRepository from "@/infrastructure/database/repositories/ChallengesRepository";
 import CommentLikesRepository from "@/infrastructure/database/repositories/CommentLikesRepository";
+import OrganizationChallengesRepository from "@/infrastructure/database/repositories/OrganizationChallengesRepository";
 import SubmissionsRepository from "@/infrastructure/database/repositories/SubmissionsRepository";
 import TestCaseInputsRepository from "@/infrastructure/database/repositories/TestCaseInputsRepository";
 import TestCasesRepository from "@/infrastructure/database/repositories/TestCasesRepository";
@@ -33,6 +34,20 @@ export default class ChallengesService {
 
     async updateChallenge(challenge_id: number, challenge: ChallengeEntity): Promise<InsertResultInterface | null> {
         return await this.challengesRepository.updateChallenge(challenge_id, challenge);
+    }
+
+    async updateTestCase(testCaseId: number, inputs: TestCaseInputEntity[], output: string): Promise<InsertResultInterface | null> {
+        const testCaseResult = await this.testCasesRepository.updateTestCase(testCaseId, output);
+        const promise = inputs.map(input => this.testCaseInputsRepository.updateTestCaseInput(input.id!, input));
+
+        await Promise.all(promise);
+
+        return testCaseResult;
+    }
+
+    async removeTestCaseById(testCaseId: number): Promise<InsertResultInterface | null> {
+        await this.testCaseInputsRepository.removeByTestCaseId(testCaseId);
+        return await this.testCasesRepository.removeById(testCaseId);
     }
 
     async getChallengeById(id: number): Promise<ChallengeEntity | null> {

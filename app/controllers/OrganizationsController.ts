@@ -77,7 +77,7 @@ export default class OrganizationsController {
         });
     }
 
-    getUserOrganizations  = async (req: Request, res: Response) => {
+    getUserOrganizations = async (req: Request, res: Response) => {
         const user_id = req.user?.id;
         let data = await this.organizationsService.getOrganizationsByUserId(user_id as number);
 
@@ -407,6 +407,141 @@ export default class OrganizationsController {
         const challenges = await this.organizationsService.getChallenges(parseInt(organization_id));
 
         res.status(200).json({ status: "success", data: challenges });
+    }
+
+    updateChallenge = async (req: Request, res: Response) => {
+        const { id, challenge_id } = req.params;
+        const updatedChallenge: ChallengeEntity = req.body;
+
+        const allowedProperties = [
+            "title",
+            "description",
+            "topic",
+            "level",
+            "is_public",
+            "type",
+        ];
+
+        const propertyNames: string[] = Object.getOwnPropertyNames(updatedChallenge);
+        for (let property of propertyNames) {
+            if (!allowedProperties.includes(property)) {
+                res.status(200).json({ status: "error", message: `Can't update ${property}` });
+                return;
+            }
+        }
+
+        const challenge = await this.organizationsService.getChallengeById(parseInt(id), parseInt(challenge_id));
+        if (!challenge) {
+            res.status(200).json({
+                status: "error",
+                message: "Challenge not found"
+            });
+
+            return;
+        }
+
+        const user = req.user;
+
+        const hasPermissions = await this.membersService.isChallengesManager(user?.id!, parseInt(id));
+        if (!hasPermissions) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
+
+        const updateEvent = await this.challengesService.updateChallenge(parseInt(challenge_id), updatedChallenge);
+        if (!updateEvent) {
+            res.status(200).json({ status: "error", message: "Something went wrong" });
+            return;
+        }
+
+        res.status(200).json({ status: "success", message: "Challenge updated successfully" });
+    }
+
+    updateChallengeTestCases = async (req: Request, res: Response) => {
+        const { id, challenge_id } = req.params;
+        const { test_cases }: { test_cases: TestCaseEntity[] } = req.body;
+
+        const challenge = await this.organizationsService.getChallengeById(parseInt(id), parseInt(challenge_id));
+        if (!challenge) {
+            res.status(200).json({
+                status: "error",
+                message: "Challenge not found"
+            });
+
+            return;
+        }
+
+        const user = req.user;
+
+        const hasPermissions = await this.membersService.isChallengesManager(user?.id!, parseInt(id));
+        if (!hasPermissions) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
+
+        const oldTestCases = await this.challengesService.getTestCases(parseInt(challenge_id));
+        // Update And Create New TestCases
+        for (let i = 0; i < test_cases.length; i++) {
+            const testCase = test_cases[i];
+            if (testCase.id != undefined) {
+                const updateTestCase = await this.challengesService.updateTestCase(testCase.id, testCase.inputs || [], testCase.output);
+                if (!updateTestCase) {
+                    res.status(200).json({ status: "error", message: "Something went wrong" });
+                    return;
+                }
+            } else {
+                await this.challengesService.createTestCase(parseInt(challenge_id), testCase.inputs || [], testCase.output);
+            }
+        }
+
+        const hasTheSameInputs = (testCase1Inputs: TestCaseInputEntity[], testCase2Inputs: TestCaseInputEntity[]): boolean => {
+            if (testCase1Inputs.length != testCase2Inputs.length) {
+                return false;
+            }
+
+            testCase1Inputs.forEach(i => {
+                const didFind = testCase2Inputs.find(e => e.input == i.input && e.type == i.type);
+                if (!didFind) {
+                    return false;
+                }
+            })
+
+            return true;
+        }
+
+        if (oldTestCases) {
+            // Check if user removed a TestCase
+            for (let i = 0; i < oldTestCases.length; i++) {
+                const oldTestCase = oldTestCases[i];
+                const didFind = test_cases.find((t => t.output == oldTestCase.output && hasTheSameInputs(oldTestCase.inputs || [], t.inputs || [])));
+                if(!didFind){
+                    // Remove
+                    await this.challengesService.removeTestCaseById(oldTestCase.id!);
+                }
+            }
+        }
+
+        res.status(200).json({ status: "success", message: "TestCases updated successfully" });
+    }
+
+    deleteChallenge = async (req: Request, res: Response) => {
+        const { id, challenge_id } = req.params;
+
+        const user = req.user;
+
+        const hasPermissions = await this.membersService.isChallengesManager(user?.id!, parseInt(id));
+        if (!hasPermissions) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
+
+        const deleteOrganizationChallenge = await this.organizationsService.deleteOrganizationChallenge(parseInt(id), parseInt(challenge_id));
+        if (!deleteOrganizationChallenge) {
+            res.status(200).json({ status: "error", message: "Something went wrong" });
+            return;
+        }
+
+        res.status(200).json({ status: "success", message: "Challenge deleted successfully" });
     }
 
     createChallenge = async (req: Request, res: Response) => {

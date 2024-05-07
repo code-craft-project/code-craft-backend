@@ -5,6 +5,7 @@ import JobPostsRepository from "@/infrastructure/database/repositories/JobPostsR
 import MembersRepository from "@/infrastructure/database/repositories/MembersRepository";
 import OrganizationChallengesRepository from "@/infrastructure/database/repositories/OrganizationChallengesRepository";
 import OrganizationsRepository from "@/infrastructure/database/repositories/OrganizationsRepository";
+import { testCaseInputsRepository, testCasesRepository } from "../repositories";
 
 export default class OrganizationsService {
     organizationsRepository: OrganizationsRepository;
@@ -78,6 +79,26 @@ export default class OrganizationsService {
 
         await this.organizationChallengesRepository.createOrganizationChallenge({ organization_id, challenge_id: createChallenge.insertId });
         return await this.challengesRepository.getChallengeById(createChallenge.insertId);
+    }
+
+    async getChallengeById(organization_id: number, challenge_id: number): Promise<ChallengeEntity | null> {
+        return await this.challengesRepository.getOrganizationChallengeById(organization_id, challenge_id);
+    }
+
+    async deleteOrganizationChallenge(organization_id: number, challenge_id: number): Promise<InsertResultInterface | null> {
+        const deleteOrganizationChallenge = await this.organizationChallengesRepository.removeOrganizationChallenge({ challenge_id, organization_id });
+        if (!deleteOrganizationChallenge) {
+            return null;
+        }
+
+        const testCases = await testCasesRepository.getTestCasesByChallengeId(challenge_id);
+        testCases?.forEach(async (t) => {
+            await testCaseInputsRepository.removeByTestCaseId(t.id!);
+        });
+        
+        await testCasesRepository.removeByChallengeId(challenge_id);
+        
+        return await this.challengesRepository.removeChallengeById(challenge_id);
     }
 
     async getOrganizationDashboard(organization_id: number): Promise<OrganizationDashboardStats> {

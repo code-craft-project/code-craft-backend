@@ -15,6 +15,9 @@ router.get("/:id/job_posts/:job_post_id/applications", organizationsController.g
 router.get("/:id/events", organizationsController.getEvents);
 router.post("/:id/challenges/create", organizationsController.createChallenge);
 router.get("/:id/challenges", organizationsController.getChallenges);
+router.post("/:id/challenges/:challenge_id/update", organizationsController.updateChallenge);
+router.post("/:id/challenges/:challenge_id/update_test_cases", organizationsController.updateChallengeTestCases);
+router.post("/:id/challenges/:challenge_id/delete", organizationsController.deleteChallenge);
 router.get("/:id/dashboard", organizationsController.getOrganizationDashboard);
 router.get("/me", organizationsController.getUserOrganizations);
 router.get("/:id", organizationsController.getOrganizationById);
