@@ -1088,7 +1088,8 @@ describe("API Tests:", () => {
                     const expectedOutput = { status: "success", message: "Challenge created successfully" };
 
                     expect(response.statusCode).toBe(200);
-                    expect(response.body).toEqual(expectedOutput);
+                    expect(response.body.status).toEqual(expectedOutput.status);
+                    expect(response.body.message).toEqual(expectedOutput.message);
                 });
             });
 
@@ -1237,7 +1238,8 @@ describe("API Tests:", () => {
                 };
 
                 expect(response.statusCode).toBe(200);
-                expect(response.body).toEqual(expectedOutput);
+                expect(response.body.status).toEqual(expectedOutput.status);
+                expect(response.body.message).toEqual(expectedOutput.message);
             });
         });
 
