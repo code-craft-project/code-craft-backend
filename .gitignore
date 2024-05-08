@@ -5,3 +5,6 @@ package-lock.json
 
 public/images/*
 !public/images/.gitkeep
+
+public/files/*
+!public/files/.gitkeep

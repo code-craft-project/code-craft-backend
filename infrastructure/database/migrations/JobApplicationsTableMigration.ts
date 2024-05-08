@@ -6,6 +6,8 @@ export default class JobApplicationsTableMigration extends TableMigration {
             id int AUTO_INCREMENT primary key,
             job_post_id int,
             user_id int,
+            cover_message text,
+            resume_url text,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             foreign key(job_post_id) references job_posts(id),
             foreign key(user_id) references users(id)

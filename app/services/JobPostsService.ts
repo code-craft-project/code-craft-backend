@@ -18,8 +18,8 @@ export default class JobPostsService {
         return null;
     }
 
-    async getJobPostById(id: number): Promise<JobPostEntity | null> {
-        return await this.jobPostsRepository.getJobPostById(id);
+    async getJobPostById(id: number, user_id: number = 0): Promise<JobPostEntity | null> {
+        return await this.jobPostsRepository.getJobPostById(id, user_id);
     }
 
     async getJobPostsByPage(page?: number, limits?: number): Promise<JobPostEntity[] | null> {
@@ -39,8 +39,8 @@ export default class JobPostsService {
         return await this.jobApplicationsRepository.getUserJobApplicationById(job_post_id, user_id);
     }
 
-    async applyToJob(user_id: number, job_post_id: number): Promise<JobApplicationEntity | null> {
-        const insertResult = await this.jobApplicationsRepository.createJobApplication({ user_id, job_post_id });
+    async applyToJob(user_id: number, job_post_id: number, cover_message: string, resume_url: string): Promise<JobApplicationEntity | null> {
+        const insertResult = await this.jobApplicationsRepository.createJobApplication({ user_id, job_post_id, cover_message, resume_url });
         if (insertResult) {
             return await this.jobApplicationsRepository.getJobApplicationById(insertResult.insertId);
         }

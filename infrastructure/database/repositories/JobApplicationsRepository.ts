@@ -12,6 +12,8 @@ export default class JobApplicationsRepository implements JobApplicationsReposit
         let result = await this.database.query<InsertResultInterface>(`insert into job_applications (${JOB_APPLICATION_CREATE_PROPS}) values (?);`, [
             job_application.job_post_id,
             job_application.user_id,
+            job_application.cover_message,
+            job_application.resume_url
         ]);
 
         if (result) {

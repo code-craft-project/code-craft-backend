@@ -50,7 +50,7 @@ export default class JobPostsController {
     getJobPostById = async (req: Request, res: Response) => {
         const { id } = req.params;
 
-        let data = await this.jobPostsService.getJobPostById(parseInt(id));
+        let data = await this.jobPostsService.getJobPostById(parseInt(id), req.user?.id);
 
         if (!data) {
             res.status(200).json({
@@ -168,6 +168,7 @@ export default class JobPostsController {
 
     applyToJob = async (req: Request, res: Response) => {
         const { id: job_post_id } = req.params;
+        const { cover_message, resume_url } = req.body;
 
         const user_id = req.user?.id as number;
 
@@ -177,7 +178,7 @@ export default class JobPostsController {
             return;
         }
 
-        let createJobApplication = await this.jobPostsService.applyToJob(user_id, parseInt(job_post_id));
+        let createJobApplication = await this.jobPostsService.applyToJob(user_id, parseInt(job_post_id), cover_message, resume_url);
         if (!createJobApplication) {
             res.status(200).json({ status: "error", message: "Can't apply to job, something went wrong" });
             return;
