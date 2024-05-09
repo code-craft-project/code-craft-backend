@@ -125,6 +125,163 @@
                 }
             }
         },
+        "/users/me/skills": {
+            "get": {
+                "tags": [
+                    "User Management"
+                ],
+                "description": "Get current user skills",
+                "operationId": "getCurrentUserSkills",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "description": "Bearer token for authentication"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "current user skills response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Skill"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/me/skills/create": {
+            "post": {
+                "tags": [
+                    "User Management"
+                ],
+                "description": "create user skill",
+                "operationId": "createSkill",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "description": "Bearer token for authentication"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "credentials",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "create skill response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "data": {
+                                    "$ref": "#/definitions/Skill"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/me/skills/{id}/delete": {
+            "post": {
+                "tags": [
+                    "User Management"
+                ],
+                "description": "delete skill by Id",
+                "operationId": "deleteSkillbyId",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of Skill",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "description": "Bearer token for authentication"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "delete skill response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
         "/users/my_progress": {
             "get": {
                 "tags": [
@@ -201,6 +358,54 @@
                                 },
                                 "data": {
                                     "$ref": "#/definitions/User"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}/skills": {
+            "get": {
+                "tags": [
+                    "User Management"
+                ],
+                "description": "Get user skill by id",
+                "operationId": "getUserSkillsById",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of User",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "get_user_skills_by_id response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Skill"
+                                    }
                                 }
                             }
                         }
@@ -4130,6 +4335,24 @@
                     "example": "2024-02-28T20:20:48.000Z"
                 },
                 "updated_at": {
+                    "type": "string",
+                    "example": "2024-02-28T20:20:48.000Z"
+                }
+            }
+        },
+        "Skill": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "created_at": {
                     "type": "string",
                     "example": "2024-02-28T20:20:48.000Z"
                 }

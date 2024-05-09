@@ -11,6 +11,7 @@ import MembersRepository from "@/infrastructure/database/repositories/MembersRep
 import OrganizationChallengesRepository from "@/infrastructure/database/repositories/OrganizationChallengesRepository";
 import OrganizationsRepository from "@/infrastructure/database/repositories/OrganizationsRepository";
 import PermissionsRepository from "@/infrastructure/database/repositories/PermissionsRepository";
+import SkillsRepository from "@/infrastructure/database/repositories/SkillsRepository";
 import SubmissionsRepository from "@/infrastructure/database/repositories/SubmissionsRepository";
 import TeamMembersRepository from "@/infrastructure/database/repositories/TeamMembersRepository";
 import TeamsRepository from "@/infrastructure/database/repositories/TeamsRepository";
@@ -40,3 +41,4 @@ export const testCasesRepository = new TestCasesRepository(database);
 export const testCaseInputsRepository = new TestCaseInputsRepository(database);
 export const submissionsRepository = new SubmissionsRepository(database);
 export const organizationChallengesRepository = new OrganizationChallengesRepository(database);
+export const skillsRepository = new SkillsRepository(database);

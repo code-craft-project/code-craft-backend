@@ -39,6 +39,7 @@ export default class UsersController {
             'last_name',
             'email',
             'profile_image_url',
+            'bio',
         ];
 
         const propertyNames: string[] = Object.getOwnPropertyNames(data);
@@ -93,5 +94,55 @@ export default class UsersController {
         }
 
         res.status(200).json({ status: "success", data: userProgress });
+    }
+
+    getUserSkills = async (req: Request, res: Response) => {
+        const userSkills = await this.usersService.getUserSkills(req.user!.id as number);
+
+        if (!userSkills) {
+            res.status(200).json({ status: "success", data: [] });
+            return;
+        }
+
+        res.status(200).json({ status: "success", data: userSkills });
+    }
+
+    deleteUserSkillById = async (req: Request, res: Response) => {
+        const { id } = req.params;
+
+        const deleteSkill = await this.usersService.deleteSkillById(parseInt(id));
+
+        if (!deleteSkill) {
+            res.status(200).json({ status: "error", message: "Something went wrong" });
+            return;
+        }
+
+        res.status(200).json({ status: "success", message: "Skill deleted Successfully" });
+    }
+
+    getUserSkillsById = async (req: Request, res: Response) => {
+        const { id } = req.params;
+
+        const userSkills = await this.usersService.getUserSkills(parseInt(id));
+
+        if (!userSkills) {
+            res.status(200).json({ status: "success", data: [] });
+            return;
+        }
+
+        res.status(200).json({ status: "success", data: userSkills });
+    }
+
+    createUserSkill = async (req: Request, res: Response) => {
+        const skill: SkillEntity = req.body;
+
+        const userSkill = await this.usersService.createUserSkill({ user_id: req.user?.id!, name: skill.name });
+
+        if (!userSkill) {
+            res.status(200).json({ status: "error", message: "Something went wrong" });
+            return;
+        }
+
+        res.status(200).json({ status: "success", message: "Skill created successfully", data: userSkill });
     }
 };

@@ -10,6 +10,8 @@ import { query, organization, privateEvent, user, user2, user2Credentials, userC
 let access_token: string = "";
 let user2_access_token: string = "";
 
+const total_tables = 23;
+
 describe("API Tests:", () => {
     afterAll(() => {
         database.close();
@@ -24,7 +26,7 @@ describe("API Tests:", () => {
 
             await databaseMigration.migrateAll();
 
-            expect(spy).toHaveBeenCalledTimes(22);
+            expect(spy).toHaveBeenCalledTimes(total_tables);
         }, 30000);
 
         test("Drop tables", async () => {
@@ -34,7 +36,7 @@ describe("API Tests:", () => {
 
             await databaseMigration.dropAll();
 
-            expect(spy).toHaveBeenCalledTimes(22);
+            expect(spy).toHaveBeenCalledTimes(total_tables);
 
             // IMPORTANT: This step is necessary to allow all other tests to work.
             await databaseMigration.migrateAll();
@@ -113,8 +115,6 @@ describe("API Tests:", () => {
         test("Should return a invalid session when user sign out", async () => {
             const response = await request(server).post("/api/auth/sign_in").send(userCredentials);
             const response1 = await request(server).post("/api/auth/sign_out").set('Authorization', response.body.data.access_token);
-
-            console.log({ access_token, response1: response.body.data.access_token });
 
             expect(response1.statusCode).toBe(200);
             expect(response1.body.status).toEqual("success");
@@ -208,6 +208,42 @@ describe("API Tests:", () => {
             expect(response.statusCode).toBe(200);
             expect(response.body.status).toEqual("success");
         });
+
+        test("Should successfully create user skill", async () => {
+            const response = await request(server).post("/api/users/me/skills/create").set('Authorization', access_token).send({ name: "new skills" });
+
+            const expectedOutput = { status: "success", message: "Skill created successfully" };
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body.status).toEqual(expectedOutput.status);
+            expect(response.body.message).toEqual(expectedOutput.message);
+        });
+
+        test("Should successfully delete user skill", async () => {
+            const response = await request(server).post("/api/users/me/skills/1/delete").set('Authorization', access_token)
+
+            const expectedOutput = { status: "success", message: "Skill deleted Successfully" };
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toEqual(expectedOutput);
+        });
+
+        test("Should retrieve current user skills", async () => {
+            const response = await request(server).get("/api/users/me/skills").set('Authorization', access_token);;
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body.status).toEqual("success");
+            expect(Array.isArray(response.body.data)).toBeTruthy();
+        });
+
+        test("Should retrieve a user skills with USER ID '1'", async () => {
+            const response = await request(server).get("/api/users/1/skills");
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body.status).toEqual("success");
+            expect(Array.isArray(response.body.data)).toBeTruthy();
+        });
+
     });
 
     describe("Organizations", () => {

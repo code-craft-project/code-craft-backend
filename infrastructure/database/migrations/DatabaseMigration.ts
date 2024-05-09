@@ -22,6 +22,7 @@ import EventChallengesTableMigration from "./EventChallengesTableMigration";
 import TestCasesTableMigration from "./TestCasesTableMigration";
 import TestCaseInputsTableMigration from "./TestCaseInputsTableMigration";
 import OrganizationChallengesTableMigration from "./OrganizationChallengesTableMigration";
+import SkillsTableMigration from "./SkillsTableMigration";
 
 export class DatabaseMigration {
     private database: MySQLDatabase;
@@ -35,6 +36,7 @@ export class DatabaseMigration {
         try {
             let users_table = new UsersTableMigration(this.database, this.logger);
 
+            let skills_table = new SkillsTableMigration(this.database, this.logger);
             let user_sessions_table = new UserSessionsTableMigration(this.database, this.logger);
             let organizations_table = new OrganizationsTableMigration(this.database, this.logger);
             let challenges_table = new ChallengesTableMigration(this.database, this.logger);
@@ -68,6 +70,7 @@ export class DatabaseMigration {
 
             // Level 02
             await Promise.all([
+                skills_table.migrate(),
                 user_sessions_table.migrate(),
                 organizations_table.migrate(),
                 challenges_table.migrate(),
@@ -116,6 +119,7 @@ export class DatabaseMigration {
         try {
             let users_table = new UsersTableMigration(this.database, this.logger);
 
+            let skills_table = new SkillsTableMigration(this.database, this.logger);
             let user_sessions_table = new UserSessionsTableMigration(this.database, this.logger);
             let organizations_table = new OrganizationsTableMigration(this.database, this.logger);
             let challenges_table = new ChallengesTableMigration(this.database, this.logger);
@@ -177,6 +181,7 @@ export class DatabaseMigration {
 
             // Level 02
             await Promise.all([
+                skills_table.drop(),
                 user_sessions_table.drop(),
                 organizations_table.drop(),
                 challenges_table.drop(),
