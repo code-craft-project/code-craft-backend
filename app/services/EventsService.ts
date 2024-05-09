@@ -156,4 +156,32 @@ export default class EventsService {
 
         return await this.challengesRepository.removeChallengeById(challenge_id);
     }
+
+    async deleteEvent(event_id: number): Promise<InsertResultInterface | null> {
+        // Delete Event participants
+        await this.eventParticipantsRepository.removeEventParticipantsByEventId(event_id);
+
+        // Delete Event Challenges
+        const challenges = await this.challengesRepository.getChallengesByEventId(event_id);
+        if (challenges) {
+            for (let i = 0; i < challenges.length; i++) {
+                const challenge: ChallengeEntity = challenges[i];
+                await this.eventChallengesRepository.removeEventChallenge({ challenge_id: challenge.id!, event_id: event_id });
+                await this.challengesRepository.removeChallengeById(challenge.id!);
+            }
+        }
+        // Delete Event Teams
+        const teams = await this.teamsRepository.getTeamsByEventId(event_id);
+        if (teams) {
+            for (let i = 0; i < teams.length; i++) {
+                const team = teams[i];
+                await this.teamMembersRepository.removeMembersByTeamId(team.id!);
+                await this.teamsRepository.removeTeamById(team.id!);
+            }
+        }
+
+        // TODO: Remove From Permissions table
+
+        return await this.eventsRepository.deleteEventById(event_id);
+    }
 };

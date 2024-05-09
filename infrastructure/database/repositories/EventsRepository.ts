@@ -60,7 +60,11 @@ export default class EventsRepository implements EventsRepositoryInterface {
         for (let i = 0; i < propertyNames.length; i++) {
             let property = propertyNames[i];
             query += `${property} = ?`;
-            params.push((event as any)[property]);
+            if (property == 'start_at' || property == 'end_at') {
+                params.push(new Date((event as any)[property]));
+            } else {
+                params.push((event as any)[property]);
+            }
             if (i < (propertyNames.length - 1)) {
                 query += ',';
             }
@@ -75,7 +79,7 @@ export default class EventsRepository implements EventsRepositoryInterface {
     }
 
     async getOrganizationEventsByPage(organization_id: number, page: number, limits: number) {
-        let data = await this.database.query<EventEntity[]>(`select ${EVENT_SELECT_PROPS}, JSON_OBJECT(${ORGANIZATION_JOIN_PROPS}) AS organization from events join organizations on organization_id = organizations.id where organization_id = ? limit ?;`, organization_id, [page, limits]);
+        let data = await this.database.query<EventEntity[]>(`select ${EVENT_SELECT_PROPS}, JSON_OBJECT(${ORGANIZATION_JOIN_PROPS}) AS organization from events join organizations on organization_id = organizations.id where organization_id = ? order by events.created_at desc limit ?;`, organization_id, [page, limits]);
         if (!data) {
             return null;
         }
@@ -100,5 +104,15 @@ export default class EventsRepository implements EventsRepositoryInterface {
         }
 
         return data;
+    }
+
+    async deleteEventById(id: number): Promise<InsertResultInterface | null> {
+        let result = await this.database.query<InsertResultInterface>(`delete from events where id = ?;`, id);
+
+        if (result) {
+            return result;
+        }
+
+        return null;
     }
 }

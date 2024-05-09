@@ -40,4 +40,14 @@ export default class EventParticipantsRepository implements EventParticipantsRep
 
         return null;
     }
+
+    async removeEventParticipantsByEventId(eventId: number): Promise<EventParticipantEntity | null> {
+        let result = await this.database.query<EventParticipantEntity>(`delete from event_participants where event_id = ?;`, eventId);
+
+        if (result) {
+            return result;
+        }
+
+        return null;
+    }
 }

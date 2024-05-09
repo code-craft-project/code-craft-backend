@@ -106,7 +106,7 @@ export default class EventsController {
         const { id: event_id } = req.params;
         const event: EventEntity = req.body;
 
-        const allowedProperties = ["title", "description", "is_public", "start_at", "end_at", "is_team_based", "max_team_members"];
+        const allowedProperties = ["title", "description", "is_public", "start_at", "end_at", "is_team_based", "max_team_members", "logo_url"];
 
         const propertyNames: string[] = Object.getOwnPropertyNames(event);
         for (let property of propertyNames) {
@@ -706,5 +706,31 @@ export default class EventsController {
         }
 
         res.status(200).json({ status: "success", message: "Challenge deleted successfully" });
+    }
+
+    deleteEvent = async (req: Request, res: Response) => {
+        const { id } = req.params;
+
+        const event = await this.eventsService.getEventById(parseInt(id));
+        if (!event) {
+            res.status(200).json({ status: "error", message: "Event Does not exists" });
+            return;
+        }
+
+        const user = req.user;
+
+        const hasPermissions = await this.membersService.isEventsManager(user?.id!, event.organization_id);
+        if (!hasPermissions) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
+
+        const deleteEvent = await this.eventsService.deleteEvent(parseInt(id));
+        if (!deleteEvent) {
+            res.status(200).json({ status: "error", message: "Something went wrong" });
+            return;
+        }
+
+        res.status(200).json({ status: "success", message: "Event deleted successfully" });
     }
 };

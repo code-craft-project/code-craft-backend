@@ -27,6 +27,7 @@ const DYNAMIC_PROTECTED_ROUTES: RegExp[] = [
     /^\/events\/[0-9]+\/join_event$/,
     /^\/events\/[0-9]+\/leave_event$/,
     /^\/events\/[0-9]+\/update$/,
+    /^\/events\/[0-9]+\/delete$/,
     /^\/events\/[0-9]+\/teams\/me$/,
     /^\/events\/[0-9]+\/teams\/[0-9]+\/update$/,
     /^\/events\/[0-9]+\/teams\/create$/,

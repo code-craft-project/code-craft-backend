@@ -22,6 +22,7 @@ router.get("/:id/challenges/topic/:topic", eventsController.getChallengesByTopic
 router.post("/create", eventsController.createEvent);
 router.get("/:id", eventsController.getEventById);
 router.post("/:id/update", eventsController.updateEvent);
+router.post("/:id/delete", eventsController.deleteEvent);
 router.get("/", eventsController.getEvents);
 
 export default router;
