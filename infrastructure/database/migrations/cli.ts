@@ -23,3 +23,13 @@ if (action == "clean") {
         logger.success("✅ All Tables has been dropped");
     });
 }
+
+if (action == "reset") {
+    databaseMigration.dropAll().then(() => {
+        logger.success("✅ All Tables has been dropped");
+        console.log("");
+        databaseMigration.migrateAll().then(() => {
+            logger.success("✅ All Tables has been created");
+        });
+    });
+}
