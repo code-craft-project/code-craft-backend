@@ -26,6 +26,7 @@ const DYNAMIC_PROTECTED_ROUTES: RegExp[] = [
     /^\/organizations\/me$/,
     /^\/organizations\/[0-9]+\/update$/,
     /^\/organizations\/[0-9]+\/members\/me$/,
+    /^\/organizations\/[0-9]+\/members\/[0-9]+\/update$/,
     /^\/organizations\/[0-9]+\/members$/,
     /^\/organizations\/[0-9]+\/challenges$/,
     /^\/organizations\/[0-9]+\/challenges\/[0-9]+\/update$/,

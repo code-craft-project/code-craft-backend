@@ -8,6 +8,7 @@ router.post("/:id/update", organizationsController.updateOrganization);
 router.post("/:id/give_permission", organizationsController.givePermission);
 router.get("/:id/members", organizationsController.getMembers);
 router.get("/:id/members/me", organizationsController.getMemberByUser);
+router.post("/:id/members/:member_id/update", organizationsController.updateMember);
 router.post("/:id/add_member", organizationsController.addOrganizationMember);
 router.post("/:id/remove_member", organizationsController.removeOrganizationMember);
 router.get("/:id/job_posts", organizationsController.getJobPosts);

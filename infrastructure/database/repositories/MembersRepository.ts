@@ -23,7 +23,17 @@ export default class MembersRepository implements MembersRepositoryInterface {
     }
 
     async getMemberById(member_id: number): Promise<MemberEntity | null> {
-        let data = await this.database.query<MemberEntity[]>(`select ${MEMBER_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS user from members join users on users.id = members.user_id where id = ?;`, [member_id]);
+        let data = await this.database.query<MemberEntity[]>(`select ${MEMBER_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS user from members join users on users.id = members.user_id where members.id = ?;`, [member_id]);
+
+        if (data && data.length > 0) {
+            return data[0];
+        }
+
+        return null;
+    }
+
+    async getMemberByUserId(user_id: number): Promise<MemberEntity | null> {
+        let data = await this.database.query<MemberEntity[]>(`select ${MEMBER_SELECT_PROPS}, JSON_OBJECT(${USER_JOIN_PROPS}) AS user from members join users on users.id = members.user_id where members.user_id = ?;`, user_id);
 
         if (data && data.length > 0) {
             return data[0];
@@ -70,5 +80,27 @@ export default class MembersRepository implements MembersRepositoryInterface {
         }
 
         return null;
+    }
+
+    async updateMember(member_id: number, member: MemberEntity): Promise<InsertResultInterface | null> {
+        let query = '';
+
+        const params = [];
+        const propertyNames = Object.getOwnPropertyNames(member);
+        for (let i = 0; i < propertyNames.length; i++) {
+            let property = propertyNames[i];
+            query += `${property} = ?`;
+            params.push((member as any)[property]);
+            if (i < (propertyNames.length - 1)) {
+                query += ',';
+            }
+        }
+
+        let updateMember = await this.database.query<InsertResultInterface>(`update members set ${query} where id = ?;`, ...params, member_id);
+        if (!updateMember) {
+            return null;
+        }
+
+        return updateMember;
     }
 }

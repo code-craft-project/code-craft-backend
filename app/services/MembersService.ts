@@ -15,6 +15,10 @@ export default class MembersService {
         return await this.membersRepository.getMemberById(id);
     }
 
+    async getMemberByUserId(user_id: number): Promise<MemberEntity | null> {
+        return await this.membersRepository.getMemberByUserId(user_id);
+    }
+
     async getOrganizationMembers(organization_id: number): Promise<MemberEntity[] | null> {
         return await this.membersRepository.getOrganizationMembers(organization_id);
     }
@@ -77,5 +81,9 @@ export default class MembersService {
         }
 
         return true;
+    }
+
+    async updateMember(member_id: number, member: MemberEntity): Promise<InsertResultInterface | null> {
+        return await this.membersRepository.updateMember(member_id, { role: member.role });
     }
 };

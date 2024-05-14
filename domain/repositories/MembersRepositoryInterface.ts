@@ -5,8 +5,11 @@ export interface MembersRepositoryInterface {
     createMember(member: MemberEntity): Promise<InsertResultInterface | null>;
 
     getMemberById(member_id: number): Promise<MemberEntity | null>;
+    getMemberByUserId(user_id: number): Promise<MemberEntity | null>;
     removeOrganizationMemberById(member_id: number, organization_id: number): Promise<MemberEntity | null>;
     getMemberByOrganizationId(user_id: number, organization_id: number): Promise<MemberEntity | null>;
 
     getOrganizationMembers(organization_id: number): Promise<MemberEntity[] | null>;
+
+    updateMember(member_id: number, member:MemberEntity): Promise<InsertResultInterface|null>;
 };

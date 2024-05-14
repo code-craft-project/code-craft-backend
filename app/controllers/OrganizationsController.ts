@@ -206,7 +206,7 @@ export default class OrganizationsController {
             return;
         }
 
-        const organization_member_exist = await this.membersService.getMemberByOrganizationId(member.user_id, organization_id);
+        const organization_member_exist = await this.membersService.getMemberByOrganizationId(member.user_id!, organization_id);
         if (organization_member_exist) {
             res.status(200).json({ status: "error", message: "Member already exist" });
             return;
@@ -480,13 +480,13 @@ export default class OrganizationsController {
         }
 
         const oldTestCases = await this.challengesService.getTestCases(parseInt(challenge_id));
-        
+
         if (oldTestCases) {
             // Check if user removed a TestCase
             for (let i = 0; i < oldTestCases.length; i++) {
                 const oldTestCase = oldTestCases[i];
                 const didFind = test_cases.find((t => t.id == oldTestCase.id));
-                if(!didFind){
+                if (!didFind) {
                     // Remove
                     await this.challengesService.removeTestCaseById(oldTestCase.id!);
                 }
@@ -578,6 +578,33 @@ export default class OrganizationsController {
         const members = await this.membersService.getOrganizationMembers(parseInt(organization_id));
 
         res.status(200).json({ status: "success", data: members });
+    }
+
+    updateMember = async (req: Request, res: Response) => {
+        const { id: organization_id, member_id } = req.params;
+
+        const member: MemberEntity = req.body;
+        const user = req.user;
+
+        const hasPermissions = await this.membersService.isAdmin(user?.id!, parseInt(organization_id));
+
+        if (!hasPermissions) {
+            res.status(200).json({ status: "error", message: "You don't have permissions" });
+            return;
+        }
+
+        const targetMember = await this.membersService.getMemberById(parseInt(member_id));
+        if (targetMember?.user_id == req.user?.id) {
+            res.status(200).json({ status: "error", message: "You can't update your role. Another admin can do that." });
+            return;
+        }
+
+        const updateMember = await this.membersService.updateMember(parseInt(member_id), member);
+        if (!updateMember) {
+            return res.status(200).json({ status: "error", message: 'Something went wrong' });
+        }
+
+        res.status(200).json({ status: "success", message: "Member updated successfully" });
     }
 
     getMemberByUser = async (req: Request, res: Response) => {
