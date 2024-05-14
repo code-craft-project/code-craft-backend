@@ -9,6 +9,7 @@ import ChallengesService from "../services/ChallengesService";
 import EventsService from "../services/EventsService";
 import PermissionsService from "../services/PermissionsService";
 import ChallengeValidator from "@/infrastructure/validators/ChallengeValidator";
+import UsersService from "../services/UsersService";
 
 export interface OrganizationsControllerConfig {
     organizationsService: OrganizationsService;
@@ -20,6 +21,7 @@ export interface OrganizationsControllerConfig {
     memberValidator: MemberValidator;
     permissionValidator: PermissionValidator;
     challengeValidator: ChallengeValidator;
+    usersService: UsersService;
 };
 
 export default class OrganizationsController {
@@ -32,6 +34,7 @@ export default class OrganizationsController {
     memberValidator: MemberValidator;
     permissionValidator: PermissionValidator;
     challengeValidator: ChallengeValidator;
+    usersService: UsersService;
 
     constructor(organizationsControllerConfig: OrganizationsControllerConfig) {
         this.organizationsService = organizationsControllerConfig.organizationsService;
@@ -43,6 +46,7 @@ export default class OrganizationsController {
         this.memberValidator = organizationsControllerConfig.memberValidator;
         this.permissionValidator = organizationsControllerConfig.permissionValidator;
         this.challengeValidator = organizationsControllerConfig.challengeValidator;
+        this.usersService = organizationsControllerConfig.usersService;
     }
 
     getOrganizations = async (req: Request, res: Response) => {
@@ -190,11 +194,11 @@ export default class OrganizationsController {
 
     addOrganizationMember = async (req: Request, res: Response) => {
         const organization_id: number = parseInt(req.params.id);
-        const member: MemberEntity = req.body;
+        const newMember: NewMember = req.body;
 
-        let validate_result: ValidatorResult = this.memberValidator.validate(member);
-        if (!validate_result.is_valid) {
-            res.status(200).json({ status: "error", message: "Invalid body parameters", errors: validate_result.messages });
+        const findUser = await this.usersService.getUserByEmail(newMember.email);
+        if (!findUser) {
+            res.status(200).json({ status: "error", message: "User not found" });
             return;
         }
 
@@ -206,19 +210,21 @@ export default class OrganizationsController {
             return;
         }
 
-        const organization_member_exist = await this.membersService.getMemberByOrganizationId(member.user_id!, organization_id);
+        const organization_member_exist = await this.membersService.getMemberByOrganizationId(findUser.id!, organization_id);
         if (organization_member_exist) {
             res.status(200).json({ status: "error", message: "Member already exist" });
             return;
         }
 
-        const new_member = await this.membersService.createMember({ ...member, organization_id });
-        if (!new_member) {
+        const createMember = await this.membersService.createMember({ user_id: findUser.id!, role: newMember.role, organization_id });
+        if (!createMember) {
             res.status(200).json({ status: "error", message: "Can't add new member, something went wrong" });
             return;
         }
 
-        res.status(200).json({ status: "success", data: new_member });
+        const _member = await this.membersService.getMemberById(createMember.insertId);
+
+        res.status(200).json({ status: "success", message: "Member added successfully", data: _member });
     }
 
     removeOrganizationMember = async (req: Request, res: Response) => {

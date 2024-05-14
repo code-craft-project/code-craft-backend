@@ -7,3 +7,8 @@ interface MemberEntity {
     organization_id?: number;
     created_at?: timestamp;
 };
+
+interface NewMember {
+    email: string,
+    role: MemberRole
+};
