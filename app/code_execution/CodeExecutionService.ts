@@ -14,7 +14,9 @@ export default class CodeExecutionService {
         this.payload = payload;
         this.queue = queue;
 
-        this.client = new WebSocket(`ws://localhost:${EXECUTION_SERVICE_PORT}`);
+        EXECUTION_SERVICE_PORT;
+        // localhost:${EXECUTION_SERVICE_PORT}
+        this.client = new WebSocket(`ws://code-execution.onrender.com`);
         this.client.onopen = () => {
             console.log('Connected to code-execution service at ', EXECUTION_SERVICE_PORT);
         }
