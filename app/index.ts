@@ -26,7 +26,7 @@ app.use('/api-docs', swaggerMiddlewares.swaggerUIServe, swaggerMiddlewares.swagg
 app.use('/api', apiRouter);
 app.use('/public', filesServeRouter);
 
-const wsServer = new WebSocketServer({ port: WEBSCOKET_SERVER_PORT }, () => {
+const wsServer = new WebSocketServer({ noServer: true }, () => {
     console.log('WebSocketServer at ', WEBSCOKET_SERVER_PORT);
 });
 
@@ -35,4 +35,10 @@ const realTimeService = new RealTimeService(wsServer, { testCasesRepository, sub
 
 export const server = app.listen(PORT, () => {
     console.log(`Server is up running on port ${PORT}`);
+});
+
+server.on("upgrade", (request, socket, head) => {
+    wsServer.handleUpgrade(request, socket, head, (_socket, _request) => {
+        wsServer.emit("connection", _socket, _request);
+    });
 });
