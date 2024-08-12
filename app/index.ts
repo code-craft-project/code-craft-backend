@@ -10,6 +10,7 @@ import { WebSocketServer } from 'ws';
 import { testCasesRepository, submissionsRepository } from './repositories';
 import Queue from './services/QueueService';
 import fileUpload from 'express-fileupload';
+import cors from "cors";
 
 const PORT = process.env.PORT || 3000;
 const WEBSCOKET_SERVER_PORT = process.env.WEBSCOKET_SERVER_PORT ? parseInt(process.env.WEBSCOKET_SERVER_PORT) : 3002;
@@ -21,6 +22,7 @@ const app = express();
 
 app.use(fileUpload());
 app.use(express.json());
+app.use(cors({ origin: "*" }));
 
 app.use('/api-docs', swaggerMiddlewares.swaggerUIServe, swaggerMiddlewares.swaggerUISetup);
 app.use('/api', apiRouter);
